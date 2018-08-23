@@ -14,11 +14,29 @@
     <depends>com.intellij.modules.lang</depends>
     -->
 
+    <application-components>
+        <component>
+            <implementation-class>com.intellij.jira.components.JiraActionManager</implementation-class>
+        </component>
+    </application-components>
+
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow id="JIRA" anchor="bottom" icon="/icons/ico-jira-16.png" factoryClass="com.intellij.jira.ui.JiraToolWindowFactory"/>
+
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <action id="Jira.toolwindow.Refresh"
+                class="com.intellij.jira.actions.JiraIssuesRefreshAction"
+                text="Refresh issues"
+                description="Updates the project issues"
+                icon="JiraIcons.ISSUES_REFRESH">
+        </action>
+        <action id="Jira.toolwindow.Settings"
+                class="com.intellij.jira.actions.JiraSettingsAction"
+                text="Settings"
+                description="Configure Jira"
+                icon="JiraIcons.TOOLS">
+        </action>
     </actions>
 </idea-plugin>
