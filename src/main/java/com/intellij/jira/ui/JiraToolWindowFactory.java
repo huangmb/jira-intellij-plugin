@@ -1,11 +1,18 @@
 package com.intellij.jira.ui;
 
+import com.intellij.jira.tasks.JiraServer;
+import com.intellij.jira.tasks.JiraTaskManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ToolWindowType;
 import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentManager;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Optional;
 
 public class JiraToolWindowFactory implements ToolWindowFactory {
 
@@ -21,11 +28,31 @@ public class JiraToolWindowFactory implements ToolWindowFactory {
     }
 
     private static void addIssuesTab(Project project, ToolWindow toolWindow) {
-        JiraIssuesPanel issuesPanel = new JiraIssuesPanel();
-        Content issuesContent = toolWindow.getContentManager().getFactory()
-                .createContent(issuesPanel, TAB_ISSUES,false);
-        toolWindow.getContentManager().addDataProvider(issuesPanel);
-        toolWindow.getContentManager().addContent(issuesContent);
+        ContentManager contentManager = toolWindow.getContentManager();
+        Content content = null;
+
+        Optional<JiraServer> jiraServer = new JiraTaskManager(project).getConfiguredJiraServer();
+        if(!jiraServer.isPresent()){
+            content = contentManager.getFactory().createContent(createPlaceHolderPanel(), TAB_ISSUES, false);
+        }
+        else{
+            JiraIssuesPanel issuesPanel = new JiraIssuesPanel(jiraServer.get());
+            content = contentManager.getFactory().createContent(issuesPanel, TAB_ISSUES,false);
+            contentManager.addDataProvider(issuesPanel);
+        }
+
+        contentManager.addContent(content);
+    }
+
+    private static JComponent createPlaceHolderPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        JPanel labelPanel = new JPanel();
+        JLabel messageLabel = new JLabel("No Jira server found");
+        messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelPanel.add(messageLabel);
+        panel.add(labelPanel, BorderLayout.CENTER);
+
+        return panel;
     }
 
     private static void addProjectsTab(Project project, ToolWindow toolWindow) {
