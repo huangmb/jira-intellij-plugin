@@ -3,12 +3,12 @@ package com.intellij.jira.ui.panels;
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.util.JiraIconUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.tasks.jira.CachedIconLoader;
 import com.intellij.tools.SimpleActionGroup;
@@ -16,11 +16,9 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.table.TableView;
 import com.intellij.util.text.DateFormatUtil;
 import com.intellij.util.ui.ColumnInfo;
-import com.intellij.util.ui.ImageUtil;
 import com.intellij.util.ui.ListTableModel;
 import com.intellij.util.ui.table.IconTableCellRenderer;
 import org.fest.util.Lists;
-import org.imgscalr.Scalr;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -29,13 +27,9 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
@@ -184,31 +178,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
         @Nullable
         @Override
         protected Icon getIcon(@NotNull Object value, JTable table, int row) {
-            try {
-                Icon icon = IconLoader.findIcon(new URL(iconUrl));
-                if(isNull(icon)){
-                    return null;
-                }
-
-                Image image = IconLoader.toImage(icon);
-                BufferedImage bufferedImage = ImageUtil.toBufferedImage(image);
-
-
-                BufferedImage resizeImage = Scalr.resize(bufferedImage, Scalr.Method.ULTRA_QUALITY, 16);
-
-
-                /*Icon icon = IconLoader.findIcon(new URL(iconUrl));
-                BufferedImage image = UIUtil.createImage(15, 15, BufferedImage.TYPE_4BYTE_ABGR);
-                Graphics2D graphics = image.createGraphics();
-                icon.paintIcon(null, graphics, 0, 0);
-                graphics.dispose();*/
-
-                return new ImageIcon(resizeImage);
-            } catch (MalformedURLException e) {
-                log.error(String.format("Unable to get icon from '%s'", iconUrl));
-            }
-
-            return null;
+            return JiraIconUtil.getSmallIcon(iconUrl);
         }
 
         @Override

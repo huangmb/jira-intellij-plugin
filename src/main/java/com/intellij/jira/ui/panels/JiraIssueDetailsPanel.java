@@ -2,6 +2,7 @@ package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.util.JiraIconUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -41,25 +42,73 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
     private void setMainPanel(JiraIssue issue) {
         this.currentIssue = issue;
-        this.mainPanel = new JBPanel();
+        this.mainPanel = new JBPanel(new BorderLayout());
 
         JBPanel issueDetails = new JBPanel().withBackground(JBColor.WHITE);
         issueDetails.setLayout(new BoxLayout(issueDetails, BoxLayout.Y_AXIS));
 
-        JBPanel issueKeyPanel = new JBPanel().andTransparent();
-        issueKeyPanel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        issueKeyPanel.add(new JBLabel("Key: " + issue.getKey()));
+        // Key
+        JBPanel issueKeyPanel = new JBPanel(new BorderLayout()).andTransparent();
+        JBLabel keyLabel = new JBLabel(issue.getKey());
+        keyLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        issueKeyPanel.add(keyLabel, BorderLayout.LINE_START);
 
-        JBPanel issueSummaryPanel = new JBPanel().andTransparent();
-        issueSummaryPanel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        issueSummaryPanel.add(new JBLabel("Summary: " + issue.getSummary()));
+        // Summary
+        JBPanel issueSummaryPanel = new JBPanel(new BorderLayout()).andTransparent();
+        JBLabel summaryLabel = new JBLabel("Summary: " + issue.getSummary());
+        summaryLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        issueSummaryPanel.add(summaryLabel, BorderLayout.LINE_START);
 
+        // Type and Status
+        JBPanel typeAndStatusPanel = new JBPanel(new GridLayout(1, 2)).andTransparent();
+        JBPanel typePanel = new JBPanel(new BorderLayout()).andTransparent();
+        JBLabel typeLabel = new JBLabel("Type: ");
+        typeLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+
+        JBLabel typeValueLabel = new JBLabel(JiraIconUtil.getIcon(issue.getIssuetype().getIconUrl()));
+        typeValueLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        typeValueLabel.setText(issue.getIssuetype().getName());
+
+        typePanel.add(typeLabel, BorderLayout.LINE_START);
+        typePanel.add(typeValueLabel, BorderLayout.CENTER);
+
+
+        JBPanel statusPanel = new JBPanel(new BorderLayout()).andTransparent();
+        JBLabel statusLabel = new JBLabel("Status: ");
+        statusLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+
+        JBLabel statusValueLabel = new JBLabel(JiraIconUtil.getIcon(issue.getStatus().getIconUrl()));
+        statusValueLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        statusValueLabel.setText(issue.getStatus().getName());
+
+        statusPanel.add(statusLabel, BorderLayout.LINE_START);
+        statusPanel.add(statusValueLabel, BorderLayout.CENTER);
+
+
+        typeAndStatusPanel.add(typePanel);
+        typeAndStatusPanel.add(statusPanel);
+
+        // Priority and Assignee
+        JBPanel priorityAndAssigneePanel = new JBPanel(new GridLayout(1, 2)).andTransparent();
+        JBLabel priorityLabel = new JBLabel(JiraIconUtil.getSmallIcon(issue.getPriority().getIconUrl()));
+        priorityLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        priorityLabel.setText("Priority: " + issue.getPriority().getName());
+
+        JBLabel assigneeLabel = new JBLabel("Assigne: " + (issue.getAssignee() != null ? issue.getAssignee().getDisplayName() : "-"));
+        assigneeLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        priorityAndAssigneePanel.add(priorityLabel);
+        priorityAndAssigneePanel.add(assigneeLabel);
+
+        // Description
         JBPanel issueDescriptionPanel = new JBPanel().andTransparent();
-        issueDescriptionPanel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        issueDescriptionPanel.add(new JBLabel("Description: " + issue.getDescription()));
+        JTextArea descriptionArea = new JTextArea("Description: " + issue.getDescription());
+
+        issueDescriptionPanel.add(descriptionArea);
 
         issueDetails.add(issueKeyPanel);
         issueDetails.add(issueSummaryPanel);
+        issueDetails.add(typeAndStatusPanel);
+        issueDetails.add(priorityAndAssigneePanel);
         issueDetails.add(issueDescriptionPanel);
 
         this.mainPanel.add(ScrollPaneFactory.createScrollPane(issueDetails, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
