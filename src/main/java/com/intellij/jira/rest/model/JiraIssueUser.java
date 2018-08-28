@@ -9,7 +9,7 @@ public class JiraIssueUser {
     private String key;
     private String emailAdress;
     private String displayName;
-    //private JiraIssueUser.Avatar avatarUrls;
+    private JiraIssueUser.Avatar avatarUrls;
 
     public JiraIssueUser() { }
 
@@ -31,6 +31,10 @@ public class JiraIssueUser {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getAvatarIcon(){
+        return avatarUrls.xsmallIcon;
     }
 
     public class Avatar{

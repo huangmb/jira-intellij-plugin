@@ -2,25 +2,40 @@ package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.rest.model.JiraIssueUser;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.openapi.util.IconLoader;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.tasks.jira.CachedIconLoader;
 import com.intellij.tools.SimpleActionGroup;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.table.TableView;
 import com.intellij.util.text.DateFormatUtil;
 import com.intellij.util.ui.ColumnInfo;
+import com.intellij.util.ui.ImageUtil;
 import com.intellij.util.ui.ListTableModel;
+import com.intellij.util.ui.table.IconTableCellRenderer;
 import org.fest.util.Lists;
+import org.imgscalr.Scalr;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
@@ -77,10 +92,10 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
         for (JiraIssue issue : issues){
             key = this.getMax(key, getKey(issue));
             summary = this.getMax(summary, getSummary(issue));
-            assignee = this.getMax(assignee, getAssignee(issue));
-            type = this.getMax(type, getType(issue));
-            priority = this.getMax(priority, getPriority(issue));
-            status = this.getMax(status, getStatus(issue));
+            assignee = this.getMax(assignee, getAssignee(issue)).withIcon(getAvatarIcon(issue.getAssignee()));
+            type = this.getMax(type, getType(issue)).withIcon(issue.getIssuetype().getIconUrl());
+            priority = this.getMax(priority, getPriority(issue)).withIcon(issue.getPriority().getIconUrl());
+            status = this.getMax(status, getStatus(issue)).withIcon(issue.getStatus().getIconUrl());
             created = this.getMax(created, getCreated(issue));
         }
 
@@ -92,23 +107,14 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
             public String valueOf(JiraIssue issue) {
                 return getSummary(issue);
             }
-        }, new JiraIssuesPanel.JiraIssueColumnInfo("Assignee", assignee.myItem) {
+        }, new JiraIssuesPanel.JiraIssueColumnInfo("Assignee", assignee.myItem, assignee.iconUrl) {
             public String valueOf(JiraIssue issue) {
                 return getAssignee(issue);
             }
-        },new JiraIssuesPanel.JiraIssueColumnInfo("Type", type.myItem) {
-            public String valueOf(JiraIssue issue) {
-                return getType(issue);
-            }
-        },new JiraIssuesPanel.JiraIssueColumnInfo("Priority", priority.myItem) {
-            public String valueOf(JiraIssue issue) {
-                return getPriority(issue);
-            }
-        },new JiraIssuesPanel.JiraIssueColumnInfo("Status", status.myItem) {
-            public String valueOf(JiraIssue issue) {
-                return getStatus(issue);
-            }
-        },new JiraIssuesPanel.JiraIssueColumnInfo("Created", created.myItem) {
+        }, new IssueTypeColumnInfo("Type")
+         , new PriorityColumnInfo("Priority")
+         , new StatusColumnInfo("Status")
+         , new JiraIssuesPanel.JiraIssueColumnInfo("Created", created.myItem) {
             public String valueOf(JiraIssue issue) {
                 return getCreated(issue);
             }
@@ -122,6 +128,8 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
         return width > current.myWidth ? new JiraIssuesPanel.ItemAndWidth(candidate, width) : current;
     }
 
+
+
     private static String getKey(JiraIssue jiraIssue) {
         return jiraIssue.getKey();
     }
@@ -132,6 +140,10 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
 
     private static String getAssignee(JiraIssue jiraIssue) {
         return nonNull(jiraIssue.getAssignee()) ? jiraIssue.getAssignee().getName() : "";
+    }
+
+    private static String getAvatarIcon(JiraIssueUser user) {
+        return nonNull(user) ? user.getAvatarIcon(): "";
     }
 
     private static String getType(JiraIssue jiraIssue) {
@@ -150,13 +162,178 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
         return DateFormatUtil.formatPrettyDateTime(jiraIssue.getCreated());
     }
 
+
+    public static class IconAndTextTableCellRenderer extends IconTableCellRenderer {
+        private static final Logger log = LoggerFactory.getLogger(IconAndTextTableCellRenderer.class);
+
+        private String iconUrl;
+        private String label;
+
+        public void setIconUrl(String iconUrl) {
+            this.iconUrl = iconUrl;
+        }
+
+        public void setLabel(String label) {
+            this.label = StringUtil.isNotEmpty(label) ? label : "";
+        }
+
+        public void emptyText(){
+            this.label = "";
+        }
+
+        @Nullable
+        @Override
+        protected Icon getIcon(@NotNull Object value, JTable table, int row) {
+            try {
+                Icon icon = IconLoader.findIcon(new URL(iconUrl));
+                if(isNull(icon)){
+                    return null;
+                }
+
+                Image image = IconLoader.toImage(icon);
+                BufferedImage bufferedImage = ImageUtil.toBufferedImage(image);
+
+
+                BufferedImage resizeImage = Scalr.resize(bufferedImage, Scalr.Method.ULTRA_QUALITY, 16);
+
+
+                /*Icon icon = IconLoader.findIcon(new URL(iconUrl));
+                BufferedImage image = UIUtil.createImage(15, 15, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D graphics = image.createGraphics();
+                icon.paintIcon(null, graphics, 0, 0);
+                graphics.dispose();*/
+
+                return new ImageIcon(resizeImage);
+            } catch (MalformedURLException e) {
+                log.error(String.format("Unable to get icon from '%s'", iconUrl));
+            }
+
+            return null;
+        }
+
+        @Override
+        protected boolean isCenterAlignment() {
+            return true;
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focus, int row, int column) {
+            super.getTableCellRendererComponent(table, value, selected, focus, row, column);
+            setText(label);
+            return this;
+        }
+    }
+
+    public static class IssueTypeColumnInfo extends ColumnInfo<JiraIssue, String>{
+        private final TableCellRenderer ICON_AND_TEXT_RENDERER = new IconAndTextTableCellRenderer();
+
+        public IssueTypeColumnInfo(String name) {
+            super(name);
+        }
+
+        @Nullable
+        @Override
+        public String valueOf(JiraIssue issue) {
+            return issue.getIssuetype().getName();
+        }
+
+        @Nullable
+        @Override
+        public TableCellRenderer getRenderer(JiraIssue issue) {
+            return ICON_AND_TEXT_RENDERER;
+        }
+
+        @Override
+        public TableCellRenderer getCustomizedRenderer(JiraIssue issue, TableCellRenderer renderer) {
+            if(renderer instanceof IconAndTextTableCellRenderer){
+                ((IconAndTextTableCellRenderer) renderer).setIconUrl(issue.getIssuetype().getIconUrl());
+                ((IconAndTextTableCellRenderer) renderer).emptyText();
+                ((IconAndTextTableCellRenderer) renderer).setToolTipText(valueOf(issue));
+                ((IconAndTextTableCellRenderer) renderer).setAlignmentX(Component.CENTER_ALIGNMENT);
+            }
+
+            return renderer;
+        }
+
+    }
+
+
+    public static class PriorityColumnInfo extends ColumnInfo<JiraIssue, String>{
+        private final TableCellRenderer ICON_AND_TEXT_RENDERER = new IconAndTextTableCellRenderer();
+
+        public PriorityColumnInfo(String name) {
+            super(name);
+        }
+
+        @Nullable
+        @Override
+        public String valueOf(JiraIssue issue) {
+            return issue.getPriority().getName();
+        }
+
+        @Nullable
+        @Override
+        public TableCellRenderer getRenderer(JiraIssue issue) {
+            return ICON_AND_TEXT_RENDERER;
+        }
+
+        @Override
+        public TableCellRenderer getCustomizedRenderer(JiraIssue issue, TableCellRenderer renderer) {
+            if(renderer instanceof IconAndTextTableCellRenderer){
+                ((IconAndTextTableCellRenderer) renderer).setIconUrl(issue.getPriority().getIconUrl());
+                ((IconAndTextTableCellRenderer) renderer).emptyText();
+                ((IconAndTextTableCellRenderer) renderer).setToolTipText(valueOf(issue));
+            }
+
+            return renderer;
+        }
+    }
+
+    public static class StatusColumnInfo extends ColumnInfo<JiraIssue, String>{
+        private final TableCellRenderer ICON_AND_TEXT_RENDERER = new IconAndTextTableCellRenderer();
+
+        public StatusColumnInfo(String name) {
+            super(name);
+        }
+
+        @Nullable
+        @Override
+        public String valueOf(JiraIssue issue) {
+            return issue.getStatus().getName();
+        }
+
+        @Nullable
+        @Override
+        public TableCellRenderer getRenderer(JiraIssue issue) {
+            return ICON_AND_TEXT_RENDERER;
+        }
+
+        @Override
+        public TableCellRenderer getCustomizedRenderer(JiraIssue issue, TableCellRenderer renderer) {
+            if(renderer instanceof IconAndTextTableCellRenderer){
+                ((IconAndTextTableCellRenderer) renderer).setIconUrl(issue.getStatus().getIconUrl());
+                ((IconAndTextTableCellRenderer) renderer).emptyText();
+                ((IconAndTextTableCellRenderer) renderer).setToolTipText(issue.getStatus().getName());
+            }
+
+            return renderer;
+        }
+    }
+
+
     private abstract static class JiraIssueColumnInfo extends ColumnInfo<JiraIssue, String> {
         @NotNull
         private final String myMaxString;
+        private String iconUrl;
 
         public JiraIssueColumnInfo(@NotNull String name, @NotNull String maxString) {
             super(name);
             this.myMaxString = maxString;
+        }
+
+        public JiraIssueColumnInfo(@NotNull String name, @NotNull String maxString, @NotNull String iconUrl) {
+            this(name, maxString);
+            this.iconUrl = iconUrl;
         }
 
         public String getMaxStringValue() {
@@ -166,15 +343,28 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
         public int getAdditionalWidth() {
             return 10;
         }
+
+        @Nullable
+        @Override
+        public Icon getIcon() {
+            return CachedIconLoader.getIcon(this.iconUrl);
+        }
+
     }
 
     private static class ItemAndWidth {
         private final String myItem;
         private final int myWidth;
+        private String iconUrl;
 
         private ItemAndWidth(String item, int width) {
             this.myItem = item;
             this.myWidth = width;
+        }
+
+        public ItemAndWidth withIcon(String iconUrl){
+            this.iconUrl = iconUrl;
+            return this;
         }
     }
 
