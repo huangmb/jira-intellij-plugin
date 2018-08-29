@@ -16,6 +16,7 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import org.fest.util.Lists;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,18 +31,24 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
 public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
-    private ActionToolbar toolbar;
     private JBPanel mainPanel;
     private JiraIssue currentIssue;
 
-    public JiraIssueDetailsPanel(JiraIssue issue) {
+    public JiraIssueDetailsPanel(){
+        super(true, true);
+        setToolbar();
+        emptyPanel();
+    }
+
+
+    public JiraIssueDetailsPanel(@NotNull JiraIssue issue) {
         super(true, true);
         setToolbar();
         setMainPanel(issue);
     }
 
-    public void updateIssue(JiraIssue issue){
-        if(!currentIssue.getKey().equals(issue.getKey())) {
+    public void updateIssue(@NotNull JiraIssue issue){
+        if(!issue.equals(currentIssue)) {
             this.mainPanel.removeAll();
             setMainPanel(issue);
             this.mainPanel.repaint();
@@ -127,14 +134,17 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     }
 
     private void setToolbar(){
-        this.toolbar = ActionManager.getInstance().createActionToolbar(TOOL_WINDOW_ID, createActionGroup(), true);
-        this.toolbar.setTargetComponent(this);
+        ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar(TOOL_WINDOW_ID, createActionGroup(), true);
+        actionToolbar.setTargetComponent(this);
 
         Box toolBarBox = Box.createHorizontalBox();
-        toolBarBox.add(this.toolbar.getComponent());
+        toolBarBox.add(actionToolbar.getComponent());
         super.setToolbar(toolBarBox);
     }
 
+    private void emptyPanel() {
+        super.setContent(JiraPanelUtil.createPlaceHolderPanel("No issue to display"));
+    }
 
 
     private ActionGroup createActionGroup(){

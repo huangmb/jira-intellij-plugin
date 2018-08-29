@@ -1,10 +1,12 @@
 package com.intellij.jira.util;
 
 import com.intellij.ui.JBColor;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
@@ -17,5 +19,16 @@ public class JiraPanelUtil {
                 .withBackground(JBColor.WHITE);
     }
 
+
+    public static JBPanel createPlaceHolderPanel(String text) {
+        JBPanel panel = new JBPanel(new BorderLayout());
+        JBPanel labelPanel = new JBPanel();
+        JBLabel messageLabel = new JBLabel(text);
+        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        messageLabel.setVerticalAlignment(SwingConstants.CENTER);
+        labelPanel.add(messageLabel);
+        panel.add(labelPanel, BorderLayout.CENTER);
+        return panel;
+    }
 
 }

@@ -15,12 +15,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class JiraTaskManager extends AbstractProjectComponent {
-
     private static final String JIRA = "JIRA";
 
     private List<Runnable> listeners = new ArrayList();
-    private Long configurationHash = 0L;
-    private ScheduledFuture job;
+    private Long currentJiraServerHash = 0L;
+    private ScheduledFuture checkJiraServerChangesJob;
 
     public JiraTaskManager(Project project) {
         super(project);
@@ -29,39 +28,42 @@ public class JiraTaskManager extends AbstractProjectComponent {
 
     @Override
     public void projectOpened() {
-        syncTaskManager();
-        job = JobScheduler.getScheduler().scheduleWithFixedDelay(() -> {
+        syncJiraIssuesIfProceed();
+        checkJiraServerChangesJob = JobScheduler.getScheduler().scheduleWithFixedDelay(() -> {
                 if(!listeners.isEmpty()){
-                    syncTaskManager();
+                    syncJiraIssuesIfProceed();
                 }
         }, 3, 3, TimeUnit.SECONDS);
     }
 
-    public synchronized void syncTaskManager(){
-        long newHash = Arrays.stream(getTaskManager().getAllRepositories())
-                .filter(r -> isJiraRepository(r))
-                .mapToLong(repo -> repo.hashCode())
-                .reduce(0L, (sum, value) -> sum + value);
-
-        if (configurationHash != newHash) {
-            configurationHash = newHash;
-            listeners.forEach(r -> r.run());
-        }
-    }
-
-
     @Override
     public void projectClosed() {
         listeners.clear();
-        job.cancel(false);
+        checkJiraServerChangesJob.cancel(false);
+    }
+
+    private synchronized void syncJiraIssuesIfProceed(){
+        long jiraServerHash = getConfiguredJiraRepository().map(repo -> (long) repo.hashCode()).orElse(0L);
+
+        if (currentJiraServerHash != jiraServerHash) {
+            currentJiraServerHash = jiraServerHash;
+            syncJiraIssues();
+        }
+    }
+
+    public synchronized void syncJiraIssues(){
+        listeners.forEach(Runnable::run);
+    }
+
+
+    private Optional<TaskRepository> getConfiguredJiraRepository(){
+        return Arrays.stream(getTaskManager().getAllRepositories())
+                .filter(repo -> isJiraRepository(repo) && repo.isConfigured())
+                .findFirst();
     }
 
     public Optional<JiraServer> getConfiguredJiraServer(){
-        return Arrays.stream(getTaskManager().getAllRepositories())
-                .filter(repo -> isJiraRepository(repo) && repo.isConfigured())
-                .map(repo -> new JiraServer((JiraRepository) repo))
-                .findFirst();
-
+        return getConfiguredJiraRepository().map(repo -> new JiraServer((JiraRepository) repo));
     }
 
 

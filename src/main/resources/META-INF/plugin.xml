@@ -19,6 +19,9 @@
         <component>
             <implementation-class>com.intellij.jira.components.JiraActionManager</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.intellij.jira.notifications.JiraNotificationComponent</implementation-class>
+        </component>
     </application-components>
 
     <project-components>

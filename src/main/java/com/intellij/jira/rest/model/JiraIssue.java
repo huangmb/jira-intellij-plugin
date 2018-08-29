@@ -1,6 +1,7 @@
 package com.intellij.jira.rest.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class JiraIssue {
 
@@ -97,5 +98,17 @@ public class JiraIssue {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JiraIssue jiraIssue = (JiraIssue) o;
+        return Objects.equals(id, jiraIssue.id) &&
+                Objects.equals(key, jiraIssue.key);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, key);
+    }
 }
