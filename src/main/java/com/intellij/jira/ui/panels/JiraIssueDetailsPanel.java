@@ -2,7 +2,6 @@ package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.rest.model.JiraIssue;
-import com.intellij.jira.ui.labels.LinkLabel;
 import com.intellij.jira.util.JiraIconUtil;
 import com.intellij.jira.util.JiraLabelUtil;
 import com.intellij.jira.util.JiraPanelUtil;
@@ -61,7 +60,7 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
         // Key
         JBPanel issueKeyPanel = JiraPanelUtil.createWhitePanel(new BorderLayout()).withBorder(MARGIN_BOTTOM);
-        JBLabel keyLabel = JiraLabelUtil.createLinkLabel(issue.getKey(), issue.getSelf());
+        JBLabel keyLabel = JiraLabelUtil.createLinkLabel(issue.getKey(), issue.getUrl());
         issueKeyPanel.add(keyLabel, LINE_START);
 
         // Summary

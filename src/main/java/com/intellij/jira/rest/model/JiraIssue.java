@@ -73,6 +73,10 @@ public class JiraIssue {
         return fields.reporter;
     }
 
+    public String getUrl(){
+        return self.replaceFirst("(/rest([\\w/]+))", "/browse/" + getKey());
+    }
+
     public static class Fields{
 
         private String summary;
