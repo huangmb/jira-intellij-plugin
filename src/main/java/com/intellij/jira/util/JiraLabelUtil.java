@@ -1,5 +1,6 @@
 package com.intellij.jira.util;
 
+import com.intellij.jira.ui.labels.LinkLabel;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBFont;
 import com.intellij.util.ui.JBUI;
@@ -31,5 +32,8 @@ public class JiraLabelUtil {
         return new JBLabel(text, JiraIconUtil.getIcon(iconUrl), SwingConstants.LEFT);
     }
 
+    public static JBLabel createLinkLabel(String text, String url){
+        return new LinkLabel(text, url);
+    }
 
 }
