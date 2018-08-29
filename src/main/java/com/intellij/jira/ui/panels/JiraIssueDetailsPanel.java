@@ -3,6 +3,8 @@ package com.intellij.jira.ui.panels;
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.util.JiraIconUtil;
+import com.intellij.jira.util.JiraLabelUtil;
+import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -36,74 +38,79 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     }
 
     public void updateIssue(JiraIssue issue){
-        setMainPanel(issue);
-        this.mainPanel.repaint();
+        if(!currentIssue.getKey().equals(issue.getKey())) {
+            this.mainPanel.removeAll();
+            setMainPanel(issue);
+            this.mainPanel.repaint();
+        }
     }
 
     private void setMainPanel(JiraIssue issue) {
         this.currentIssue = issue;
-        this.mainPanel = new JBPanel(new BorderLayout());
+        this.mainPanel = new JBPanel(new BorderLayout())
+                            .withBackground(JBColor.WHITE)
+                            .withBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
 
         JBPanel issueDetails = new JBPanel().withBackground(JBColor.WHITE);
         issueDetails.setLayout(new BoxLayout(issueDetails, BoxLayout.Y_AXIS));
 
         // Key
-        JBPanel issueKeyPanel = new JBPanel(new BorderLayout()).andTransparent();
-        JBLabel keyLabel = new JBLabel(issue.getKey());
-        keyLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        JBPanel issueKeyPanel = JiraPanelUtil.createWhitePanel(new BorderLayout()).withBorder(JiraPanelUtil.MARGIN_BOTTOM);
+        JBLabel keyLabel = JiraLabelUtil.createLabel(issue.getKey());
         issueKeyPanel.add(keyLabel, BorderLayout.LINE_START);
 
         // Summary
-        JBPanel issueSummaryPanel = new JBPanel(new BorderLayout()).andTransparent();
-        JBLabel summaryLabel = new JBLabel("Summary: " + issue.getSummary());
-        summaryLabel.setHorizontalAlignment(SwingUtilities.LEFT);
+        JBPanel issueSummaryPanel = JiraPanelUtil.createWhitePanel(new BorderLayout()).withBorder(JiraPanelUtil.MARGIN_BOTTOM);
+        JBLabel summaryLabel = JiraLabelUtil.createLabel(issue.getSummary());
         issueSummaryPanel.add(summaryLabel, BorderLayout.LINE_START);
 
         // Type and Status
-        JBPanel typeAndStatusPanel = new JBPanel(new GridLayout(1, 2)).andTransparent();
-        JBPanel typePanel = new JBPanel(new BorderLayout()).andTransparent();
-        JBLabel typeLabel = new JBLabel("Type: ");
-        typeLabel.setHorizontalAlignment(SwingUtilities.LEFT);
-
-        JBLabel typeValueLabel = new JBLabel(JiraIconUtil.getIcon(issue.getIssuetype().getIconUrl()));
-        typeValueLabel.setHorizontalAlignment(SwingUtilities.LEFT);
-        typeValueLabel.setText(issue.getIssuetype().getName());
+        JBPanel typeAndStatusPanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(JiraPanelUtil.MARGIN_BOTTOM);
+        JBPanel typePanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
+        JBLabel typeLabel = JiraLabelUtil.createLabel("Type: ").withFont(JiraLabelUtil.BOLD);
+        JBLabel typeValueLabel = JiraLabelUtil.createIconLabel(issue.getIssuetype().getIconUrl(), issue.getIssuetype().getName());
 
         typePanel.add(typeLabel, BorderLayout.LINE_START);
         typePanel.add(typeValueLabel, BorderLayout.CENTER);
 
-
-        JBPanel statusPanel = new JBPanel(new BorderLayout()).andTransparent();
-        JBLabel statusLabel = new JBLabel("Status: ");
-        statusLabel.setHorizontalAlignment(SwingUtilities.LEFT);
-
-        JBLabel statusValueLabel = new JBLabel(JiraIconUtil.getIcon(issue.getStatus().getIconUrl()));
-        statusValueLabel.setHorizontalAlignment(SwingUtilities.LEFT);
-        statusValueLabel.setText(issue.getStatus().getName());
+        JBPanel statusPanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
+        JBLabel statusLabel = JiraLabelUtil.createLabel("Status: ").withFont(JiraLabelUtil.BOLD);
+        JBLabel statusValueLabel = JiraLabelUtil.createIconLabel(issue.getStatus().getIconUrl(), issue.getStatus().getName());
 
         statusPanel.add(statusLabel, BorderLayout.LINE_START);
         statusPanel.add(statusValueLabel, BorderLayout.CENTER);
-
 
         typeAndStatusPanel.add(typePanel);
         typeAndStatusPanel.add(statusPanel);
 
         // Priority and Assignee
-        JBPanel priorityAndAssigneePanel = new JBPanel(new GridLayout(1, 2)).andTransparent();
-        JBLabel priorityLabel = new JBLabel(JiraIconUtil.getSmallIcon(issue.getPriority().getIconUrl()));
-        priorityLabel.setHorizontalAlignment(SwingUtilities.LEFT);
-        priorityLabel.setText("Priority: " + issue.getPriority().getName());
+        JBPanel priorityAndAssigneePanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(JiraPanelUtil.MARGIN_BOTTOM);
+        JBPanel priorityPanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
+        JBLabel priorityLabel = JiraLabelUtil.createLabel("Priority: ").withFont(JiraLabelUtil.BOLD);
+        JBLabel priorityValueLabel = JiraLabelUtil.createIconLabel(JiraIconUtil.getSmallIcon(issue.getPriority().getIconUrl()), issue.getPriority().getName());
 
-        JBLabel assigneeLabel = new JBLabel("Assigne: " + (issue.getAssignee() != null ? issue.getAssignee().getDisplayName() : "-"));
-        assigneeLabel.setHorizontalAlignment(SwingUtilities.LEFT);
-        priorityAndAssigneePanel.add(priorityLabel);
-        priorityAndAssigneePanel.add(assigneeLabel);
+        priorityPanel.add(priorityLabel, BorderLayout.LINE_START);
+        priorityPanel.add(priorityValueLabel, BorderLayout.CENTER);
+
+        JBPanel assigneePanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
+        JBLabel assigneeLabel = JiraLabelUtil.createLabel("Assigne: ").withFont(JiraLabelUtil.BOLD);
+        JBLabel assigneeValueLabel = JiraLabelUtil.createLabel(issue.getAssignee() != null ? issue.getAssignee().getDisplayName() : "-");
+
+        assigneePanel.add(assigneeLabel, BorderLayout.LINE_START);
+        assigneePanel.add(assigneeValueLabel, BorderLayout.CENTER);
+
+        priorityAndAssigneePanel.add(priorityPanel);
+        priorityAndAssigneePanel.add(assigneePanel);
 
         // Description
-        JBPanel issueDescriptionPanel = new JBPanel().andTransparent();
-        JTextArea descriptionArea = new JTextArea("Description: " + issue.getDescription());
+        JBPanel issueDescriptionPanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
+        JBLabel descriptionLabel = JiraLabelUtil.createLabel("Description").withFont(JiraLabelUtil.BOLD);
+        JTextArea descriptionArea = new JTextArea(issue.getDescription());
+        descriptionArea.setLineWrap(true);
 
-        issueDescriptionPanel.add(descriptionArea);
+        issueDescriptionPanel.add(descriptionLabel, BorderLayout.PAGE_START);
+        issueDescriptionPanel.add(descriptionArea, BorderLayout.CENTER);
 
         issueDetails.add(issueKeyPanel);
         issueDetails.add(issueSummaryPanel);
