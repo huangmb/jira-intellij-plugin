@@ -90,15 +90,12 @@ public class ColumnInfoHelper {
                 return getCreated(issue);
             }
 
-            @Nullable
             @Override
-            public String getMaxStringValue() {
-                return "dd/MM/YYYY HH:mm";
-            }
-
-            @Override
-            public int getAdditionalWidth() {
-                return 10;
+            public TableCellRenderer getCustomizedRenderer(JiraIssue o, TableCellRenderer renderer) {
+                if(renderer instanceof JiraIssueTableCellRenderer){
+                    ((JiraIssueTableCellRenderer) renderer).setHorizontalAlignment(SwingUtilities.RIGHT);
+                }
+                return renderer;
             }
         }};
     }

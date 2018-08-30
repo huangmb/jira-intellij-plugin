@@ -117,6 +117,7 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
         JBLabel descriptionLabel = JiraLabelUtil.createLabel("Description").withFont(BOLD).withBorder(MARGIN_BOTTOM);
         JTextArea descriptionArea = new JTextArea(issue.getDescription());
         descriptionArea.setLineWrap(true);
+        descriptionArea.setEditable(false);
 
         issueDescriptionPanel.add(descriptionLabel, PAGE_START);
         issueDescriptionPanel.add(descriptionArea, CENTER);
