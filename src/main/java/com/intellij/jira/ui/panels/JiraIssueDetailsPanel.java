@@ -1,6 +1,5 @@
 package com.intellij.jira.ui.panels;
 
-import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.util.JiraIconUtil;
 import com.intellij.jira.util.JiraLabelUtil;
@@ -8,19 +7,15 @@ import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.tools.SimpleActionGroup;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
-import org.fest.util.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 import static com.intellij.jira.util.JiraLabelUtil.BOLD;
@@ -49,7 +44,6 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
     public void updateIssue(@NotNull JiraIssue issue){
         if(!issue.equals(currentIssue)) {
-            this.mainPanel.removeAll();
             setMainPanel(issue);
             this.mainPanel.repaint();
         }
@@ -143,17 +137,13 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     }
 
     private void emptyPanel() {
-        super.setContent(JiraPanelUtil.createPlaceHolderPanel("No issue to display"));
+        super.setContent(JiraPanelUtil.createPlaceHolderPanel("Select issue to view details"));
     }
 
 
     private ActionGroup createActionGroup(){
-        SimpleActionGroup group = new SimpleActionGroup();
-        getIssuePanelActions().forEach((group)::add);
-        return group;
+        return ActionGroup.EMPTY_GROUP;
     }
 
-    private List<AnAction> getIssuePanelActions(){
-        return Lists.newArrayList(JiraActionManager.getInstance().getJiraIssuesRefreshAction());
-    }
+
 }

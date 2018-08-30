@@ -61,7 +61,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
             JPanel issuesPanel = new JPanel(new BorderLayout());
             issuesPanel.add(ScrollPaneFactory.createScrollPane(issueTable), BorderLayout.CENTER);
 
-            issueDetailsPanel = issues.isEmpty() ? new JiraIssueDetailsPanel() : new JiraIssueDetailsPanel(issues.get(0));
+            issueDetailsPanel = new JiraIssueDetailsPanel();
 
             JBSplitter splitter = new JBSplitter();
             splitter.setProportion(0.6f);

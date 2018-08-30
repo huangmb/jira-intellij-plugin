@@ -40,7 +40,7 @@
                 class="com.intellij.jira.actions.JiraIssuesRefreshAction"
                 text="Refresh issues"
                 description="Updates the project issues"
-                icon="JiraIcons.ISSUES_REFRESH">
+                icon="AllIcons.Actions.Refresh">
         </action>
     </actions>
 </idea-plugin>
