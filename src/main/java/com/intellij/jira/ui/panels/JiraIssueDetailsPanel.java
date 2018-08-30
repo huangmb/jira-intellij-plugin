@@ -13,6 +13,7 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +22,7 @@ import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 import static com.intellij.jira.util.JiraLabelUtil.BOLD;
 import static com.intellij.jira.util.JiraPanelUtil.MARGIN_BOTTOM;
 import static java.awt.BorderLayout.*;
+import static java.util.Objects.isNull;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
@@ -42,10 +44,13 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
         setMainPanel(issue);
     }
 
-    public void updateIssue(@NotNull JiraIssue issue){
-        if(!issue.equals(currentIssue)) {
-            setMainPanel(issue);
-            this.mainPanel.repaint();
+    public void updateIssue(@Nullable JiraIssue issue){
+        if(isNull(issue)){
+            emptyPanel();
+        }else{
+            if(!issue.equals(currentIssue)) {
+                setMainPanel(issue);
+            }
         }
     }
 
@@ -137,7 +142,8 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     }
 
     private void emptyPanel() {
-        super.setContent(JiraPanelUtil.createPlaceHolderPanel("Select issue to view details"));
+        this.mainPanel = JiraPanelUtil.createPlaceHolderPanel("Select issue to view details");
+        super.setContent(this.mainPanel);
     }
 
 

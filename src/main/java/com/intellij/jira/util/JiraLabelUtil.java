@@ -6,11 +6,12 @@ import com.intellij.util.ui.JBFont;
 import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class JiraLabelUtil {
 
     public static final JBFont BOLD = JBUI.Fonts.label().asBold();
-    public static final JBFont ITALIC = JBUI.Fonts.label().asItalic();
+    public static final Color CELL_COLOR = new Color(211, 232, 240  );
 
 
     public static JBLabel createLabel(String text){
