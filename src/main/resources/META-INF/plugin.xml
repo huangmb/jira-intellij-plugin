@@ -42,5 +42,13 @@
                 description="Updates the project issues"
                 icon="AllIcons.Actions.Refresh">
         </action>
+
+        <action id="Jira.toolwindow.Issue.Tansition"
+                class="com.intellij.jira.actions.JiraIssueTransitionDialogAction"
+                text="Transit to"
+                description="Updates the project issues"
+                icon="AllIcons.Actions.Forward">
+        </action>
+
     </actions>
 </idea-plugin>

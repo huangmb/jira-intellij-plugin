@@ -9,11 +9,13 @@ import org.jetbrains.annotations.NotNull;
 public class JiraActionManager implements ApplicationComponent {
 
     private AnAction jiraIssuesRefreshAction;
+    private AnAction jiraIssueTransitionDialogAction;
 
 
     @Override
     public void initComponent() {
         jiraIssuesRefreshAction = ActionManager.getInstance().getAction("Jira.toolwindow.Refresh");
+        jiraIssueTransitionDialogAction = ActionManager.getInstance().getAction("Jira.toolwindow.Issue.Tansition");
     }
 
     @Override
@@ -35,4 +37,7 @@ public class JiraActionManager implements ApplicationComponent {
         return jiraIssuesRefreshAction;
     }
 
+    public AnAction getJiraIssueTransitionDialogAction() {
+        return jiraIssueTransitionDialogAction;
+    }
 }
