@@ -1,6 +1,7 @@
 package com.intellij.jira.ui.panels;
 
-import com.intellij.jira.components.JiraActionManager;
+import com.intellij.jira.actions.JiraIssueActionGroup;
+import com.intellij.jira.actions.JiraIssueTransitionPopupAction;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.util.JiraIconUtil;
 import com.intellij.jira.util.JiraLabelUtil;
@@ -8,20 +9,15 @@ import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.tools.SimpleActionGroup;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
-import org.fest.util.Lists;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collection;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 import static com.intellij.jira.util.JiraLabelUtil.BOLD;
@@ -43,19 +39,16 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     }
 
 
-    public JiraIssueDetailsPanel(@NotNull JiraIssue issue) {
-        super(true, true);
-        setToolbar();
-        setMainPanel(issue);
-    }
-
     public void updateIssue(@Nullable JiraIssue issue){
+
         if(isNull(issue)){
             emptyPanel();
         }else{
             if(!issue.equals(currentIssue)) {
                 setMainPanel(issue);
+
             }
+            setToolbar();
         }
     }
 
@@ -154,13 +147,11 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
 
     private ActionGroup createActionGroup(){
-        SimpleActionGroup group = new SimpleActionGroup();
-        getActions().forEach(group::add);
+        JiraIssueActionGroup group = new JiraIssueActionGroup(this);
+        group.add(new JiraIssueTransitionPopupAction(() -> currentIssue));
+
         return group;
     }
 
-    private Collection<AnAction> getActions(){
-        return Lists.newArrayList(JiraActionManager.getInstance().getJiraIssueTransitionDialogAction());
-    }
 
 }

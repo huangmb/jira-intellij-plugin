@@ -2,6 +2,7 @@ package com.intellij.jira.rest;
 
 import com.google.gson.reflect.TypeToken;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.httpclient.NameValuePair;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class JiraRestClient {
     private static final Type ISSUES_WRAPPER_TYPE = (new TypeToken<JiraIssuesWrapper<JiraIssue>>(){}).getType();
+    private static final Type ISSUE_TRANSITION_WRAPPER_TYPE = (new TypeToken<JiraIssueTransitionsWrapper<JiraIssueTransition>>(){}).getType();
     private static final Integer DEFAULT_MAX_ISSUES_RESULTS = 100;
 
     private JiraRepository jiraRepository;
@@ -28,6 +30,12 @@ public class JiraRestClient {
     }
 
 
+    public List<JiraIssueTransition> getTransitions(String issueId) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("issue", issueId, "transitions"));
+        String response = jiraRepository.executeMethod(method);
+        return parseIssueTransitions(response);
+    }
+
     private GetMethod getBasicSearchMethod(String jql, int maxResults){
         GetMethod method = new GetMethod(this.jiraRepository.getRestUrl(new String[]{"search"}));
         method.setQueryString(new NameValuePair[]{new NameValuePair("jql", jql), new NameValuePair("maxResults", String.valueOf(maxResults))});
@@ -41,6 +49,14 @@ public class JiraRestClient {
             return ContainerUtil.emptyList();
         }
         return wrapper.getIssues();
+    }
+
+    private List<JiraIssueTransition> parseIssueTransitions(String response){
+        JiraIssueTransitionsWrapper<JiraIssueTransition> wrapper = JiraRepository.GSON.fromJson(response, ISSUE_TRANSITION_WRAPPER_TYPE);
+        if(wrapper == null){
+            return ContainerUtil.emptyList();
+        }
+        return wrapper.getTransitions();
     }
 
 }

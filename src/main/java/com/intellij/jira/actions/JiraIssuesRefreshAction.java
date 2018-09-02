@@ -44,7 +44,7 @@ public class JiraIssuesRefreshAction extends AnAction {
                 Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotification("JIRA", "Issues are up to date"));
             }
             else{
-                Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotification("No Jira server found", "Cannot update issues"));
+                Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotificationError("No Jira server found", "Cannot update issues"));
             }
         }
 

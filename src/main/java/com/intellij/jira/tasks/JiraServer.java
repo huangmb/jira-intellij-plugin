@@ -2,6 +2,7 @@ package com.intellij.jira.tasks;
 
 import com.intellij.jira.rest.JiraRestClient;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 import org.slf4j.Logger;
@@ -25,6 +26,16 @@ public class JiraServer {
             return this.jiraRestClient.findIssues();
         } catch (Exception e) {
             log.error("No issues found");
+            return ContainerUtil.emptyList();
+        }
+    }
+
+
+    public List<JiraIssueTransition> getTransitions(String issueId){
+        try {
+            return jiraRestClient.getTransitions(issueId);
+        } catch (Exception e) {
+            log.error(String.format("No transitions was found for issue '%s'", issueId));
             return ContainerUtil.emptyList();
         }
     }
