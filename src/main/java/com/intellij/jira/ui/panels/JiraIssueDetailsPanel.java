@@ -39,15 +39,11 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     }
 
 
-    public void updateIssue(@Nullable JiraIssue issue){
-
+    public void showIssue(@Nullable JiraIssue issue){
         if(isNull(issue)){
             emptyPanel();
         }else{
-            if(!issue.equals(currentIssue)) {
-                setMainPanel(issue);
-
-            }
+            setMainPanel(issue);
             setToolbar();
         }
     }
@@ -152,6 +148,5 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
         return group;
     }
-
 
 }

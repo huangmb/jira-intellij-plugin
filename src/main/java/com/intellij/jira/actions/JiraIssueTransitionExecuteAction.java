@@ -1,8 +1,10 @@
 package com.intellij.jira.actions;
 
-import com.intellij.jira.notifications.JiraNotificationComponent;
-import com.intellij.notification.Notifications;
+import com.intellij.jira.tasks.TransitIssueTask;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.Project;
+
+import static java.util.Objects.nonNull;
 
 public class JiraIssueTransitionExecuteAction extends JiraIssueAction {
 
@@ -17,8 +19,9 @@ public class JiraIssueTransitionExecuteAction extends JiraIssueAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        // TODO: execute and update table and panel
-        String content = String.format("Executed transition %s in issue %s", transitionId, issueId);
-        Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotification("JIRA", content));
+        Project project = e.getProject();
+        if(nonNull(project)) {
+            new TransitIssueTask(project, issueId, transitionId).queue();
+        }
     }
 }

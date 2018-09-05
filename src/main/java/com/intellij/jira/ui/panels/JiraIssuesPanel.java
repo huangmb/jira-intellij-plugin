@@ -1,6 +1,8 @@
 package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.components.JiraActionManager;
+import com.intellij.jira.components.JiraIssueUpdater;
+import com.intellij.jira.events.JiraIssueEventListener;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.ui.table.JiraIssueTableView;
@@ -22,9 +24,10 @@ import java.util.Optional;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 
-public class JiraIssuesPanel extends SimpleToolWindowPanel {
+public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueEventListener {
 
     private Optional<JiraServer> jiraServer;
+    private JiraIssueTableView issueTable;
     private JiraIssueDetailsPanel issueDetailsPanel;
 
     public JiraIssuesPanel(Optional<JiraServer> jiraServer) {
@@ -36,6 +39,11 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
     private void init() {
         setToolbar();
         setContent();
+        addListeners();
+    }
+
+    private void addListeners() {
+        JiraIssueUpdater.getInstance().addListener(this);
     }
 
     private void setContent() {
@@ -46,11 +54,9 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
             List<JiraIssue> issues = jiraServer.get().getIssues();
             issueDetailsPanel = new JiraIssueDetailsPanel();
 
-            JiraIssueTableView issueTable = new JiraIssueTableView(issues);
+            issueTable = new JiraIssueTableView(issues);
             issueTable.getSelectionModel().addListSelectionListener(event -> {
-                SwingUtilities.invokeLater(() -> {
-                    this.issueDetailsPanel.updateIssue(issueTable.getSelectedObject());
-                });
+                SwingUtilities.invokeLater(() -> this.issueDetailsPanel.showIssue(issueTable.getSelectedObject()));
             });
 
 
@@ -91,4 +97,30 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel {
                                     ActionManager.getInstance().getAction("tasks.configure.servers"));
     }
 
+
+    @Override
+    public void update(List<JiraIssue> issues) {
+        JiraIssue lastSelectedIssue = issueTable.getSelectedObject();
+        issueTable.updateModel(issues);
+        int currentPosIssue = issueTable.getModel().indexOf(lastSelectedIssue);
+        if(currentPosIssue >= 0){
+            JiraIssue issueToShow = issueTable.getModel().getItem(currentPosIssue);
+            issueTable.addSelection(issueToShow);
+            issueDetailsPanel.showIssue(issueToShow);
+        }
+    }
+
+    @Override
+    public void update(JiraIssue issue) {
+        int postItem = issueTable.getModel().indexOf(issue);
+        if(postItem < 0){
+            return;
+        }
+
+        issueTable.getModel().removeRow(postItem);
+        issueTable.getModel().insertRow(postItem, issue);
+        issueTable.addSelection(issue);
+
+        issueDetailsPanel.showIssue(issue);
+    }
 }

@@ -1,9 +1,8 @@
 package com.intellij.jira.actions;
 
-import com.intellij.jira.notifications.JiraNotificationComponent;
 import com.intellij.jira.tasks.JiraServer;
-import com.intellij.jira.tasks.JiraTaskManager;
-import com.intellij.notification.Notifications;
+import com.intellij.jira.tasks.JiraServerManager;
+import com.intellij.jira.tasks.RefreshIssuesTask;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -22,7 +21,7 @@ public class JiraIssuesRefreshAction extends AnAction {
         if (isNull(project)|| !project.isInitialized() || project.isDisposed()) {
             event.getPresentation().setEnabled(false);
         } else {
-            JiraTaskManager component = project.getComponent(JiraTaskManager.class);
+            JiraServerManager component = project.getComponent(JiraServerManager.class);
             Optional<JiraServer> jiraServer = component.getConfiguredJiraServer();
             if(jiraServer.isPresent()){
                 event.getPresentation().setEnabled(true);
@@ -37,15 +36,7 @@ public class JiraIssuesRefreshAction extends AnAction {
     public void actionPerformed(AnActionEvent event) {
         Project project = event.getProject();
         if(nonNull(project)){
-            JiraTaskManager component = project.getComponent(JiraTaskManager.class);
-            Optional<JiraServer> jiraServer = component.getConfiguredJiraServer();
-            if(jiraServer.isPresent()){
-                component.syncJiraIssues();
-                Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotification("JIRA", "Issues are up to date"));
-            }
-            else{
-                Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotificationError("No Jira server found", "Cannot update issues"));
-            }
+            new RefreshIssuesTask(project).queue();
         }
 
     }

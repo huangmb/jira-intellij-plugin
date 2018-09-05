@@ -12,9 +12,12 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
 public class JiraIssueTableView extends TableView<JiraIssue> {
 
+    private JiraIssueListTableModel model;
+
     public JiraIssueTableView(List<JiraIssue> issues) {
         super();
-        setModelAndUpdateColumns(new JiraIssueListTableModel(issues));
+        model = new JiraIssueListTableModel(issues);
+        setModelAndUpdateColumns(model);
         setSelectionMode(SINGLE_SELECTION);
         setIntercellSpacing(new Dimension());
         setShowGrid(false);
@@ -34,5 +37,12 @@ public class JiraIssueTableView extends TableView<JiraIssue> {
         return columnModel;
     }
 
+    public void updateModel(List<JiraIssue> issues){
+        model.setItems(issues);
+    }
 
+    @Override
+    public JiraIssueListTableModel getModel() {
+        return model;
+    }
 }

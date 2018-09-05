@@ -14,14 +14,14 @@ import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class JiraTaskManager extends AbstractProjectComponent {
+public class JiraServerManager extends AbstractProjectComponent {
     private static final String JIRA = "JIRA";
 
     private List<Runnable> listeners = new ArrayList();
     private Long currentJiraServerHash = 0L;
     private ScheduledFuture checkJiraServerChangesJob;
 
-    public JiraTaskManager(Project project) {
+    public JiraServerManager(Project project) {
         super(project);
     }
 
@@ -51,7 +51,7 @@ public class JiraTaskManager extends AbstractProjectComponent {
         }
     }
 
-    public synchronized void syncJiraIssues(){
+    public void syncJiraIssues(){
         listeners.forEach(Runnable::run);
     }
 
@@ -67,8 +67,8 @@ public class JiraTaskManager extends AbstractProjectComponent {
     }
 
 
-    public void addConfigurationServerChangedListener(Runnable doRun){
-        listeners.add(doRun);
+    public void addConfigurationServerChangedListener(Runnable runnable){
+        listeners.add(runnable);
     }
 
     private TaskManager getTaskManager(){

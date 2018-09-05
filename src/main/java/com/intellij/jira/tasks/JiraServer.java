@@ -3,6 +3,7 @@ package com.intellij.jira.tasks;
 import com.intellij.jira.rest.JiraRestClient;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueTransition;
+import com.intellij.jira.util.JiraIssueTransitionResult;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 import org.slf4j.Logger;
@@ -18,6 +19,17 @@ public class JiraServer {
 
     public JiraServer(JiraRepository jiraRepository) {
         this.jiraRestClient = new JiraRestClient(jiraRepository);
+    }
+
+
+    public JiraIssue getIssue(String issueId){
+        try {
+            return this.jiraRestClient.getIssue(issueId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // TODO: poner Result
+        return null;
     }
 
 
@@ -40,5 +52,15 @@ public class JiraServer {
         }
     }
 
+
+    public JiraIssueTransitionResult doTransition(String issueId, String transitionId){
+        try {
+            String response = jiraRestClient.doTransition(issueId, transitionId);
+            return JiraIssueTransitionResult.create(response);
+        } catch (Exception e) {
+            log.error(String.format("Error executing transition '%s' in issue '%s'", transitionId, issueId));
+            return JiraIssueTransitionResult.error();
+        }
+    }
 
 }

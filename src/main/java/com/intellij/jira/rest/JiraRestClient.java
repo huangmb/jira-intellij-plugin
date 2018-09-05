@@ -7,7 +7,11 @@ import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -20,6 +24,13 @@ public class JiraRestClient {
 
     public JiraRestClient(JiraRepository jiraRepository) {
         this.jiraRepository = jiraRepository;
+    }
+
+    public JiraIssue getIssue(String issueId) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("issue", issueId));
+        method.setQueryString(method.getQueryString() + "?fields=" + JiraIssue.REQUIRED_FIELDS);
+        String response = jiraRepository.executeMethod(method);
+        return parseIssue(response);
     }
 
     public List<JiraIssue> findIssues() throws Exception {
@@ -42,6 +53,10 @@ public class JiraRestClient {
         return method;
     }
 
+    private JiraIssue parseIssue(String response){
+        return JiraRepository.GSON.fromJson(response, JiraIssue.class);
+    }
+
 
     private List<JiraIssue> parseIssues(String response){
         JiraIssuesWrapper<JiraIssue> wrapper = JiraRepository.GSON.fromJson(response, ISSUES_WRAPPER_TYPE);
@@ -57,6 +72,22 @@ public class JiraRestClient {
             return ContainerUtil.emptyList();
         }
         return wrapper.getTransitions();
+    }
+
+    public String doTransition(String issueId, String transitionId) throws Exception {
+        String requestBody = "{\"transition\": {\"id\": \"" + transitionId + "\"}}";
+        PostMethod method = new PostMethod(this.jiraRepository.getRestUrl("issue", issueId, "transitions"));
+        method.setRequestEntity(createJsonEntity(requestBody));
+        return jiraRepository.executeMethod(method);
+    }
+
+
+    private static RequestEntity createJsonEntity(String requestBody) {
+        try {
+            return new StringRequestEntity(requestBody, "application/json", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError("UTF-8 encoding is not supported");
+        }
     }
 
 }

@@ -22,11 +22,14 @@
         <component>
             <implementation-class>com.intellij.jira.notifications.JiraNotificationComponent</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.intellij.jira.components.JiraIssueUpdater</implementation-class>
+        </component>
     </application-components>
 
     <project-components>
         <component>
-            <implementation-class>com.intellij.jira.tasks.JiraTaskManager</implementation-class>
+            <implementation-class>com.intellij.jira.tasks.JiraServerManager</implementation-class>
         </component>
     </project-components>
 
