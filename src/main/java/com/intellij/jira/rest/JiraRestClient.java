@@ -1,23 +1,22 @@
 package com.intellij.jira.rest;
 
-import com.google.gson.reflect.TypeToken;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.rest.model.JiraIssueUser;
 import com.intellij.tasks.jira.JiraRepository;
-import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.*;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 
+import static com.intellij.jira.rest.JiraIssueParser.*;
+
 public class JiraRestClient {
-    private static final Type ISSUES_WRAPPER_TYPE = (new TypeToken<JiraIssuesWrapper<JiraIssue>>(){}).getType();
-    private static final Type ISSUE_TRANSITION_WRAPPER_TYPE = (new TypeToken<JiraIssueTransitionsWrapper<JiraIssueTransition>>(){}).getType();
     private static final Integer DEFAULT_MAX_ISSUES_RESULTS = 100;
+    private static final String ISSUE = "issue";
+    private static final String TRANSITIONS = "transitions";
+    private static final String SEARCH = "search";
 
     private JiraRepository jiraRepository;
 
@@ -26,7 +25,7 @@ public class JiraRestClient {
     }
 
     public JiraIssue getIssue(String issueIdOrKey) throws Exception {
-        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("issue", issueIdOrKey));
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl(ISSUE, issueIdOrKey));
         method.setQueryString(method.getQueryString() + "?fields=" + JiraIssue.REQUIRED_FIELDS);
         String response = jiraRepository.executeMethod(method);
         return parseIssue(response);
@@ -41,43 +40,39 @@ public class JiraRestClient {
 
 
     public List<JiraIssueTransition> getTransitions(String issueId) throws Exception {
-        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("issue", issueId, "transitions"));
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl(ISSUE, issueId, TRANSITIONS));
         String response = jiraRepository.executeMethod(method);
         return parseIssueTransitions(response);
     }
 
-    private GetMethod getBasicSearchMethod(String jql, int maxResults){
-        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl(new String[]{"search"}));
-        method.setQueryString(new NameValuePair[]{new NameValuePair("jql", jql), new NameValuePair("maxResults", String.valueOf(maxResults))});
-        return method;
-    }
-
-    private JiraIssue parseIssue(String response){
-        return JiraRepository.GSON.fromJson(response, JiraIssue.class);
-    }
-
-
-    private List<JiraIssue> parseIssues(String response){
-        JiraIssuesWrapper<JiraIssue> wrapper = JiraRepository.GSON.fromJson(response, ISSUES_WRAPPER_TYPE);
-        if(wrapper == null){
-            return ContainerUtil.emptyList();
-        }
-        return wrapper.getIssues();
-    }
-
-    private List<JiraIssueTransition> parseIssueTransitions(String response){
-        JiraIssueTransitionsWrapper<JiraIssueTransition> wrapper = JiraRepository.GSON.fromJson(response, ISSUE_TRANSITION_WRAPPER_TYPE);
-        if(wrapper == null){
-            return ContainerUtil.emptyList();
-        }
-        return wrapper.getTransitions();
-    }
 
     public String transitIssue(String issueId, String transitionId) throws Exception {
         String requestBody = "{\"transition\": {\"id\": \"" + transitionId + "\"}}";
-        PostMethod method = new PostMethod(this.jiraRepository.getRestUrl("issue", issueId, "transitions"));
+        PostMethod method = new PostMethod(this.jiraRepository.getRestUrl(ISSUE, issueId, TRANSITIONS));
         method.setRequestEntity(createJsonEntity(requestBody));
         return jiraRepository.executeMethod(method);
+    }
+
+    public List<JiraIssueUser> getAssignableUsers(String issueKey) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("user", "assignable", SEARCH));
+        method.setQueryString(new NameValuePair[]{new NameValuePair("issueKey", issueKey)});
+        String response = jiraRepository.executeMethod(method);
+        return parseUsers(response);
+    }
+
+
+
+    public String assignUserToIssue(String username, String issueKey) throws Exception {
+        String requestBody = "{\"name\": \"" + username + "\"}";
+        PutMethod method = new PutMethod(this.jiraRepository.getRestUrl(ISSUE, issueKey, "assignee"));
+        method.setRequestEntity(createJsonEntity(requestBody));
+        return jiraRepository.executeMethod(method);
+    }
+
+    private GetMethod getBasicSearchMethod(String jql, int maxResults){
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl(SEARCH));
+        method.setQueryString(new NameValuePair[]{new NameValuePair("jql", jql), new NameValuePair("maxResults", String.valueOf(maxResults))});
+        return method;
     }
 
 
@@ -87,24 +82,6 @@ public class JiraRestClient {
         } catch (UnsupportedEncodingException e) {
             throw new AssertionError("UTF-8 encoding is not supported");
         }
-    }
-
-    public List<JiraIssueUser> getAssignableUsers(String issueKey) throws Exception {
-        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("user", "assignable", "search"));
-        method.setQueryString(new NameValuePair[]{new NameValuePair("issueKey", issueKey)});
-        String response = jiraRepository.executeMethod(method);
-        return parseUsers(response);
-    }
-
-    private List<JiraIssueUser> parseUsers(String response) {
-        return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssueUser[].class));
-    }
-
-    public String assignUserToIssue(String username, String issueKey) throws Exception {
-        String requestBody = "{\"name\": \"" + username + "\"}";
-        PutMethod method = new PutMethod(this.jiraRepository.getRestUrl("issue", issueKey, "assignee"));
-        method.setRequestEntity(createJsonEntity(requestBody));
-        return jiraRepository.executeMethod(method);
     }
 
 

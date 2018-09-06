@@ -103,7 +103,7 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
         JBPanel assigneePanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
         JBLabel assigneeLabel = JiraLabelUtil.createLabel("Assigne: ").withFont(BOLD);
-        JBLabel assigneeValueLabel = JiraLabelUtil.createLabel(issue.getAssignee() != null ? issue.getAssignee().getDisplayName() : "-");
+        JBLabel assigneeValueLabel = JiraLabelUtil.createLabel(issue.getAssignee() != null ? issue.getAssignee().getDisplayName() : "Unassigned");
 
         assigneePanel.add(assigneeLabel, LINE_START);
         assigneePanel.add(assigneeValueLabel, CENTER);
