@@ -13,8 +13,10 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.tools.SimpleActionGroup;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.util.ui.JBUI;
 import org.fest.util.Lists;
 
 import javax.swing.*;
@@ -61,6 +63,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
 
 
             JPanel issuesPanel = new JPanel(new BorderLayout());
+            issuesPanel.setBorder(JBUI.Borders.customLine(JBColor.border(),0, 0, 0, 1));
             issuesPanel.add(ScrollPaneFactory.createScrollPane(issueTable), BorderLayout.CENTER);
 
 
@@ -68,6 +71,8 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
             splitter.setProportion(0.6f);
             splitter.setFirstComponent(issuesPanel);
             splitter.setSecondComponent(issueDetailsPanel);
+            splitter.setShowDividerIcon(false);
+            splitter.setDividerWidth(1);
 
             content = splitter;
         }
