@@ -17,15 +17,15 @@ import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
-public class TransitIssueTask extends Task.Backgroundable {
+public class AssignUserTask extends Task.Backgroundable {
 
-    private String issueId;
-    private String transitionId;
+    private String username;
+    private String issueKey;
 
-    public TransitIssueTask(@Nullable Project project, String issueId, String transitionId) {
-        super(project, "Transiting Issue...", false, ALWAYS_BACKGROUND);
-        this.issueId = issueId;
-        this.transitionId = transitionId;
+    public AssignUserTask(@Nullable Project project, String username, String issueKey) {
+        super(project, "Assigning User to Issue...", false, ALWAYS_BACKGROUND);
+        this.username = username;
+        this.issueKey = issueKey;
     }
 
     @Override
@@ -36,13 +36,13 @@ public class TransitIssueTask extends Task.Backgroundable {
             throw new JiraServerConfigurationNotFoundException();
         }
 
-        Result result = jiraServer.get().transitIssue(issueId, transitionId);
+        Result result = jiraServer.get().assignUserToIssue(username, issueKey);
         if(!result.isValid()) {
-            throw new InvalidResultException("Transition error", "Issue has not been updated");
+            throw new InvalidResultException("Assignment error", "Issue has not been updated");
         }
 
         // Retrieve updated issue
-        JiraIssue issue = jiraServer.get().getIssue(issueId);
+        JiraIssue issue = jiraServer.get().getIssue(issueKey);
         // Update panels
         JiraIssueUpdater.getInstance().update(issue);
     }
@@ -50,7 +50,7 @@ public class TransitIssueTask extends Task.Backgroundable {
 
     @Override
     public void onSuccess() {
-        Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotification("Transition successful", "Issue status has been updated"));
+        Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotification("Assignment successful", "Issue assignee has been updated"));
     }
 
     @Override
@@ -58,4 +58,5 @@ public class TransitIssueTask extends Task.Backgroundable {
         String content = nonNull(error.getCause()) ? error.getCause().getMessage() : "";
         Notifications.Bus.notify(JiraNotificationComponent.getInstance().createNotificationError(error.getMessage(), content));
     }
+
 }

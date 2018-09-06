@@ -4,7 +4,8 @@ import com.intellij.jira.rest.JiraRestClient;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.rest.model.JiraIssueUser;
-import com.intellij.jira.util.JiraIssueTransitionResult;
+import com.intellij.jira.util.EmptyResult;
+import com.intellij.jira.util.Result;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 import org.slf4j.Logger;
@@ -23,9 +24,9 @@ public class JiraServer {
     }
 
 
-    public JiraIssue getIssue(String issueId){
+    public JiraIssue getIssue(String issueIdOrKey){
         try {
-            return this.jiraRestClient.getIssue(issueId);
+            return this.jiraRestClient.getIssue(issueIdOrKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,13 +55,13 @@ public class JiraServer {
     }
 
 
-    public JiraIssueTransitionResult doTransition(String issueId, String transitionId){
+    public Result transitIssue(String issueId, String transitionId){
         try {
-            String response = jiraRestClient.doTransition(issueId, transitionId);
-            return JiraIssueTransitionResult.create(response);
+            String response = jiraRestClient.transitIssue(issueId, transitionId);
+            return EmptyResult.create(response);
         } catch (Exception e) {
             log.error(String.format("Error executing transition '%s' in issue '%s'", transitionId, issueId));
-            return JiraIssueTransitionResult.error();
+            return EmptyResult.error();
         }
     }
 
@@ -72,6 +73,18 @@ public class JiraServer {
             return ContainerUtil.emptyList();
         }
     }
+
+
+    public Result assignUserToIssue(String username, String issueKey){
+        try {
+            String response = jiraRestClient.assignUserToIssue(username, issueKey);
+            return EmptyResult.create(response);
+        } catch (Exception e) {
+            log.error(String.format("Error assigning user '%s' to issue '%s'", username, issueKey));
+            return EmptyResult.error();
+        }
+    }
+
 
 
 }

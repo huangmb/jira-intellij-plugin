@@ -1,6 +1,10 @@
 package com.intellij.jira.actions;
 
+import com.intellij.jira.tasks.AssignUserTask;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.Project;
+
+import static java.util.Objects.nonNull;
 
 public class JiraIssueAssignmentExecuteAction extends JiraIssueAction {
 
@@ -21,6 +25,9 @@ public class JiraIssueAssignmentExecuteAction extends JiraIssueAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        // TODO: task to assign
+        Project project = e.getProject();
+        if(nonNull(project)) {
+            new AssignUserTask(project, username, issueKey).queue();
+        }
     }
 }

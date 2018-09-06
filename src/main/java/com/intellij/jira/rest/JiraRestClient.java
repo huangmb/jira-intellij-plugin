@@ -7,10 +7,7 @@ import com.intellij.jira.rest.model.JiraIssueUser;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.methods.*;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -28,8 +25,8 @@ public class JiraRestClient {
         this.jiraRepository = jiraRepository;
     }
 
-    public JiraIssue getIssue(String issueId) throws Exception {
-        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("issue", issueId));
+    public JiraIssue getIssue(String issueIdOrKey) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("issue", issueIdOrKey));
         method.setQueryString(method.getQueryString() + "?fields=" + JiraIssue.REQUIRED_FIELDS);
         String response = jiraRepository.executeMethod(method);
         return parseIssue(response);
@@ -76,7 +73,7 @@ public class JiraRestClient {
         return wrapper.getTransitions();
     }
 
-    public String doTransition(String issueId, String transitionId) throws Exception {
+    public String transitIssue(String issueId, String transitionId) throws Exception {
         String requestBody = "{\"transition\": {\"id\": \"" + transitionId + "\"}}";
         PostMethod method = new PostMethod(this.jiraRepository.getRestUrl("issue", issueId, "transitions"));
         method.setRequestEntity(createJsonEntity(requestBody));
@@ -102,4 +99,14 @@ public class JiraRestClient {
     private List<JiraIssueUser> parseUsers(String response) {
         return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssueUser[].class));
     }
+
+    public String assignUserToIssue(String username, String issueKey) throws Exception {
+        String requestBody = "{\"name\": \"" + username + "\"}";
+        PutMethod method = new PutMethod(this.jiraRepository.getRestUrl("issue", issueKey, "assignee"));
+        method.setRequestEntity(createJsonEntity(requestBody));
+        return jiraRepository.executeMethod(method);
+    }
+
+
+
 }
