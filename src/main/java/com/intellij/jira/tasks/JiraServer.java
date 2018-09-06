@@ -3,6 +3,7 @@ package com.intellij.jira.tasks;
 import com.intellij.jira.rest.JiraRestClient;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueTransition;
+import com.intellij.jira.rest.model.JiraIssueUser;
 import com.intellij.jira.util.JiraIssueTransitionResult;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
@@ -62,5 +63,15 @@ public class JiraServer {
             return JiraIssueTransitionResult.error();
         }
     }
+
+    public List<JiraIssueUser> getAssignableUsers(String issueKey){
+        try {
+            return jiraRestClient.getAssignableUsers(issueKey);
+        } catch (Exception e) {
+            log.error("Error fetching users to assign");
+            return ContainerUtil.emptyList();
+        }
+    }
+
 
 }

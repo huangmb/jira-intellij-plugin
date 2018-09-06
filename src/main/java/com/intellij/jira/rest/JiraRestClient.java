@@ -3,6 +3,7 @@ package com.intellij.jira.rest;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueTransition;
+import com.intellij.jira.rest.model.JiraIssueUser;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 import org.apache.commons.httpclient.NameValuePair;
@@ -13,6 +14,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
 public class JiraRestClient {
@@ -90,4 +92,14 @@ public class JiraRestClient {
         }
     }
 
+    public List<JiraIssueUser> getAssignableUsers(String issueKey) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("user", "assignable", "search"));
+        method.setQueryString(new NameValuePair[]{new NameValuePair("issueKey", issueKey)});
+        String response = jiraRepository.executeMethod(method);
+        return parseUsers(response);
+    }
+
+    private List<JiraIssueUser> parseUsers(String response) {
+        return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssueUser[].class));
+    }
 }

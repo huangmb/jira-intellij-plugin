@@ -1,6 +1,7 @@
 package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.actions.JiraIssueActionGroup;
+import com.intellij.jira.actions.JiraIssueAssigneePopupAction;
 import com.intellij.jira.actions.JiraIssueTransitionPopupAction;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.util.JiraIconUtil;
@@ -149,6 +150,7 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     private ActionGroup createActionGroup(){
         JiraIssueActionGroup group = new JiraIssueActionGroup(this);
         group.add(new JiraIssueTransitionPopupAction(() -> currentIssue));
+        group.add(new JiraIssueAssigneePopupAction(() -> currentIssue));
 
         return group;
     }

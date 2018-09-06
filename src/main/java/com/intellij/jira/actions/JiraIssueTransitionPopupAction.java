@@ -6,11 +6,10 @@ import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.tasks.JiraServerManager;
 import com.intellij.jira.ui.popup.JiraIssueTransitionsPopup;
+import com.intellij.jira.util.JiraIssueFactory;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Conditions;
-import org.apache.commons.collections.Factory;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +17,14 @@ import java.util.Optional;
 import static java.util.Objects.nonNull;
 
 public class JiraIssueTransitionPopupAction extends JiraIssueAction {
+    private static final ActionProperties properties = ActionProperties.of("Transit",  AllIcons.Actions.Forward);
 
-    private static final ActionProperties properties = ActionProperties.of("Transit to",  AllIcons.Actions.Forward);
-    private Factory factory;
+    private JiraIssueFactory issueFactory;
 
 
-    public JiraIssueTransitionPopupAction(Factory factory) {
+    public JiraIssueTransitionPopupAction(JiraIssueFactory factory) {
         super(properties);
-        this.factory = factory;
+        this.issueFactory = factory;
     }
 
     @Override
@@ -35,9 +34,9 @@ public class JiraIssueTransitionPopupAction extends JiraIssueAction {
             JiraServerManager component = project.getComponent(JiraServerManager.class);
             Optional<JiraServer> jiraServer = component.getConfiguredJiraServer();
             if(jiraServer.isPresent()){
-                JiraIssue issue = (JiraIssue) factory.create();
+                JiraIssue issue = issueFactory.create();
                 List<JiraIssueTransition> transitions = jiraServer.get().getTransitions(issue.getId());
-                JiraIssueTransitionsPopup popup = new JiraIssueTransitionsPopup(createActionGroup(transitions, issue), project, Conditions.alwaysTrue());
+                JiraIssueTransitionsPopup popup = new JiraIssueTransitionsPopup(createActionGroup(transitions, issue), project);
                 popup.showInCenterOf(getComponent());
 
             }
@@ -47,7 +46,7 @@ public class JiraIssueTransitionPopupAction extends JiraIssueAction {
 
     @Override
     public void update(AnActionEvent e) {
-        e.getPresentation().setEnabled(nonNull(factory.create()));
+        e.getPresentation().setEnabled(nonNull(issueFactory.create()));
     }
 
 
