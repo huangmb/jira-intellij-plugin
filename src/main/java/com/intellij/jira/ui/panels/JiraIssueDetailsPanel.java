@@ -24,6 +24,8 @@ import static com.intellij.jira.util.JiraLabelUtil.BOLD;
 import static com.intellij.jira.util.JiraPanelUtil.MARGIN_BOTTOM;
 import static java.awt.BorderLayout.*;
 import static java.util.Objects.isNull;
+import static javax.swing.BoxLayout.X_AXIS;
+import static javax.swing.BoxLayout.Y_AXIS;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
@@ -56,7 +58,7 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
 
 
         JBPanel issueDetails = new JBPanel().withBackground(JBColor.WHITE);
-        issueDetails.setLayout(new BoxLayout(issueDetails, BoxLayout.Y_AXIS));
+        issueDetails.setLayout(new BoxLayout(issueDetails, Y_AXIS));
 
         // Key
         JBPanel issueKeyPanel = JiraPanelUtil.createWhitePanel(new BorderLayout()).withBorder(MARGIN_BOTTOM);
@@ -77,12 +79,14 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
         typePanel.add(typeLabel, LINE_START);
         typePanel.add(typeValueLabel, CENTER);
 
-        JBPanel statusPanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
-        JBLabel statusLabel = JiraLabelUtil.createLabel("Status: ").withFont(BOLD);
-        JBLabel statusValueLabel = JiraLabelUtil.createIconLabel(issue.getStatus().getIconUrl(), issue.getStatus().getName());
+        JBPanel statusPanel = new JBPanel().withBackground(JBColor.white);
+        statusPanel.setLayout(new BoxLayout( statusPanel, X_AXIS));
 
-        statusPanel.add(statusLabel, LINE_START);
-        statusPanel.add(statusValueLabel, CENTER);
+        JBLabel statusLabel = JiraLabelUtil.createLabel("Status: ").withFont(BOLD);
+        JLabel statusValueLabel = JiraLabelUtil.createStatusLabel(issue.getStatus());
+
+        statusPanel.add(statusLabel);
+        statusPanel.add(statusValueLabel);
 
         typeAndStatusPanel.add(typePanel);
         typeAndStatusPanel.add(statusPanel);

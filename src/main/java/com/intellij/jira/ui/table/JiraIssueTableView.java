@@ -3,7 +3,6 @@ package com.intellij.jira.ui.table;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.ui.table.TableView;
 
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.util.List;
@@ -24,11 +23,6 @@ public class JiraIssueTableView extends TableView<JiraIssue> {
         setRowHeight(25);
     }
 
-
-    @Override
-    public TableCellRenderer getCellRenderer(int row, int column) {
-        return super.getCellRenderer(row, column);
-    }
 
     @Override
     protected TableColumnModel createDefaultColumnModel() {

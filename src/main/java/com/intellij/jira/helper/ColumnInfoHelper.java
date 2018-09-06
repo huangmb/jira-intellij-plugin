@@ -2,6 +2,7 @@ package com.intellij.jira.helper;
 
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.ui.table.JiraIconAndTextTableCellRenderer;
+import com.intellij.jira.ui.table.JiraIssueStatusTableCellRenderer;
 import com.intellij.jira.ui.table.JiraIssueTableCellRenderer;
 import com.intellij.util.ui.ColumnInfo;
 import org.jetbrains.annotations.NotNull;
@@ -151,7 +152,7 @@ public class ColumnInfoHelper {
         }
     }
 
-    private static class StatusColumnInfo extends AbstractColumnInfo{
+    private static class StatusColumnInfo extends JiraIssueColumnInfo{
 
         StatusColumnInfo(String name) {
             super(name);
@@ -163,17 +164,12 @@ public class ColumnInfoHelper {
             return issue.getStatus().getName();
         }
 
-
+        @Nullable
         @Override
-        public TableCellRenderer getCustomizedRenderer(JiraIssue issue, TableCellRenderer renderer) {
-            if(renderer instanceof JiraIconAndTextTableCellRenderer){
-                ((JiraIconAndTextTableCellRenderer) renderer).setIconUrl(issue.getStatus().getIconUrl());
-                ((JiraIconAndTextTableCellRenderer) renderer).emptyText();
-                ((JiraIconAndTextTableCellRenderer) renderer).setToolTipText(valueOf(issue));
-            }
-
-            return renderer;
+        public TableCellRenderer getRenderer(JiraIssue issue) {
+            return new JiraIssueStatusTableCellRenderer(issue.getStatus().getName(), issue.getStatus().getCategoryColor(), issue.getStatus().isInProgressCategory());
         }
+
     }
 
     private abstract static class JiraIssueColumnInfo extends ColumnInfo<JiraIssue, String> {

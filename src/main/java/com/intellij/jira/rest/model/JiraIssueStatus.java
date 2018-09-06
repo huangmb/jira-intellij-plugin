@@ -1,5 +1,7 @@
 package com.intellij.jira.rest.model;
 
+import java.awt.*;
+
 public class JiraIssueStatus {
 
     private String id;
@@ -7,6 +9,7 @@ public class JiraIssueStatus {
     private String name;
     private String description;
     private String iconUrl;
+    private JiraIssueStatusCategory statusCategory;
 
     public JiraIssueStatus() { }
 
@@ -28,5 +31,13 @@ public class JiraIssueStatus {
 
     public String getIconUrl() {
         return iconUrl;
+    }
+
+    public Color getCategoryColor(){
+        return statusCategory.getColor();
+    }
+
+    public boolean isInProgressCategory(){
+        return statusCategory.isInProgressCategory();
     }
 }
