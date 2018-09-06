@@ -20,7 +20,7 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
     public void showIssue(@NotNull JiraIssue issue) {
         JiraTabbedPane tabbedPane = new JiraTabbedPane(JTabbedPane.BOTTOM);
         tabbedPane.addTab("Preview", new JiraIssuePreviewPanel(issue));
-        tabbedPane.addTab("Comments", new JiraIssueCommentsPanel());
+        tabbedPane.addTab(String.format("Comments (%d)", issue.getComments().getTotal()), new JiraIssueCommentsPanel(issue.getComments()));
 
         setContent(tabbedPane);
     }

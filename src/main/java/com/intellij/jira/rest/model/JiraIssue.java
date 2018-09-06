@@ -1,11 +1,13 @@
 package com.intellij.jira.rest.model;
 
+import com.intellij.jira.rest.JiraIssueCommentsWrapper;
+
 import java.util.Date;
 import java.util.Objects;
 
 public class JiraIssue {
 
-    public static final String REQUIRED_FIELDS = "summary,description,created,updated,duedate,resolutiondate,assignee,reporter,issuetype,status,priority";
+    public static final String REQUIRED_FIELDS = "summary,description,created,updated,duedate,resolutiondate,assignee,reporter,issuetype,status,priority,comment";
 
     private String id;
     private String self;
@@ -74,6 +76,10 @@ public class JiraIssue {
         return fields.reporter;
     }
 
+    public JiraIssueCommentsWrapper getComments(){
+        return fields.comment;
+    }
+
     public String getUrl(){
         return self.replaceFirst("(/rest([\\w/]+))", "/browse/" + getKey());
     }
@@ -92,6 +98,7 @@ public class JiraIssue {
         private JiraIssueUser assignee;
         private JiraIssueUser creator;
         private JiraIssueUser reporter;
+        private JiraIssueCommentsWrapper comment;
 
         public Fields() { }
 

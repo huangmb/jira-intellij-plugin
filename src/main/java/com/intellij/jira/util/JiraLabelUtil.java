@@ -16,6 +16,8 @@ import static javax.swing.SwingConstants.LEFT;
 public class JiraLabelUtil {
 
     public static final JBFont BOLD = JBUI.Fonts.label().asBold();
+    public static final JBFont ITALIC = JBUI.Fonts.label().asItalic();
+
     public static final Color CELL_COLOR = new Color(211, 232, 240  );
 
     // Status
@@ -44,6 +46,16 @@ public class JiraLabelUtil {
     public static JBLabel createIconLabel(String iconUrl, String text){
         return new JBLabel(text, JiraIconUtil.getIcon(iconUrl), LEFT);
     }
+
+    public static JBLabel createBoldLabel(String text){
+        return createLabel(text).withFont(BOLD);
+    }
+
+    public static JBLabel createItalicLabel(String text){
+        return createLabel(text).withFont(ITALIC);
+    }
+
+
 
     public static JBLabel createLinkLabel(String text, String url){
         return new LinkLabel(text, url);

@@ -1,10 +1,13 @@
 package com.intellij.jira.util;
 
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.rest.model.JiraIssueComment;
 import com.intellij.jira.rest.model.JiraIssueUser;
 import com.intellij.util.text.DateFormatUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Date;
 
 import static java.util.Objects.nonNull;
 
@@ -40,10 +43,17 @@ public class JiraIssueUtil {
     }
 
     public static String getCreated(@NotNull JiraIssue jiraIssue) {
-        return DateFormatUtil.formatPrettyDateTime(jiraIssue.getCreated());
+        return getPrettyDateTime(jiraIssue.getCreated());
+    }
+
+    public static String getCreated(@NotNull JiraIssueComment comment) {
+        return getPrettyDateTime(comment.getCreated());
     }
 
 
+    private static String getPrettyDateTime(Date date){
+        return DateFormatUtil.formatPrettyDateTime(date);
+    }
 
 
 }
