@@ -1,11 +1,14 @@
 package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.rest.model.JiraIssueLink;
+import com.intellij.jira.ui.JiraIssueLinkListCellRenderer;
+import com.intellij.jira.ui.JiraIssueLinkListModel;
 import com.intellij.jira.util.JiraLabelUtil;
 import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBUI;
 
@@ -15,7 +18,7 @@ import java.util.List;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.util.Objects.nonNull;
-import static javax.swing.BoxLayout.Y_AXIS;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
 public class JiraIssueLinksPanel extends SimpleToolWindowPanel {
@@ -29,20 +32,16 @@ public class JiraIssueLinksPanel extends SimpleToolWindowPanel {
     }
 
     private void initContent() {
-        if(issueLinks.isEmpty()){
-            setContent(JiraPanelUtil.createPlaceHolderPanel("No links"));
-        }
-        else{
-            JBPanel issueLinksPanel = new JBPanel();
-            issueLinksPanel.setLayout(new BoxLayout(issueLinksPanel, Y_AXIS));
-            issueLinks.forEach(issueLink -> issueLinksPanel.add(createIssueLinkPanel(issueLink)));
+        JBPanel panel = new JBPanel(new BorderLayout());
 
-            JBPanel panel = JiraPanelUtil.createWhitePanel(new BorderLayout());
-            panel.add(ScrollPaneFactory.createScrollPane(issueLinksPanel, VERTICAL_SCROLLBAR_AS_NEEDED), CENTER);
+        JBList<JiraIssueLink> issueLinkList = new JBList<>();
+        issueLinkList.setEmptyText("No links");
+        issueLinkList.setModel(new JiraIssueLinkListModel(issueLinks));
+        issueLinkList.setCellRenderer(new JiraIssueLinkListCellRenderer());
 
-            setContent(panel);
-        }
+        panel.add(ScrollPaneFactory.createScrollPane(issueLinkList, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), CENTER);
 
+        setContent(panel);
     }
 
     private JPanel createIssueLinkPanel(JiraIssueLink issueLink) {

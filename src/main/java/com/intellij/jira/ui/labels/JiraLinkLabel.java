@@ -10,13 +10,13 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class LinkLabel extends JBLabel {
+public class JiraLinkLabel extends JBLabel {
 
     private static final Cursor HAND_CURSOR = new Cursor(Cursor.HAND_CURSOR);
     private static final Color LINK_COLOR = JBColor.BLUE;
     private String url;
 
-    public LinkLabel(String text, String url) {
+    public JiraLinkLabel(String text, String url) {
         super(text);
         this.url = url;
         init();
