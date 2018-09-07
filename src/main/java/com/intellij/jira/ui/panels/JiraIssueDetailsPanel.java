@@ -21,6 +21,7 @@ public class JiraIssueDetailsPanel extends SimpleToolWindowPanel {
         JiraTabbedPane tabbedPane = new JiraTabbedPane(JTabbedPane.BOTTOM);
         tabbedPane.addTab("Preview", new JiraIssuePreviewPanel(issue));
         tabbedPane.addTab(String.format("Comments (%d)", issue.getComments().getTotal()), new JiraIssueCommentsPanel(issue.getComments()));
+        tabbedPane.addTab(String.format("Links (%d)", issue.getIssueLinks().size()), new JiraIssueLinksPanel(issue.getIssueLinks()));
 
         setContent(tabbedPane);
     }
