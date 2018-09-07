@@ -108,10 +108,14 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
         JiraIssue lastSelectedIssue = issueTable.getSelectedObject();
         issueTable.updateModel(issues);
         int currentPosIssue = issueTable.getModel().indexOf(lastSelectedIssue);
+        // if the last selected issue exist in the new list
         if(currentPosIssue >= 0){
             JiraIssue issueToShow = issueTable.getModel().getItem(currentPosIssue);
             issueTable.addSelection(issueToShow);
             issueDetailsPanel.showIssue(issueToShow);
+        }
+        else{
+            issueDetailsPanel.setEmptyContent();
         }
     }
 
