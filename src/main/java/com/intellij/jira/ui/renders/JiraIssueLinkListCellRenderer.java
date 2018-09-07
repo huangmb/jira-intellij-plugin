@@ -1,4 +1,4 @@
-package com.intellij.jira.ui;
+package com.intellij.jira.ui.renders;
 
 import com.intellij.jira.rest.model.JiraIssueLink;
 import com.intellij.jira.util.JiraLabelUtil;

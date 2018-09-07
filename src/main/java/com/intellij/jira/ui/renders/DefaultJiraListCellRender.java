@@ -1,4 +1,4 @@
-package com.intellij.jira.ui;
+package com.intellij.jira.ui.renders;
 
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;

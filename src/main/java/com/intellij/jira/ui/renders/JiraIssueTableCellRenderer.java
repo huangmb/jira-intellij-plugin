@@ -1,4 +1,4 @@
-package com.intellij.jira.ui.table;
+package com.intellij.jira.ui.renders;
 
 import com.intellij.jira.util.JiraLabelUtil;
 

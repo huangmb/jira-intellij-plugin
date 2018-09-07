@@ -1,4 +1,4 @@
-package com.intellij.jira.ui.table;
+package com.intellij.jira.ui.renders;
 
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBPanel;

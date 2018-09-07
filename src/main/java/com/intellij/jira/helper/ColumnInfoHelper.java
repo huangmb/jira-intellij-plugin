@@ -1,9 +1,9 @@
 package com.intellij.jira.helper;
 
 import com.intellij.jira.rest.model.JiraIssue;
-import com.intellij.jira.ui.table.JiraIconAndTextTableCellRenderer;
-import com.intellij.jira.ui.table.JiraIssueStatusTableCellRenderer;
-import com.intellij.jira.ui.table.JiraIssueTableCellRenderer;
+import com.intellij.jira.ui.renders.JiraIconAndTextTableCellRenderer;
+import com.intellij.jira.ui.renders.JiraIssueStatusTableCellRenderer;
+import com.intellij.jira.ui.renders.JiraIssueTableCellRenderer;
 import com.intellij.util.ui.ColumnInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
