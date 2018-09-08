@@ -5,6 +5,7 @@ import com.intellij.jira.actions.JiraIssueAssigneePopupAction;
 import com.intellij.jira.actions.JiraIssueTransitionPopupAction;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.util.JiraIconUtil;
+import com.intellij.jira.util.JiraIssueUtil;
 import com.intellij.jira.util.JiraLabelUtil;
 import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
@@ -23,6 +24,7 @@ import java.awt.*;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 import static com.intellij.jira.util.JiraLabelUtil.BOLD;
+import static com.intellij.jira.util.JiraLabelUtil.ITALIC;
 import static com.intellij.jira.util.JiraPanelUtil.MARGIN_BOTTOM;
 import static java.awt.BorderLayout.*;
 import static javax.swing.BoxLayout.X_AXIS;
@@ -59,10 +61,16 @@ class JiraIssuePreviewPanel extends SimpleToolWindowPanel {
         JBPanel issueDetails = new JBPanel().withBackground(JBColor.WHITE);
         issueDetails.setLayout(new BoxLayout(issueDetails, Y_AXIS));
 
-        // Key
-        JBPanel issueKeyPanel = JiraPanelUtil.createWhitePanel(new BorderLayout()).withBorder(MARGIN_BOTTOM);
+        // Key and updated
+        JBPanel keyAndUpdatedPanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
         JBLabel keyLabel = JiraLabelUtil.createLinkLabel(issue.getKey(), issue.getUrl());
-        issueKeyPanel.add(keyLabel, LINE_START);
+
+        JBLabel updatedLabel = JiraLabelUtil.createLabel(JiraIssueUtil.getUpdated(issue), SwingConstants.RIGHT).withFont(ITALIC);
+        updatedLabel.setForeground(JBColor.darkGray);
+        updatedLabel.setToolTipText("Updated");
+
+        keyAndUpdatedPanel.add(keyLabel);
+        keyAndUpdatedPanel.add(updatedLabel);
 
         // Summary
         JBPanel issueSummaryPanel = JiraPanelUtil.createWhitePanel(new BorderLayout()).withBorder(MARGIN_BOTTOM);
@@ -119,7 +127,7 @@ class JiraIssuePreviewPanel extends SimpleToolWindowPanel {
         issueDescriptionPanel.add(descriptionLabel, PAGE_START);
         issueDescriptionPanel.add(descriptionArea, CENTER);
 
-        issueDetails.add(issueKeyPanel);
+        issueDetails.add(keyAndUpdatedPanel);
         issueDetails.add(issueSummaryPanel);
         issueDetails.add(typeAndStatusPanel);
         issueDetails.add(priorityAndAssigneePanel);

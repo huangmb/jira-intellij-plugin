@@ -46,6 +46,10 @@ public class JiraIssueUtil {
         return getPrettyDateTime(jiraIssue.getCreated());
     }
 
+    public static String getUpdated(@NotNull JiraIssue jiraIssue) {
+        return getPrettyDateTime(jiraIssue.getUpdated());
+    }
+
     public static String getCreated(@NotNull JiraIssueComment comment) {
         return getPrettyDateTime(comment.getCreated());
     }
