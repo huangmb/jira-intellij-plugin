@@ -26,8 +26,8 @@ public class ActionProperties {
         return new ActionProperties(text, description, icon, null);
     }
 
-    public static ActionProperties of(String text, String description, Icon icon, String shortcut){
-        return new ActionProperties(text, description, icon, shortcut);
+    public static ActionProperties of(String text, Icon icon, String shortcut){
+        return new ActionProperties(text, null, icon, shortcut);
     }
 
     private ActionProperties(@Nullable String text, @Nullable String description, @Nullable Icon icon, @Nullable String shortcut) {

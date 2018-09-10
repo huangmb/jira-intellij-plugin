@@ -1,28 +1,31 @@
 package com.intellij.jira.ui.panels;
 
+import com.google.common.util.concurrent.SettableFuture;
+import com.intellij.jira.actions.GoToIssuePopupAction;
+import com.intellij.jira.actions.JiraIssueActionGroup;
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.events.JiraIssueEventListener;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.tasks.JiraServer;
+import com.intellij.jira.ui.table.JiraIssueListTableModel;
 import com.intellij.jira.ui.table.JiraIssueTableView;
 import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.tools.SimpleActionGroup;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.JBUI;
-import org.fest.util.Lists;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Future;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 
@@ -92,14 +95,11 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
     }
 
     private ActionGroup createActionGroup(){
-        SimpleActionGroup group = new SimpleActionGroup();
-        getIssuePanelActions().forEach((group)::add);
+        JiraIssueActionGroup group = new JiraIssueActionGroup(this);
+        group.add(JiraActionManager.getInstance().getJiraIssuesRefreshAction());
+        group.add(new GoToIssuePopupAction());
+        group.add(ActionManager.getInstance().getAction("tasks.configure.servers"));
         return group;
-    }
-
-    private List<AnAction> getIssuePanelActions(){
-        return Lists.newArrayList(JiraActionManager.getInstance().getJiraIssuesRefreshAction(),
-                                    ActionManager.getInstance().getAction("tasks.configure.servers"));
     }
 
 
@@ -132,4 +132,28 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
 
         issueDetailsPanel.showIssue(issue);
     }
+
+
+    public JiraIssueListTableModel getTableListModel(){
+        return issueTable.getModel();
+    }
+
+    public JiraIssueTableView getIssueTable(){
+        return issueTable;
+    }
+
+    public Future<Boolean> goToIssue(String issueKey){
+        SettableFuture<Boolean> future = SettableFuture.create();
+        future.set(false);
+        Optional<JiraIssue> targetIssue = issueTable.getItems().stream().filter(issue -> Objects.equals(issue.getKey(), issueKey)).findFirst();
+        if(targetIssue.isPresent()){
+            future.set(true);
+            issueTable.addSelection(targetIssue.get());
+            issueTable.scrollRectToVisible(issueTable.getCellRect(issueTable.getSelectedRow(),issueTable.getSelectedColumn(), true));
+            issueDetailsPanel.showIssue(targetIssue.get());
+        }
+
+        return future;
+    }
+
 }
