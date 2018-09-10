@@ -96,5 +96,8 @@ public class JiraRestClient {
     }
 
 
-
+    public String deleteCommentToIssue(String issueKey, String commentId) throws Exception {
+        DeleteMethod method = new DeleteMethod(this.jiraRepository.getRestUrl(ISSUE, issueKey, "comment", commentId));
+        return jiraRepository.executeMethod(method);
+    }
 }

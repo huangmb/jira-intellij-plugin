@@ -99,4 +99,14 @@ public class JiraServer {
     }
 
 
+    public Result deleteCommentToIssue(String issueKey, String commentId) {
+        try {
+            String response = jiraRestClient.deleteCommentToIssue(issueKey, commentId);
+            return EmptyResult.create(response);
+        } catch (Exception e) {
+            log.error(String.format("Error deleting comment in issue '%s'", issueKey));
+            return EmptyResult.error();
+        }
+
+    }
 }

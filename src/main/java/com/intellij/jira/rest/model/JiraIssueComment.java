@@ -26,7 +26,7 @@ public class JiraIssueComment {
         return created;
     }
 
-    public Date getUpdated() {
-        return updated;
+    public String getId() {
+        return id;
     }
 }

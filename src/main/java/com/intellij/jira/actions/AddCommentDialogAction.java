@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project;
 import static java.util.Objects.isNull;
 
 public class AddCommentDialogAction extends JiraIssueAction{
-    private static final ActionProperties properties = ActionProperties.of("Add a comment",  AllIcons.General.Balloon);
+    private static final ActionProperties properties = ActionProperties.of("Add a comment",  AllIcons.General.Add);
 
     private String issueKey;
 

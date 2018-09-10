@@ -1,6 +1,7 @@
 package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.actions.AddCommentDialogAction;
+import com.intellij.jira.actions.DeleteCommentDialogAction;
 import com.intellij.jira.actions.JiraIssueActionGroup;
 import com.intellij.jira.rest.JiraIssueCommentsWrapper;
 import com.intellij.jira.rest.model.JiraIssue;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 import static java.awt.BorderLayout.CENTER;
@@ -28,6 +30,9 @@ class JiraIssueCommentsPanel extends SimpleToolWindowPanel {
 
     private JiraIssueCommentsWrapper comments;
     private String issueKey;
+    private JiraIssueComment comment;
+
+    private JBList<JiraIssueComment> issueCommentList;
 
     JiraIssueCommentsPanel(@NotNull JiraIssue issue) {
         super(true);
@@ -49,6 +54,7 @@ class JiraIssueCommentsPanel extends SimpleToolWindowPanel {
     private ActionGroup createActionGroup() {
         JiraIssueActionGroup group = new JiraIssueActionGroup(this);
         group.add(new AddCommentDialogAction(issueKey));
+        group.add(new DeleteCommentDialogAction(issueKey, () -> comment));
 
         return group;
     }
@@ -57,15 +63,26 @@ class JiraIssueCommentsPanel extends SimpleToolWindowPanel {
     private void initContent(){
         JBPanel panel = new JBPanel(new BorderLayout());
 
-        JBList<JiraIssueComment> issueCommentList = new JBList<>();
+        issueCommentList = new JBList<>();
         issueCommentList.setEmptyText("No comments");
         issueCommentList.setModel(new JiraIssueCommentListModel(comments.getComments()));
         issueCommentList.setCellRenderer(new JiraIssueCommentListCellRenderer());
         issueCommentList.setSelectionMode(SINGLE_SELECTION);
+        issueCommentList.addListSelectionListener(e -> {
+             SwingUtilities.invokeLater(this::updateToolbarActions);
+        });
 
         panel.add(ScrollPaneFactory.createScrollPane(issueCommentList, VERTICAL_SCROLLBAR_AS_NEEDED), CENTER);
 
         setContent(panel);
+    }
+
+    private void updateToolbarActions() {
+        JiraIssueComment selectedComment = issueCommentList.getSelectedValue();
+        if(!Objects.equals(comment, selectedComment)){
+            comment = selectedComment;
+            initToolbar();
+        }
     }
 
 
