@@ -1,6 +1,7 @@
 package com.intellij.jira.rest;
 
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.rest.model.JiraIssueComment;
 import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.rest.model.JiraIssueUser;
 import com.intellij.tasks.jira.JiraRepository;
@@ -68,6 +69,16 @@ public class JiraRestClient {
         method.setRequestEntity(createJsonEntity(requestBody));
         return jiraRepository.executeMethod(method);
     }
+
+
+    public JiraIssueComment addCommentToIssue(String body, String issueKey) throws Exception {
+        String requestBody = "{\"body\": \"" + body + "\"}";
+        PostMethod method = new PostMethod(this.jiraRepository.getRestUrl(ISSUE, issueKey, "comment"));
+        method.setRequestEntity(createJsonEntity(requestBody));
+        String response = jiraRepository.executeMethod(method);
+        return parseIssueComment(response);
+    }
+
 
     private GetMethod getBasicSearchMethod(String jql, int maxResults){
         GetMethod method = new GetMethod(this.jiraRepository.getRestUrl(SEARCH));

@@ -2,8 +2,10 @@ package com.intellij.jira.tasks;
 
 import com.intellij.jira.rest.JiraRestClient;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.rest.model.JiraIssueComment;
 import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.util.BodyResult;
 import com.intellij.jira.util.EmptyResult;
 import com.intellij.jira.util.Result;
 import com.intellij.tasks.jira.JiraRepository;
@@ -85,6 +87,16 @@ public class JiraServer {
         }
     }
 
+
+    public Result addCommentToIssue(String body, String issueKey){
+        try {
+            JiraIssueComment comment = jiraRestClient.addCommentToIssue(body, issueKey);
+            return BodyResult.ok(comment);
+        } catch (Exception e) {
+            log.error(String.format("Error creating comment in issue '%s'", issueKey));
+            return BodyResult.error();
+        }
+    }
 
 
 }
