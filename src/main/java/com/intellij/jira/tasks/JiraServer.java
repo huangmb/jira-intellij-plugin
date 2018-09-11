@@ -1,10 +1,7 @@
 package com.intellij.jira.tasks;
 
 import com.intellij.jira.rest.JiraRestClient;
-import com.intellij.jira.rest.model.JiraIssue;
-import com.intellij.jira.rest.model.JiraIssueComment;
-import com.intellij.jira.rest.model.JiraIssueTransition;
-import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.rest.model.*;
 import com.intellij.jira.util.BodyResult;
 import com.intellij.jira.util.EmptyResult;
 import com.intellij.jira.util.Result;
@@ -105,6 +102,26 @@ public class JiraServer {
             return EmptyResult.create(response);
         } catch (Exception e) {
             log.error(String.format("Error deleting comment in issue '%s'", issueKey));
+            return EmptyResult.error();
+        }
+
+    }
+
+    public List<JiraIssuePriority> getIssuePriorities() {
+        try {
+            return jiraRestClient.getIssuePriorities();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ContainerUtil.emptyList();
+        }
+    }
+
+    public Result changeIssuePriority(String priorityName, String issueIdOrKey) {
+        try {
+            String response = jiraRestClient.changeIssuePriority(priorityName, issueIdOrKey);
+            return EmptyResult.create(response);
+        } catch (Exception e) {
+            e.printStackTrace();
             return EmptyResult.error();
         }
 

@@ -1,9 +1,6 @@
 package com.intellij.jira.rest;
 
-import com.intellij.jira.rest.model.JiraIssue;
-import com.intellij.jira.rest.model.JiraIssueComment;
-import com.intellij.jira.rest.model.JiraIssueTransition;
-import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.rest.model.*;
 import com.intellij.tasks.jira.JiraRepository;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.*;
@@ -98,6 +95,19 @@ public class JiraRestClient {
 
     public String deleteCommentToIssue(String issueKey, String commentId) throws Exception {
         DeleteMethod method = new DeleteMethod(this.jiraRepository.getRestUrl(ISSUE, issueKey, "comment", commentId));
+        return jiraRepository.executeMethod(method);
+    }
+
+    public List<JiraIssuePriority> getIssuePriorities() throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("priority"));
+        String response = jiraRepository.executeMethod(method);
+        return parseIssuePriorities(response);
+    }
+
+    public String changeIssuePriority(String priorityName, String issueIdOrKey) throws Exception {
+        String requestBody = "{\"update\": {\"priority\": [{\"set\": {\"name\": \"" + priorityName+ "\"}}]}}";
+        PutMethod method = new PutMethod(this.jiraRepository.getRestUrl(ISSUE, issueIdOrKey));
+        method.setRequestEntity(createJsonEntity(requestBody));
         return jiraRepository.executeMethod(method);
     }
 }

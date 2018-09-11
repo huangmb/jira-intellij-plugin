@@ -1,10 +1,7 @@
 package com.intellij.jira.rest;
 
 import com.google.gson.reflect.TypeToken;
-import com.intellij.jira.rest.model.JiraIssue;
-import com.intellij.jira.rest.model.JiraIssueComment;
-import com.intellij.jira.rest.model.JiraIssueTransition;
-import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.rest.model.*;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -47,6 +44,10 @@ public class JiraIssueParser {
 
     public static JiraIssueComment parseIssueComment(String response){
         return JiraRepository.GSON.fromJson(response, JiraIssueComment.class);
+    }
+
+    public static List<JiraIssuePriority> parseIssuePriorities(String response){
+        return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssuePriority[].class));
     }
 
 }
