@@ -99,7 +99,7 @@ public class ColumnInfoHelper {
 
     }
 
-    private static class IssueTypeColumnInfo extends AbstractColumnInfo{
+    private static class IssueTypeColumnInfo extends JiraIssueColumnInfo{
 
         IssueTypeColumnInfo(String name) {
             super(name);
@@ -111,19 +111,6 @@ public class ColumnInfoHelper {
             return issue.getIssuetype().getName();
         }
 
-
-        @Override
-        public TableCellRenderer getCustomizedRenderer(JiraIssue issue, TableCellRenderer renderer) {
-            if(renderer instanceof JiraIconAndTextTableCellRenderer){
-                ((JiraIconAndTextTableCellRenderer) renderer).setIconUrl(issue.getIssuetype().getIconUrl());
-                ((JiraIconAndTextTableCellRenderer) renderer).emptyText();
-                ((JiraIconAndTextTableCellRenderer) renderer).setToolTipText(valueOf(issue));
-            }
-
-
-
-            return renderer;
-        }
 
     }
 

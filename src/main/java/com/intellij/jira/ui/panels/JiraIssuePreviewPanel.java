@@ -82,7 +82,7 @@ class JiraIssuePreviewPanel extends SimpleToolWindowPanel {
         JBPanel typeAndStatusPanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
         JBPanel typePanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
         JBLabel typeLabel = JiraLabelUtil.createLabel("Type: ").withFont(BOLD);
-        JBLabel typeValueLabel = JiraLabelUtil.createIconLabel(issue.getIssuetype().getIconUrl(), issue.getIssuetype().getName());
+        JBLabel typeValueLabel = JiraLabelUtil.createLabel(issue.getIssuetype().getName());
 
         typePanel.add(typeLabel, LINE_START);
         typePanel.add(typeValueLabel, CENTER);
