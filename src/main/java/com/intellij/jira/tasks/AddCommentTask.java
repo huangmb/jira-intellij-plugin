@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AddCommentTask extends AbstractIssueTask {
+public class AddCommentTask extends AbstractBackgroundableTask {
 
     private String issueKey;
     private String body;

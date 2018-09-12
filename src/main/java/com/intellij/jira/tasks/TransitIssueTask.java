@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-public class TransitIssueTask extends AbstractIssueTask {
+public class TransitIssueTask extends AbstractBackgroundableTask {
 
     private String issueId;
     private String transitionId;

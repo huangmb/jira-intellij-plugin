@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-public class DeleteCommentTask extends AbstractIssueTask {
+public class DeleteCommentTask extends AbstractBackgroundableTask {
     private String issueKey;
     private String commentId;
 

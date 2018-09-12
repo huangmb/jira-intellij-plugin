@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public class RefreshIssuesTask extends AbstractIssueTask{
+public class RefreshIssuesTask extends AbstractBackgroundableTask {
 
     public RefreshIssuesTask(@NotNull Project project) {
         super(project, "Updating Issues from Server");

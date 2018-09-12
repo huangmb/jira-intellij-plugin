@@ -11,9 +11,9 @@ import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
-public abstract class AbstractIssueTask extends Task.Backgroundable {
+public abstract class AbstractBackgroundableTask extends Task.Backgroundable {
 
-    public AbstractIssueTask(@NotNull Project project, @NotNull String title) {
+    public AbstractBackgroundableTask(@NotNull Project project, @NotNull String title) {
         super(project, title, false, ALWAYS_BACKGROUND);
     }
 

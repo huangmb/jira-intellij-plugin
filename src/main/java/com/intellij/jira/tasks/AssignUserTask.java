@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-public class AssignUserTask extends AbstractIssueTask {
+public class AssignUserTask extends AbstractBackgroundableTask {
 
     private String username;
     private String issueKey;

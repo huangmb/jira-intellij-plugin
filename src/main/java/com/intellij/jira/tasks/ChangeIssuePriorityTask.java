@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-public class ChangeIssuePriorityTask extends AbstractIssueTask {
+public class ChangeIssuePriorityTask extends AbstractBackgroundableTask {
 
     private String priorityName;
     private String issueIdOrKey;
