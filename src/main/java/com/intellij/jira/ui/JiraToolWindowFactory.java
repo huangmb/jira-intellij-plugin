@@ -27,7 +27,7 @@ public class JiraToolWindowFactory implements ToolWindowFactory {
         createContent(project, toolWindow);
 
         project.getComponent(JiraServerManager.class).addConfigurationServerChangedListener(() -> {
-            SwingUtilities.invokeLater(() -> updateContent(project));
+            SwingUtilities.invokeLater(() -> createContent(project, toolWindow));
         });
 
         toolWindow.setType(ToolWindowType.DOCKED, null);
@@ -45,11 +45,6 @@ public class JiraToolWindowFactory implements ToolWindowFactory {
         contentManager.addContent(content);
     }
 
-
-    private void updateContent(Project project){
-        getJiraServer(project)
-            .ifPresent(jiraServer -> issuesPanel.update(jiraServer.getIssues()));
-    }
 
 
     private Optional<JiraServer> getJiraServer(Project project){

@@ -1,12 +1,15 @@
 package com.intellij.jira.actions;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.jira.tasks.JiraServer;
+import com.intellij.jira.tasks.JiraServerManager;
 import com.intellij.jira.ui.panels.JiraIssuesPanel;
 import com.intellij.jira.ui.popup.GoToIssuePopup;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
@@ -37,8 +40,20 @@ public class GoToIssuePopupAction extends JiraIssueAction {
     }
 
     @Override
-    public void update(AnActionEvent e) {
-        // TODO: activo si hay issues
+    public void update(AnActionEvent event) {
+        Project project = event.getProject();
+        if (isNull(project)|| !project.isInitialized() || project.isDisposed()) {
+            event.getPresentation().setEnabled(false);
+        } else {
+            JiraServerManager component = project.getComponent(JiraServerManager.class);
+            Optional<JiraServer> jiraServer = component.getConfiguredJiraServer();
+            if(jiraServer.isPresent()){
+                event.getPresentation().setEnabled(true);
+            }
+            else{
+                event.getPresentation().setEnabled(false);
+            }
+        }
     }
 
 
