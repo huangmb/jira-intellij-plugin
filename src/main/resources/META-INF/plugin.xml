@@ -1,19 +1,29 @@
 <idea-plugin>
     <id>com.intellij.jira</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>Jira Integration Plugin</name>
+    <vendor email="adrielsr3@gmail.com" url="https://gitlab.com/adrielsr/jira-intellij-plugin">Adriel Saa Romano</vendor>
 
-    <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-    ]]></description>
+    <description>
+        <![CDATA[
+            Jira Integration Plugin has been created to help developers focusing on IDE avoiding has to
+            change windows or painfull neck twist.
+
+            This plugin comes with the followings functionalities:
+            <ul>
+                <li>Fetch issues from server with customizable searchers</li>
+                <li>View issue details</li>
+                <li>Run actions on issue, like transit an issue, assign it, change his priority,...</li>
+                <li>Go to specific issue on list</li>
+            </ul>
+
+        ]]>
+    </description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
 
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.tasks</depends>
-    <depends>Git4Idea</depends>
 
     <application-components>
         <component>
