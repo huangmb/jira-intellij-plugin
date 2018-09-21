@@ -40,4 +40,8 @@ public class JiraIssueStatus {
     public boolean isInProgressCategory(){
         return statusCategory.isInProgressCategory();
     }
+
+    public boolean isDoneCategory(){
+        return statusCategory.isDoneCategory();
+    }
 }

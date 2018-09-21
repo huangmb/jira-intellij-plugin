@@ -40,7 +40,6 @@ public class JiraLabelUtil {
     public static JBLabel createLabel(String text, int horizontalAlignment){
         JBLabel label = new JBLabel(text);
         label.setHorizontalAlignment(horizontalAlignment);
-
         return label;
     }
 
@@ -72,6 +71,14 @@ public class JiraLabelUtil {
         label.setBorder(JBUI.Borders.empty(2, 2, 2, 3));
         label.setBackground(status.getCategoryColor());
         label.setForeground(status.isInProgressCategory() ?  IN_PROGRESS_TEXT_COLOR : JBColor.white);
+        label.setOpaque(true);
+        return label;
+    }
+
+    public static JBLabel createEmptyStatusLabel(){
+        JBLabel label = new JBLabel("", LEFT);
+        label.setFont(JBFont.create(new Font("SansSerif", Font.BOLD, 9)));
+        label.setBorder(JBUI.Borders.empty(2, 2, 2, 3));
         label.setOpaque(true);
         return label;
     }

@@ -90,6 +90,10 @@ public class JiraIssue {
         return self.replaceFirst("(/rest([\\w/]+))", "/browse/" + getKey());
     }
 
+    public boolean isResolved(){
+        return getStatus().isDoneCategory();
+    }
+
     public static class Fields{
 
         private String summary;
