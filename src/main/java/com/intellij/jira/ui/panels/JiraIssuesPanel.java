@@ -156,4 +156,8 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
         return future;
     }
 
+    public int getIssuesCount(){
+        return issueTable.getRowCount();
+    }
+
 }

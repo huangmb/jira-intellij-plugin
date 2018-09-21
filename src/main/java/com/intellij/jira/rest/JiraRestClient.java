@@ -11,7 +11,7 @@ import java.util.List;
 import static com.intellij.jira.rest.JiraIssueParser.*;
 
 public class JiraRestClient {
-    private static final Integer DEFAULT_MAX_ISSUES_RESULTS = 100;
+    private static final Integer DEFAULT_MAX_ISSUES_RESULTS = 500;
     private static final String ISSUE = "issue";
     private static final String TRANSITIONS = "transitions";
     private static final String SEARCH = "search";
