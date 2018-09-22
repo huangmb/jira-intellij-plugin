@@ -26,7 +26,6 @@ public class RefreshIssuesTask extends AbstractBackgroundableTask {
 
         List<JiraIssue> issues = jiraServer.get().getIssues();
         JiraIssueUpdater.getInstance().update(issues);
-        //jiraServerManager.syncJiraIssues();
     }
 
     @Override

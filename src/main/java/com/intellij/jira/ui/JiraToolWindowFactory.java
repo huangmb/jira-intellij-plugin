@@ -18,7 +18,7 @@ import java.util.Optional;
 public class JiraToolWindowFactory implements ToolWindowFactory {
 
     public static final String TOOL_WINDOW_ID = "JIRA";
-    public static final String TAB_ISSUES = "Issues (%s)";
+    public static final String TAB_ISSUES = "Issues";
 
     private JiraIssuesPanel issuesPanel;
 
@@ -40,7 +40,7 @@ public class JiraToolWindowFactory implements ToolWindowFactory {
         Optional<JiraServer> jiraServer =  getJiraServer(project);
         issuesPanel = new JiraIssuesPanel(jiraServer);
 
-        Content content = contentManager.getFactory().createContent(issuesPanel, String.format(TAB_ISSUES, issuesPanel.getIssuesCount()), false);
+        Content content = contentManager.getFactory().createContent(issuesPanel, TAB_ISSUES, false);
         contentManager.addDataProvider(issuesPanel);
         contentManager.addContent(content);
     }

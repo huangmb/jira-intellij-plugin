@@ -14,6 +14,7 @@ import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.Separator;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.JBSplitter;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.concurrent.Future;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
+import static java.util.Objects.nonNull;
 
 public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueEventListener {
 
@@ -98,6 +100,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
         JiraIssueActionGroup group = new JiraIssueActionGroup(this);
         group.add(JiraActionManager.getInstance().getJiraIssuesRefreshAction());
         group.add(new GoToIssuePopupAction());
+        group.add(Separator.getInstance());
         group.add(ActionManager.getInstance().getAction("tasks.configure.servers"));
         return group;
     }
@@ -105,17 +108,19 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
 
     @Override
     public void update(List<JiraIssue> issues) {
-        JiraIssue lastSelectedIssue = issueTable.getSelectedObject();
-        issueTable.updateModel(issues);
-        int currentPosIssue = issueTable.getModel().indexOf(lastSelectedIssue);
-        // if the last selected issue exist in the new list
-        if(currentPosIssue >= 0){
-            JiraIssue issueToShow = issueTable.getModel().getItem(currentPosIssue);
-            issueTable.addSelection(issueToShow);
-            issueDetailsPanel.showIssue(issueToShow);
-        }
-        else{
-            issueDetailsPanel.setEmptyContent();
+        if(nonNull(issueTable)){
+            JiraIssue lastSelectedIssue = issueTable.getSelectedObject();
+            issueTable.updateModel(issues);
+            int currentPosIssue = issueTable.getModel().indexOf(lastSelectedIssue);
+            // if the last selected issue exist in the new list
+            if(currentPosIssue >= 0){
+                JiraIssue issueToShow = issueTable.getModel().getItem(currentPosIssue);
+                issueTable.addSelection(issueToShow);
+                issueDetailsPanel.showIssue(issueToShow);
+            }
+            else{
+                issueDetailsPanel.setEmptyContent();
+            }
         }
     }
 
@@ -156,8 +161,5 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
         return future;
     }
 
-    public int getIssuesCount(){
-        return issueTable.getRowCount();
-    }
 
 }
