@@ -1,24 +1,59 @@
 <idea-plugin>
     <id>com.intellij.jira</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>Jira Integration Plugin</name>
+    <vendor email="adrielsr3@gmail.com" url="https://gitlab.com/adrielsr/jira-intellij-plugin">Adriel Saa Romano</vendor>
 
-    <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-    ]]></description>
+    <description>
+        <![CDATA[
+
+            This plugin provides the followings functionalities:
+            <ul>
+                <li>Fetch issues from server with customizable searchers</li>
+                <li>View issue details</li>
+                <li>Run actions on issue, like transit an issue, assign it, change his priority,...</li>
+                <li>Go to specific issue on list</li>
+            </ul>
+
+        ]]>
+    </description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
-    <!-- uncomment to enable plugin in all products
+
     <depends>com.intellij.modules.lang</depends>
-    -->
+    <depends>com.intellij.tasks</depends>
+
+    <application-components>
+        <component>
+            <implementation-class>com.intellij.jira.components.JiraActionManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.intellij.jira.notifications.JiraNotificationComponent</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.intellij.jira.components.JiraIssueUpdater</implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+        <component>
+            <implementation-class>com.intellij.jira.tasks.JiraServerManager</implementation-class>
+        </component>
+    </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow id="JIRA" anchor="bottom" icon="/icons/ico-jira-16.png" factoryClass="com.intellij.jira.ui.JiraToolWindowFactory"/>
+
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <action id="Jira.toolwindow.Refresh"
+                class="com.intellij.jira.actions.JiraIssuesRefreshAction"
+                text="Refresh issues"
+                description="Updates the project issues"
+                icon="AllIcons.Actions.Refresh">
+        </action>
+
+
     </actions>
 </idea-plugin>
