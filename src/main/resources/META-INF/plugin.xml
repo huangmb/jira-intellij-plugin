@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.intellij.jira</id>
-    <name>Jira Integration Plugin</name>
+    <name>Jira Integration</name>
     <vendor email="adrielsr3@gmail.com" url="https://gitlab.com/adrielsr/jira-intellij-plugin">Adriel Saa Romano</vendor>
 
     <description>
