@@ -37,6 +37,9 @@ public class JiraIssueParser {
         return wrapper.getTransitions();
     }
 
+    public static JiraIssueUser parseUser(String response) {
+        return JiraRepository.GSON.fromJson(response, JiraIssueUser.class);
+    }
 
     public static List<JiraIssueUser> parseUsers(String response) {
         return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssueUser[].class));

@@ -28,9 +28,13 @@ public class TransitIssueTask extends AbstractBackgroundableTask {
         }
 
         // Retrieve updated issue
-        JiraIssue issue = jiraServer.getIssue(issueId);
-        // Update panels
-        JiraIssueUpdater.getInstance().update(issue);
+        Result issueResult = jiraServer.getIssue(issueId);
+        if(issueResult.isValid()){
+            JiraIssue issue = (JiraIssue) issueResult.get();
+            // Update panels
+            JiraIssueUpdater.getInstance().update(issue);
+        }
+
     }
 
 

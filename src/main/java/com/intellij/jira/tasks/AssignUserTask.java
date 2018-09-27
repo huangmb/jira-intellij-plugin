@@ -28,9 +28,12 @@ public class AssignUserTask extends AbstractBackgroundableTask {
         }
 
         // Retrieve updated issue
-        JiraIssue issue = jiraServer.getIssue(issueKey);
-        // Update panels
-        JiraIssueUpdater.getInstance().update(issue);
+        Result issueResult = jiraServer.getIssue(issueKey);
+        if(issueResult.isValid()){
+            JiraIssue issue = (JiraIssue) issueResult.get();
+            // Update panels
+            JiraIssueUpdater.getInstance().update(issue);
+        }
     }
 
 

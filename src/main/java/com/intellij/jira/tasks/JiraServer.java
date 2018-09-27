@@ -10,6 +10,7 @@ import com.intellij.util.containers.ContainerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JiraServer {
@@ -23,14 +24,15 @@ public class JiraServer {
     }
 
 
-    public JiraIssue getIssue(String issueIdOrKey){
+    public Result getIssue(String issueIdOrKey){
         try {
-            return this.jiraRestClient.getIssue(issueIdOrKey);
+            JiraIssue issue = this.jiraRestClient.getIssue(issueIdOrKey);
+            return BodyResult.ok(issue);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(String.format("Issue %s not found", issueIdOrKey));
         }
-        // TODO: poner Result
-        return null;
+
+        return BodyResult.error();
     }
 
 
@@ -126,4 +128,16 @@ public class JiraServer {
         }
 
     }
+
+    public boolean userHasPermissionOnIssue(String issueKey, JiraPermission permission){
+        List<JiraIssueUser> users = new ArrayList<>();
+        try {
+            users = jiraRestClient.findUsersWithPermissionOnIssue(issueKey, permission);
+        } catch (Exception e) {
+            log.error("Current user has not permission to do this action");
+        }
+
+        return !users.isEmpty();
+    }
+
 }

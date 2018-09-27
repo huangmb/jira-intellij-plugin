@@ -27,6 +27,9 @@ intellij {
 }
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      Version 1.1<br>
+      <ul>
+        <li>Notifications when user has not permissions to do an action</li>
+        <li>Bug fixed</li>
+      </ul>"""
 }
