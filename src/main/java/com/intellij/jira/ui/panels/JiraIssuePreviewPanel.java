@@ -64,13 +64,21 @@ class JiraIssuePreviewPanel extends SimpleToolWindowPanel {
 
         // Key and updated
         JBPanel keyAndUpdatedPanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
-        JBLabel keyLabel = JiraLabelUtil.createLinkLabel(issue.getKey(), issue.getUrl());
+        JBPanel issueAndProjectKeyPanel = new JBPanel().withBackground(JBColor.WHITE);
+        issueAndProjectKeyPanel.setLayout(new BoxLayout(issueAndProjectKeyPanel, X_AXIS));
+        JBLabel projectKeyLabel = JiraLabelUtil.createLinkLabel(issue.getProject().getName(), issue.getProject().getUrl());
+        JBLabel separatorLabel = JiraLabelUtil.createLabel(" / ");
+        JBLabel issueKeyLabel = JiraLabelUtil.createLinkLabel(issue.getKey(), issue.getUrl());
+
+        issueAndProjectKeyPanel.add(projectKeyLabel);
+        issueAndProjectKeyPanel.add(separatorLabel);
+        issueAndProjectKeyPanel.add(issueKeyLabel);
 
         JBLabel updatedLabel = JiraLabelUtil.createLabel(JiraIssueUtil.getUpdated(issue), SwingConstants.RIGHT).withFont(ITALIC);
         updatedLabel.setForeground(JBColor.darkGray);
         updatedLabel.setToolTipText("Updated");
 
-        keyAndUpdatedPanel.add(keyLabel);
+        keyAndUpdatedPanel.add(issueAndProjectKeyPanel);
         keyAndUpdatedPanel.add(updatedLabel);
 
         // Summary
