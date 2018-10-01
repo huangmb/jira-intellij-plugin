@@ -1,7 +1,6 @@
 package com.intellij.jira.ui.renders;
 
 import com.intellij.jira.util.JiraIconUtil;
-import com.intellij.jira.util.JiraLabelUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ui.table.IconTableCellRenderer;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static com.intellij.jira.util.JiraLabelUtil.getBgRowColor;
 
 public class JiraIconAndTextTableCellRenderer extends IconTableCellRenderer {
     private String iconUrl;
@@ -41,11 +42,7 @@ public class JiraIconAndTextTableCellRenderer extends IconTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focus, int row, int column) {
         super.getTableCellRendererComponent(table, value, selected, false, row, column);
         setText(label);
-        if(!selected){
-            setBackground(JiraLabelUtil.CELL_COLOR);
-        }
-
-
+        setBackground(getBgRowColor(selected));
 
         return this;
     }

@@ -3,10 +3,10 @@ package com.intellij.jira.util;
 import com.intellij.jira.rest.model.JiraIssueStatus;
 import com.intellij.jira.ui.labels.JiraLinkLabel;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBFont;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +18,15 @@ public class JiraLabelUtil {
     public static final JBFont BOLD = JBUI.Fonts.label().asBold();
     public static final JBFont ITALIC = JBUI.Fonts.label().asItalic();
 
-    public static final Color CELL_COLOR = new Color(211, 232, 240  );
+    public static final Color DEFAULT_ISSUE_COLOR = new Color(211, 232, 240  );
+    public static final Color DEFAULT_SELECTED_ISSUE_COLOR = new Color(26, 125, 196  );
+    public static final Color DARCULA_ISSUE_COLOR = new Color(114, 62, 133);
+    public static final Color DARCULA_SELECTED_ISSUE_COLOR = new Color(108, 32, 133);
+
     public static final Color ISSUE_LINK_COLOR = new Color(240, 216, 226);
+    public static final Color DARCULA_ISSUE_LINK_COLOR = new Color(133, 76, 100);
+
+    public static final Color DARCULA_TEXT_COLOR = new Color(200, 200, 200);
 
     // Status
     public static final Color UNDEFINED_COLOR = new Color(192, 192, 192);
@@ -70,7 +77,7 @@ public class JiraLabelUtil {
         label.setFont(JBFont.create(new Font("SansSerif", Font.BOLD, 9)));
         label.setBorder(JBUI.Borders.empty(2, 2, 2, 3));
         label.setBackground(status.getCategoryColor());
-        label.setForeground(status.isInProgressCategory() ?  IN_PROGRESS_TEXT_COLOR : JBColor.white);
+        label.setForeground(status.isInProgressCategory() ?  IN_PROGRESS_TEXT_COLOR : Color.white);
         label.setOpaque(true);
         return label;
     }
@@ -82,5 +89,30 @@ public class JiraLabelUtil {
         label.setOpaque(true);
         return label;
     }
+
+    public static Color getBgRowColor(){
+        return UIUtil.isUnderDarcula()? DARCULA_ISSUE_COLOR : DEFAULT_ISSUE_COLOR;
+    }
+
+    public static Color getFgRowColor(){
+        return UIUtil.isUnderDarcula()? DARCULA_TEXT_COLOR : Color.BLACK;
+    }
+
+    public static Color getBgSelectedRowColor(){
+        return UIUtil.isUnderDarcula()? DARCULA_SELECTED_ISSUE_COLOR : DEFAULT_SELECTED_ISSUE_COLOR;
+    }
+
+    public static Color getFgSelectedRowColor(){
+        return UIUtil.isUnderDarcula()? DARCULA_TEXT_COLOR : Color.WHITE;
+    }
+
+    public static Color getBgRowColor(boolean isSelected){
+        return isSelected ? getBgSelectedRowColor() : getBgRowColor();
+    }
+
+    public static Color getFgRowColor(boolean isSelected){
+        return isSelected ? getFgSelectedRowColor() : getFgRowColor();
+    }
+
 
 }

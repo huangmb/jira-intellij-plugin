@@ -31,6 +31,7 @@ patchPluginXml {
       <ul>
         <li>Notifications when user has not permissions to do an action</li>
         <li>Link to project in issue details preview</li>
+        <li>Darcula theme</li>
         <li>Bug fixed</li>
       </ul>"""
 }
