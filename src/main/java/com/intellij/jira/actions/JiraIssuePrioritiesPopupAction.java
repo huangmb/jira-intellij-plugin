@@ -54,7 +54,7 @@ public class JiraIssuePrioritiesPopupAction extends JiraIssueAction {
 
     private ActionGroup createActionGroup(List<JiraIssuePriority> priorities, JiraIssue issue) {
         JiraIssueActionGroup group = new JiraIssueActionGroup(getComponent());
-        priorities.forEach(p -> group.add(new JiraIssueChangePriorityAction(p.getName(), issue.getId())));
+        priorities.forEach(p -> group.add(new JiraIssueChangePriorityAction(p.getName(), issue.getKey())));
 
         return group;
     }

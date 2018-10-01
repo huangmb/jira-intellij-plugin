@@ -110,4 +110,12 @@ public class JiraRestClient {
         method.setRequestEntity(createJsonEntity(requestBody));
         return jiraRepository.executeMethod(method);
     }
+
+
+    public List<JiraIssueUser> findUsersWithPermissionOnIssue(String issueKey, JiraPermission permission) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("user", "permission", SEARCH));
+        method.setQueryString(new NameValuePair[]{new NameValuePair("issueKey", issueKey), new NameValuePair("username", jiraRepository.getUsername()), new NameValuePair("permissions", permission.toString())});
+        String response = jiraRepository.executeMethod(method);
+        return parseUsers(response);
+    }
 }

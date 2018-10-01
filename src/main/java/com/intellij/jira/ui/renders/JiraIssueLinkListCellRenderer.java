@@ -8,6 +8,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UIUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -45,10 +46,11 @@ public class JiraIssueLinkListCellRenderer extends DefaultJiraListCellRender {
         JiraIssueLink issueLink = (JiraIssueLink) value;
 
         setBorder(JBUI.Borders.emptyBottom(2));
-        setBackground(ISSUE_LINK_COLOR);
+        setBackground(UIUtil.isUnderDarcula() ? DARCULA_ISSUE_LINK_COLOR : ISSUE_LINK_COLOR);
 
         String typeText = nonNull(issueLink.getInwardIssue()) ? issueLink.getType().getInward() : issueLink.getType().getOutward();
         typeLabel.setText(typeText);
+        typeLabel.setForeground(getFgRowColor());
 
         JiraIssue issue = nonNull(issueLink.getInwardIssue()) ? issueLink.getInwardIssue() : issueLink.getOutwardIssue();
         JiraIssueStatus status = issue.getStatus();
@@ -60,7 +62,7 @@ public class JiraIssueLinkListCellRenderer extends DefaultJiraListCellRender {
 
         issueStatusLabel.setText(StringUtils.upperCase(status.getName()));
         issueStatusLabel.setBackground(status.getCategoryColor());
-        issueStatusLabel.setForeground(status.isInProgressCategory() ?  IN_PROGRESS_TEXT_COLOR : JBColor.white);
+        issueStatusLabel.setForeground(status.isInProgressCategory() ?  IN_PROGRESS_TEXT_COLOR : Color.WHITE);
 
 
         return this;

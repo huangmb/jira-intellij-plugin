@@ -126,16 +126,18 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
 
     @Override
     public void update(JiraIssue issue) {
-        int postItem = issueTable.getModel().indexOf(issue);
-        if(postItem < 0){
-            return;
+        if(nonNull(issueTable)){
+            int postItem = issueTable.getModel().indexOf(issue);
+            if(postItem < 0){
+                return;
+            }
+
+            issueTable.getModel().removeRow(postItem);
+            issueTable.getModel().insertRow(postItem, issue);
+            issueTable.addSelection(issue);
+
+            issueDetailsPanel.showIssue(issue);
         }
-
-        issueTable.getModel().removeRow(postItem);
-        issueTable.getModel().insertRow(postItem, issue);
-        issueTable.addSelection(issue);
-
-        issueDetailsPanel.showIssue(issue);
     }
 
 

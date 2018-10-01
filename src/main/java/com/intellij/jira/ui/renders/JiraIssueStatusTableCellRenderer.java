@@ -1,5 +1,6 @@
 package com.intellij.jira.ui.renders;
 
+import com.intellij.jira.util.JiraLabelUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBFont;
@@ -8,9 +9,7 @@ import com.intellij.util.ui.JBUI;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.intellij.jira.util.JiraLabelUtil.CELL_COLOR;
 import static com.intellij.jira.util.JiraLabelUtil.IN_PROGRESS_TEXT_COLOR;
-import static com.intellij.ui.JBColor.white;
 import static java.awt.BorderLayout.LINE_START;
 
 public class JiraIssueStatusTableCellRenderer extends JiraIssueTableCellRenderer {
@@ -32,12 +31,12 @@ public class JiraIssueStatusTableCellRenderer extends JiraIssueTableCellRenderer
 
         JBPanel panel = new JBPanel(new BorderLayout()).withBackground(label.getBackground());
         if(!isSelected){
-            panel.withBackground(CELL_COLOR);
+            panel.withBackground(JiraLabelUtil.getBgRowColor());
         }
 
         setText(StringUtil.toUpperCase(statusName));
         setBackground(statusCategoryColor);
-        setForeground(isInProgressCategory ? IN_PROGRESS_TEXT_COLOR : white);
+        setForeground(isInProgressCategory ? IN_PROGRESS_TEXT_COLOR : Color.white);
         setFont(JBFont.create(new Font("SansSerif", Font.BOLD, 8)));
         setBorder(JBUI.Borders.empty(4, 3));
 
