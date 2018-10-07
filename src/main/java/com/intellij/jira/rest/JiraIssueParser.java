@@ -37,12 +37,12 @@ public class JiraIssueParser {
         return wrapper.getTransitions();
     }
 
-    public static JiraIssueUser parseUser(String response) {
-        return JiraRepository.GSON.fromJson(response, JiraIssueUser.class);
+    public static JiraUser parseUser(String response) {
+        return JiraRepository.GSON.fromJson(response, JiraUser.class);
     }
 
-    public static List<JiraIssueUser> parseUsers(String response) {
-        return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssueUser[].class));
+    public static List<JiraUser> parseUsers(String response) {
+        return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraUser[].class));
     }
 
     public static JiraIssueComment parseIssueComment(String response){
@@ -51,6 +51,14 @@ public class JiraIssueParser {
 
     public static List<JiraIssuePriority> parseIssuePriorities(String response){
         return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssuePriority[].class));
+    }
+
+    public static List<JiraProject> parseProjects(String response){
+        return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraProject[].class));
+    }
+
+    public static List<JiraProjectVersionDetails> parseProjectVersionsDetails(String response){
+        return  Arrays.asList(JiraRepository.GSON.fromJson(response, JiraProjectVersionDetails[].class));
     }
 
 }

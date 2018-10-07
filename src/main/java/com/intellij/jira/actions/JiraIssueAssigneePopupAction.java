@@ -1,7 +1,7 @@
 package com.intellij.jira.actions;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.rest.model.JiraUser;
 import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.tasks.JiraServerManager;
 import com.intellij.jira.ui.popup.JiraIssueAssignableUsersPopup;
@@ -32,7 +32,7 @@ public class JiraIssueAssigneePopupAction extends JiraIssueAction {
             JiraServerManager jiraServerManager = project.getComponent(JiraServerManager.class);
             Optional<JiraServer> jiraServer = jiraServerManager.getConfiguredJiraServer();
             if(jiraServer.isPresent()){
-                List<JiraIssueUser> assignableUsers = jiraServer.get().getAssignableUsers(issueFactory.create().getKey());
+                List<JiraUser> assignableUsers = jiraServer.get().getAssignableUsers(issueFactory.create().getKey());
                 JiraIssueAssignableUsersPopup popup = new JiraIssueAssignableUsersPopup(createActionGroup(assignableUsers), project);
                 popup.showInCenterOf(getComponent());
             }
@@ -44,7 +44,7 @@ public class JiraIssueAssigneePopupAction extends JiraIssueAction {
         e.getPresentation().setEnabled(nonNull(issueFactory.create()));
     }
 
-    private ActionGroup createActionGroup(List<JiraIssueUser> assignableUsers){
+    private ActionGroup createActionGroup(List<JiraUser> assignableUsers){
         JiraIssueActionGroup group = new JiraIssueActionGroup(getComponent());
         assignableUsers.forEach(u -> group.add(new JiraIssueAssignmentExecuteAction(u.getKey(), issueFactory.create().getKey())));
         group.add(new JiraIssueAssignmentExecuteAction(issueFactory.create().getKey())); // Unassigned action

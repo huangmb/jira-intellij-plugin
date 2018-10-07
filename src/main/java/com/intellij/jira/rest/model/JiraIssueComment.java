@@ -6,7 +6,7 @@ public class JiraIssueComment {
 
     private String self;
     private String id;
-    private JiraIssueUser author;
+    private JiraUser author;
     private String body;
     private Date created;
     private Date updated;
@@ -14,7 +14,7 @@ public class JiraIssueComment {
     public JiraIssueComment() { }
 
 
-    public JiraIssueUser getAuthor() {
+    public JiraUser getAuthor() {
         return author;
     }
 

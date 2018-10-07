@@ -66,7 +66,7 @@ public class JiraServer {
         }
     }
 
-    public List<JiraIssueUser> getAssignableUsers(String issueKey){
+    public List<JiraUser> getAssignableUsers(String issueKey){
         try {
             return jiraRestClient.getAssignableUsers(issueKey);
         } catch (Exception e) {
@@ -130,7 +130,7 @@ public class JiraServer {
     }
 
     public boolean userHasPermissionOnIssue(String issueKey, JiraPermission permission){
-        List<JiraIssueUser> users = new ArrayList<>();
+        List<JiraUser> users = new ArrayList<>();
         try {
             users = jiraRestClient.findUsersWithPermissionOnIssue(issueKey, permission);
         } catch (Exception e) {
@@ -138,6 +138,24 @@ public class JiraServer {
         }
 
         return !users.isEmpty();
+    }
+
+
+    public List<JiraProject> getProjects(){
+        try {
+            return jiraRestClient.getProjects();
+        } catch (Exception e) {
+            return ContainerUtil.emptyList();
+        }
+    }
+
+
+    public List<JiraProjectVersionDetails> getProjectVersionDetails(String projectKey){
+        try {
+            return jiraRestClient.getProjectVersionDetails(projectKey);
+        } catch (Exception e) {
+            return ContainerUtil.emptyList();
+        }
     }
 
 }

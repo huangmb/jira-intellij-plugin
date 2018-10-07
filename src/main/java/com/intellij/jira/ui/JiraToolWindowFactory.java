@@ -4,12 +4,12 @@ import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.tasks.JiraServerManager;
 import com.intellij.jira.ui.panels.JiraIssuesPanel;
+import com.intellij.jira.ui.panels.JiraProjectsPanel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ToolWindowType;
 import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -19,8 +19,10 @@ public class JiraToolWindowFactory implements ToolWindowFactory {
 
     public static final String TOOL_WINDOW_ID = "JIRA";
     public static final String TAB_ISSUES = "Issues";
+    public static final String TAB_PROJECTS = "Projects";
 
     private JiraIssuesPanel issuesPanel;
+    private JiraProjectsPanel projectsPanel;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -34,15 +36,27 @@ public class JiraToolWindowFactory implements ToolWindowFactory {
     }
 
     private void createContent(Project project, ToolWindow toolWindow) {
-        ContentManager contentManager = toolWindow.getContentManager();
-        contentManager.removeAllContents(true);
+        toolWindow.getContentManager().removeAllContents(true);
 
         Optional<JiraServer> jiraServer =  getJiraServer(project);
-        issuesPanel = new JiraIssuesPanel(jiraServer);
+        addIssuesTab(jiraServer, toolWindow);
+        addProjectsTab(jiraServer, toolWindow);
+    }
 
-        Content content = contentManager.getFactory().createContent(issuesPanel, TAB_ISSUES, false);
-        contentManager.addDataProvider(issuesPanel);
-        contentManager.addContent(content);
+    private void addIssuesTab( Optional<JiraServer> jiraServer, ToolWindow toolWindow){
+        issuesPanel = new JiraIssuesPanel(jiraServer);
+        Content content = toolWindow.getContentManager().getFactory().createContent(issuesPanel, TAB_ISSUES, false);
+        toolWindow.getContentManager().addDataProvider(issuesPanel);
+        toolWindow.getContentManager().addContent(content);
+    }
+
+    private void addProjectsTab( Optional<JiraServer> jiraServer, ToolWindow toolWindow){
+        if(jiraServer.isPresent()){
+            projectsPanel = new JiraProjectsPanel(jiraServer.get());
+            Content content = toolWindow.getContentManager().getFactory().createContent(projectsPanel, TAB_PROJECTS, false);
+            toolWindow.getContentManager().addDataProvider(projectsPanel);
+            toolWindow.getContentManager().addContent(content);
+        }
     }
 
 

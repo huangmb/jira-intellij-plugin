@@ -66,15 +66,15 @@ public class JiraIssue {
         return fields.priority;
     }
 
-    public JiraIssueUser getAssignee() {
+    public JiraUser getAssignee() {
         return fields.assignee;
     }
 
-    public JiraIssueUser getCreator() {
+    public JiraUser getCreator() {
         return fields.creator;
     }
 
-    public JiraIssueUser getReporter() {
+    public JiraUser getReporter() {
         return fields.reporter;
     }
 
@@ -113,9 +113,9 @@ public class JiraIssue {
         private JiraIssueType issuetype;
         private JiraIssueStatus status;
         private JiraIssuePriority priority;
-        private JiraIssueUser assignee;
-        private JiraIssueUser creator;
-        private JiraIssueUser reporter;
+        private JiraUser assignee;
+        private JiraUser creator;
+        private JiraUser reporter;
         private JiraIssueCommentsWrapper comment;
         private List<JiraIssueLink> issuelinks = ContainerUtil.emptyList();
         private JiraProject project;

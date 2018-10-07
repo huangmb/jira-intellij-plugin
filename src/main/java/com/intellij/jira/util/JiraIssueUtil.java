@@ -2,7 +2,7 @@ package com.intellij.jira.util;
 
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueComment;
-import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.rest.model.JiraUser;
 import com.intellij.util.text.DateFormatUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ public class JiraIssueUtil {
         return nonNull(jiraIssue.getAssignee()) ? jiraIssue.getAssignee().getName() : "";
     }
 
-    public static String getAvatarIcon(@Nullable JiraIssueUser user) {
+    public static String getAvatarIcon(@Nullable JiraUser user) {
         return nonNull(user) ? user.getAvatarIcon(): "";
     }
 

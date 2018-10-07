@@ -2,16 +2,16 @@ package com.intellij.jira.rest.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class JiraIssueUser {
+public class JiraUser {
 
     private String self;
     private String name;
     private String key;
     private String emailAdress;
     private String displayName;
-    private JiraIssueUser.Avatar avatarUrls;
+    private JiraUser.Avatar avatarUrls;
 
-    public JiraIssueUser() { }
+    public JiraUser() { }
 
     public String getSelf() {
         return self;

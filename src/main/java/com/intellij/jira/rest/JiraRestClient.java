@@ -15,6 +15,7 @@ public class JiraRestClient {
     private static final String ISSUE = "issue";
     private static final String TRANSITIONS = "transitions";
     private static final String SEARCH = "search";
+    private static final String PROJECT = "project";
 
     private JiraRepository jiraRepository;
 
@@ -51,7 +52,7 @@ public class JiraRestClient {
         return jiraRepository.executeMethod(method);
     }
 
-    public List<JiraIssueUser> getAssignableUsers(String issueKey) throws Exception {
+    public List<JiraUser> getAssignableUsers(String issueKey) throws Exception {
         GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("user", "assignable", SEARCH));
         method.setQueryString(new NameValuePair[]{new NameValuePair("issueKey", issueKey)});
         String response = jiraRepository.executeMethod(method);
@@ -112,10 +113,23 @@ public class JiraRestClient {
     }
 
 
-    public List<JiraIssueUser> findUsersWithPermissionOnIssue(String issueKey, JiraPermission permission) throws Exception {
+    public List<JiraUser> findUsersWithPermissionOnIssue(String issueKey, JiraPermission permission) throws Exception {
         GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("user", "permission", SEARCH));
         method.setQueryString(new NameValuePair[]{new NameValuePair("issueKey", issueKey), new NameValuePair("username", jiraRepository.getUsername()), new NameValuePair("permissions", permission.toString())});
         String response = jiraRepository.executeMethod(method);
         return parseUsers(response);
+    }
+
+    public List<JiraProject> getProjects() throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl(PROJECT));
+        method.setQueryString(new NameValuePair[]{new NameValuePair("expand", "lead")});
+        String response = jiraRepository.executeMethod(method);
+        return parseProjects(response);
+    }
+
+    public List<JiraProjectVersionDetails> getProjectVersionDetails(String projectKey) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getUrl() + "/rest/projects/1.0/project/" + projectKey + "/release/allversions");
+        String response = jiraRepository.executeMethod(method);
+        return parseProjectVersionsDetails(response);
     }
 }
