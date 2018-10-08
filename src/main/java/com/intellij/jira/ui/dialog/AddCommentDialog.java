@@ -6,13 +6,13 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBPanel;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 
+import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static java.util.Objects.nonNull;
 
 public class AddCommentDialog extends DialogWrapper {
@@ -57,7 +57,7 @@ public class AddCommentDialog extends DialogWrapper {
     @Nullable
     @Override
     protected ValidationInfo doValidate() {
-        if(StringUtils.isBlank(commentArea.getText())){
+        if(isEmpty(commentArea.getText())){
             return new ValidationInfo("Comment body can not be empty!", commentArea);
         }
 
