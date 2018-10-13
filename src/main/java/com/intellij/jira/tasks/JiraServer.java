@@ -1,5 +1,7 @@
 package com.intellij.jira.tasks;
 
+import com.intellij.jira.helper.TransitionFieldHelper;
+import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
 import com.intellij.jira.rest.JiraRestClient;
 import com.intellij.jira.rest.model.*;
 import com.intellij.jira.util.BodyResult;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class JiraServer {
 
@@ -56,9 +59,9 @@ public class JiraServer {
     }
 
 
-    public Result transitIssue(String issueId, String transitionId){
+    public Result transitIssue(String issueId, String transitionId, Map<String, FieldEditorInfo> requiredFields, Map<String, FieldEditorInfo> optionalFields){
         try {
-            String response = jiraRestClient.transitIssue(issueId, transitionId);
+            String response = jiraRestClient.transitIssue(issueId, transitionId, requiredFields, optionalFields);
             return EmptyResult.create(response);
         } catch (Exception e) {
             log.error(String.format("Error executing transition '%s' in issue '%s'", transitionId, issueId));

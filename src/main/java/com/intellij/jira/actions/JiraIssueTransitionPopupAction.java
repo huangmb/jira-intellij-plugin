@@ -5,9 +5,8 @@ import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.tasks.JiraServerManager;
-import com.intellij.jira.ui.popup.JiraIssueTransitionsPopup;
+import com.intellij.jira.ui.dialog.IssueTransitionDialog;
 import com.intellij.jira.util.JiraIssueFactory;
-import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 
@@ -36,8 +35,9 @@ public class JiraIssueTransitionPopupAction extends JiraIssueAction {
             if(jiraServer.isPresent()){
                 JiraIssue issue = issueFactory.create();
                 List<JiraIssueTransition> transitions = jiraServer.get().getTransitions(issue.getId());
-                JiraIssueTransitionsPopup popup = new JiraIssueTransitionsPopup(createActionGroup(transitions, issue), project);
-                popup.showInCenterOf(getComponent());
+
+                IssueTransitionDialog dialog = new IssueTransitionDialog(project, issue.getId(), transitions);
+                dialog.show();
 
             }
         }
@@ -50,12 +50,7 @@ public class JiraIssueTransitionPopupAction extends JiraIssueAction {
     }
 
 
-    private ActionGroup createActionGroup(List<JiraIssueTransition> transitions, JiraIssue issue){
-        JiraIssueActionGroup group = new JiraIssueActionGroup(getComponent());
-        transitions.forEach(t -> group.add(new JiraIssueTransitionExecuteAction(t.getName(), t.getId(), issue.getId())));
 
-        return group;
-    }
 
 
 }
