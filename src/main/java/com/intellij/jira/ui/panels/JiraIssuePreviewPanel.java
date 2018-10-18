@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
-import static com.intellij.jira.util.JiraLabelUtil.BOLD;
-import static com.intellij.jira.util.JiraLabelUtil.ITALIC;
+import static com.intellij.jira.util.JiraLabelUtil.*;
 import static com.intellij.jira.util.JiraPanelUtil.MARGIN_BOTTOM;
 import static java.awt.BorderLayout.*;
+import static java.util.Objects.nonNull;
 import static javax.swing.BoxLayout.X_AXIS;
 import static javax.swing.BoxLayout.Y_AXIS;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -114,14 +114,14 @@ class JiraIssuePreviewPanel extends SimpleToolWindowPanel {
         JBPanel priorityAndAssigneePanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
         JBPanel priorityPanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
         JBLabel priorityLabel = JiraLabelUtil.createLabel("Priority: ").withFont(BOLD);
-        JBLabel priorityValueLabel = JiraLabelUtil.createIconLabel(JiraIconUtil.getSmallIcon(issue.getPriority().getIconUrl()), issue.getPriority().getName());
+        JBLabel priorityValueLabel = nonNull(issue.getPriority()) ? createIconLabel(JiraIconUtil.getSmallIcon(issue.getPriority().getIconUrl()), issue.getPriority().getName()) : createEmptyLabel();
 
         priorityPanel.add(priorityLabel, LINE_START);
         priorityPanel.add(priorityValueLabel, CENTER);
 
         JBPanel assigneePanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
         JBLabel assigneeLabel = JiraLabelUtil.createLabel("Assigne: ").withFont(BOLD);
-        JBLabel assigneeValueLabel = JiraLabelUtil.createLabel(issue.getAssignee() != null ? issue.getAssignee().getDisplayName() : "Unassigned");
+        JBLabel assigneeValueLabel = JiraLabelUtil.createLabel(issue.getAssignee() != null ? issue.getAssignee().getDisplayName() : "");
 
         assigneePanel.add(assigneeLabel, LINE_START);
         assigneePanel.add(assigneeValueLabel, CENTER);
@@ -140,8 +140,8 @@ class JiraIssuePreviewPanel extends SimpleToolWindowPanel {
 
         // Description
         JBPanel issueDescriptionPanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
-        JBLabel descriptionLabel = JiraLabelUtil.createLabel("Description").withFont(BOLD).withBorder(MARGIN_BOTTOM);
-        JTextArea descriptionArea = new JTextArea(issue.getDescription());
+        JBLabel descriptionLabel = JiraLabelUtil.createLabel("Description: ").withFont(BOLD).withBorder(MARGIN_BOTTOM);
+        JTextArea descriptionArea = new JTextArea(nonNull(issue.getDescription()) ? issue.getDescription() : "");
         descriptionArea.setLineWrap(true);
         descriptionArea.setEditable(false);
 
