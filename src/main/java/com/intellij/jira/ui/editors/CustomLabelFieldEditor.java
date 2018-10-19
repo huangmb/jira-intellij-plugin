@@ -1,5 +1,6 @@
 package com.intellij.jira.ui.editors;
 
+import com.intellij.jira.util.JiraLabelUtil;
 import com.intellij.ui.components.JBLabel;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ public class CustomLabelFieldEditor extends AbstractFieldEditor {
 
     public CustomLabelFieldEditor(String fieldName, String labelText) {
         super(fieldName);
-        this.myLabelText = new JBLabel(labelText);
+        this.myLabelText = JiraLabelUtil.createBoldLabel(labelText);
     }
 
 

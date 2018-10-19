@@ -86,7 +86,10 @@ public class IssueTransitionDialog extends DialogWrapper {
         });
 
         transitionsPanel.add(transitionList, BorderLayout.CENTER);
-        transitionFieldsPanel = JiraPanelUtil.createPlaceHolderPanel("Select transition");
+        transitionFieldsPanel = new JBPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        transitionFieldsPanel.setBorder(JBUI.Borders.empty(5));
+        transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("Select transition"), constraints);
 
         panel.add(transitionsPanel, BorderLayout.WEST);
         panel.add(ScrollPaneFactory.createScrollPane(transitionFieldsPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
@@ -105,7 +108,7 @@ public class IssueTransitionDialog extends DialogWrapper {
 
 
         transitionFieldsPanel.removeAll();
-        transitionFieldsPanel.setBorder(JBUI.Borders.emptyLeft(5));
+
 
         // Create transition fields
         createTransitionFields(transitionFields);
@@ -120,7 +123,8 @@ public class IssueTransitionDialog extends DialogWrapper {
         optionalFields.clear();
 
         if(!transitionFields.isEmpty()){
-            FormBuilder formBuilder = FormBuilder.createFormBuilder();
+            FormBuilder formBuilder = FormBuilder.createFormBuilder().setAlignLabelOnRight(true);
+
 
             transitionFields.forEach(fieldProperties -> {
 
@@ -139,7 +143,15 @@ public class IssueTransitionDialog extends DialogWrapper {
             optionalFields.put(commentInfo.getSystem(), commentInfo);
             formBuilder.addLabeledComponent(commentInfo.getLabel(), commentInfo.getInput());
 
-            transitionFieldsPanel.add(formBuilder.getPanel(), BorderLayout.PAGE_START);
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.NORTH;
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.weighty = 1;
+
+
+            transitionFieldsPanel.setLayout(new GridBagLayout());
+            transitionFieldsPanel.add(formBuilder.getPanel(), constraints);
 
         }
 
