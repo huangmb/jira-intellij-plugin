@@ -135,13 +135,13 @@ public class IssueTransitionDialog extends DialogWrapper {
                     optionalFields.put(info.getSystem(), info);
                 }
 
-                formBuilder.addLabeledComponent(info.getLabel(), info.getInput());
+                formBuilder.addComponent(info.getPanel());
 
             });
 
             FieldEditorInfo commentInfo = createCommentFieldEditorInfo(createCommentFieldEditor());
             optionalFields.put(commentInfo.getSystem(), commentInfo);
-            formBuilder.addLabeledComponent(commentInfo.getLabel(), commentInfo.getInput());
+            formBuilder.addComponent(commentInfo.getPanel());
 
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.anchor = GridBagConstraints.NORTH;
@@ -165,8 +165,10 @@ public class IssueTransitionDialog extends DialogWrapper {
         }
 
         for(FieldEditorInfo info : requiredFields.values()){
-            if(isEmpty(info.getInputValue())){
-                return new ValidationInfo(String.format("%s is required", info.getLabelValue()));
+            for(Map.Entry<String, String> entry : info.getInputValues().entrySet()){
+                if(isEmpty(entry.getValue())){
+                    return new ValidationInfo(String.format("%s is required", entry.getKey()));
+                }
             }
 
         }

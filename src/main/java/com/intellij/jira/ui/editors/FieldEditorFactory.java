@@ -29,13 +29,17 @@ public class FieldEditorFactory {
             return new CustomTextAreaFieldEditor(getFieldName(properties));
         }else if(DATE_FIELDS.contains(fieldType)){
             return new CustomDateTextFieldEditor(getFieldName(properties));
+        }else if("timetracking".equals(fieldType)){
+            return new TimeTrackingFieldEditor();
+        }else if("issuelinks".equals(fieldType)){
+            return new LinkedIssueFieldEditor(getFieldName(properties));
         }
 
         return createCustomComboBoxFieldEditor(properties);
     }
 
     public static FieldEditor createCommentFieldEditor(){
-        return new CustomTextAreaFieldEditor("Comment");
+        return new CommentFieldEditor();
     }
 
 

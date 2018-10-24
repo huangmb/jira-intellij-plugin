@@ -10,24 +10,8 @@ import static java.util.Objects.nonNull;
 public class JiraGsonUtil {
 
 
-    public static JsonObject createCommentObject(String value){
-        JsonObject comment = new JsonObject();
-        JsonArray operations = new JsonArray();
-        JsonObject addOperation = new JsonObject();
-        JsonObject bodyComment = new JsonObject();
-        bodyComment.add("body", new JsonPrimitive(value));
-        addOperation.add("add", bodyComment);
-        operations.add(addOperation);
-        comment.add("comment", operations);
-
-        return comment;
-    }
-
     public static JsonObject createNameObject(String value){
-        JsonObject name = new JsonObject();
-        name.add("name", new JsonPrimitive(value));
-
-        return name;
+        return createObject("name", value);
     }
 
     public static JsonArray createArrayNameObject(String value){
@@ -44,8 +28,12 @@ public class JiraGsonUtil {
     }
 
     public static JsonObject createIdObject(String value){
+        return createObject("id", value);
+    }
+
+    public static JsonObject createObject(String property, String value){
         JsonObject name = new JsonObject();
-        name.add("id", new JsonPrimitive(value));
+        name.add(property, new JsonPrimitive(value));
 
         return name;
     }

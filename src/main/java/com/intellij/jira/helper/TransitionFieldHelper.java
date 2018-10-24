@@ -1,10 +1,12 @@
 package com.intellij.jira.helper;
 
+import com.google.gson.JsonElement;
 import com.intellij.jira.rest.model.JiraIssueFieldProperties;
 import com.intellij.jira.ui.editors.FieldEditor;
 import com.intellij.jira.ui.editors.FieldEditorFactory;
 
 import javax.swing.*;
+import java.util.Map;
 
 public final class TransitionFieldHelper {
 
@@ -36,21 +38,18 @@ public final class TransitionFieldHelper {
             this.editor = fieldEditor;
         }
 
-
-        public JComponent getLabel() {
-            return editor.getLabel();
+        public JComponent getPanel(){
+            return editor.createPanel();
         }
 
-        public String getLabelValue(){
-            return editor.getLabelValue();
+
+
+        public Map<String, String> getInputValues(){
+            return editor.getInputValues();
         }
 
-        public JComponent getInput() {
-            return editor.getInput();
-        }
-
-        public String getInputValue(){
-            return editor.getInputValue();
+        public JsonElement getJsonValue(){
+            return editor.getJsonValue();
         }
 
         public String getSystem(){

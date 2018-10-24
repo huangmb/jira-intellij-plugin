@@ -1,6 +1,5 @@
 package com.intellij.jira.tasks;
 
-import com.intellij.jira.helper.TransitionFieldHelper;
 import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
 import com.intellij.jira.rest.JiraRestClient;
 import com.intellij.jira.rest.model.*;
@@ -141,6 +140,16 @@ public class JiraServer {
         }
 
         return !users.isEmpty();
+    }
+
+
+    public List<JiraIssueLinkType> getIssueLinkTypes(){
+        try {
+            return jiraRestClient.getIssueLinkTypes();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ContainerUtil.emptyList();
+        }
     }
 
 }

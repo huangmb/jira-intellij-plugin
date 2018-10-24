@@ -53,4 +53,13 @@ public class JiraIssueParser {
         return Arrays.asList(JiraRepository.GSON.fromJson(response, JiraIssuePriority[].class));
     }
 
+    public static List<JiraIssueLinkType> parseIssueLinkTypes(String response){
+        JiraIssueLinkTypesWrapper wrapper = JiraRepository.GSON.fromJson(response, JiraIssueLinkTypesWrapper.class);
+        if(wrapper == null){
+            return ContainerUtil.emptyList();
+        }
+
+        return wrapper.getIssueLinkTypes();
+    }
+
 }

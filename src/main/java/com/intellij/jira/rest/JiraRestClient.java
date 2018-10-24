@@ -1,6 +1,7 @@
 package com.intellij.jira.rest;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
@@ -14,10 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.intellij.jira.rest.JiraIssueParser.*;
-import static com.intellij.jira.util.JiraGsonUtil.*;
+import static com.intellij.jira.util.JiraGsonUtil.createIdObject;
 import static com.intellij.jira.util.JiraGsonUtil.createNameObject;
-import static com.intellij.openapi.util.text.StringUtil.isEmpty;
-import static com.intellij.openapi.util.text.StringUtil.trim;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public class JiraRestClient {
@@ -130,28 +130,50 @@ public class JiraRestClient {
     }
 
 
+    public List<JiraIssueLinkType> getIssueLinkTypes() throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("issueLinkType"));
+        String response = jiraRepository.executeMethod(method);
+        return parseIssueLinkTypes(response);
+    }
+
     private String getTransitionRequestBody(String transitionId, Map<String, FieldEditorInfo> requiredFields, Map<String, FieldEditorInfo> optionalFields) {
         JsonObject transition = new JsonObject();
         transition.add("transition", createIdObject(transitionId));
 
+        // Update
+        JsonObject updateObject = new JsonObject();
+
         // Comment
         FieldEditorInfo commentField = optionalFields.remove("comment");
-        if(nonNull(commentField) && !isEmpty(trim(commentField.getInputValue()))){
-            transition.add("update", createCommentObject(commentField.getInputValue()));
+        if(nonNull(commentField) && !(commentField.getJsonValue() instanceof JsonNull)){
+            updateObject.add("comment", commentField.getJsonValue());
         }
 
-        // TODO: mirar si todos los fields se comportan igual
+        // Linked Issues
+        FieldEditorInfo issueLinkField = optionalFields.remove("issuelinks");
+        if(isNull(issueLinkField)){
+            issueLinkField = requiredFields.remove("issuelinks");
+        }
+
+        if(nonNull(issueLinkField) && !(issueLinkField.getJsonValue() instanceof JsonNull)){
+            updateObject.add("issuelinks", issueLinkField.getJsonValue());
+        }
+
+        if(updateObject.size() > 0){
+            transition.add("update", updateObject);
+        }
+
         //Fields
         JsonObject fieldsObject = new JsonObject();
         requiredFields.forEach((key, value) -> {
-            if(!isEmpty(trim(value.getInputValue()))){
-                fieldsObject.add(key, createJsonObject(key, value.getInputValue(), value.isArray()));
+            if(!(value.getJsonValue() instanceof JsonNull)){
+                fieldsObject.add(key, value.getJsonValue());
             }
         });
 
         optionalFields.forEach((key, value) -> {
-            if(!isEmpty(trim(value.getInputValue()))){
-                fieldsObject.add(key, createJsonObject(key, value.getInputValue(), value.isArray()));
+            if(!(value.getJsonValue() instanceof JsonNull)){
+                fieldsObject.add(key, value.getJsonValue());
             }
         });
 
@@ -173,8 +195,6 @@ public class JiraRestClient {
 
         return createNameObject(value, isArray);
     }
-
-
 
 }
 

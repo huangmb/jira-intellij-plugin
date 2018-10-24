@@ -1,7 +1,11 @@
 package com.intellij.jira.ui.editors;
 
+import com.google.gson.JsonElement;
+import com.intellij.util.ui.FormBuilder;
+
 import javax.swing.*;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 public class CustomDateTextFieldEditor extends AbstractFieldEditor {
 
@@ -10,16 +14,24 @@ public class CustomDateTextFieldEditor extends AbstractFieldEditor {
 
     public CustomDateTextFieldEditor(String fieldName) {
         super(fieldName);
+    }
+
+    @Override
+    public JComponent createPanel() {
         this.myFormattedTextField = new JFormattedTextField(DATE_FORMAT);
+
+        return FormBuilder.createFormBuilder()
+                .addLabeledComponent(this.myFieldLabel, this.myFormattedTextField)
+                .getPanel();
     }
 
     @Override
-    public JComponent getInput() {
-        return myFormattedTextField;
+    public Map<String, String> getInputValues() {
+        return null;
     }
 
     @Override
-    public String getInputValue() {
-        return myFormattedTextField.getText();
+    public JsonElement getJsonValue() {
+        return null;
     }
 }
