@@ -16,8 +16,8 @@ public class CustomTextAreaFieldEditor extends AbstractFieldEditor {
 
     protected JTextArea myTextArea;
 
-    public CustomTextAreaFieldEditor(String fieldName) {
-        super(fieldName);
+    public CustomTextAreaFieldEditor(String fieldName, String issueKey) {
+        super(fieldName, issueKey);
     }
 
     @Override

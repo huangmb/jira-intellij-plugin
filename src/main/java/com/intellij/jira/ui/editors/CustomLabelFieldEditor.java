@@ -14,12 +14,12 @@ public class CustomLabelFieldEditor extends AbstractFieldEditor {
     private JBLabel myLabelText;
     private String labelText;
 
-    public CustomLabelFieldEditor(String fieldName) {
-        this(fieldName, "None");
+    public CustomLabelFieldEditor(String fieldName, String issueKey) {
+        this(fieldName, "None", issueKey);
     }
 
-    public CustomLabelFieldEditor(String fieldName, String labelText) {
-        super(fieldName);
+    public CustomLabelFieldEditor(String fieldName, String labelText, String issueKey) {
+        super(fieldName, issueKey);
         this.labelText = labelText;
     }
 

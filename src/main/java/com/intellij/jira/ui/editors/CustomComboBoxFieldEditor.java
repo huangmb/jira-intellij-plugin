@@ -19,8 +19,8 @@ public class CustomComboBoxFieldEditor<T> extends AbstractFieldEditor {
     private ComboBox<T> myComboBox;
     private CollectionComboBoxModel<T> myComboBoxItems;
 
-    public CustomComboBoxFieldEditor(String fieldName, List<T> items) {
-        super(fieldName);
+    public CustomComboBoxFieldEditor(String fieldName, List<T> items, String issueKey) {
+        super(fieldName, issueKey);
         this.myComboBoxItems = new CollectionComboBoxModel<>(items);
         this.myComboBox = new ComboBox(myComboBoxItems, 300);
     }

@@ -19,8 +19,8 @@ public class TimeTrackingFieldEditor extends AbstractFieldEditor {
     private JTextField mySecondField;
 
 
-    public TimeTrackingFieldEditor() {
-        super(ORIGINAL_ESTIMATE_FIELD);
+    public TimeTrackingFieldEditor(String issueKey) {
+        super(ORIGINAL_ESTIMATE_FIELD, issueKey);
 
     }
 

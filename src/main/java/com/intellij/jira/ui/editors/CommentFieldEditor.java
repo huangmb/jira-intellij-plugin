@@ -11,8 +11,8 @@ import static com.intellij.openapi.util.text.StringUtil.trim;
 
 public class CommentFieldEditor extends CustomTextAreaFieldEditor {
 
-    public CommentFieldEditor() {
-        super("Comment");
+    public CommentFieldEditor(String issueKey) {
+        super("Comment", issueKey);
     }
 
 

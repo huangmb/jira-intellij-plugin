@@ -11,8 +11,8 @@ import java.util.Map;
 public final class TransitionFieldHelper {
 
 
-    public static FieldEditorInfo createFieldEditorInfo(JiraIssueFieldProperties properties){
-        return new FieldEditorInfo(properties);
+    public static FieldEditorInfo createFieldEditorInfo(JiraIssueFieldProperties properties, String issueKey){
+        return new FieldEditorInfo(properties, issueKey);
     }
 
     public static FieldEditorInfo createCommentFieldEditorInfo(FieldEditor fieldEditor){
@@ -27,8 +27,8 @@ public final class TransitionFieldHelper {
         private boolean required;
         private boolean array;
 
-        private FieldEditorInfo(JiraIssueFieldProperties properties) {
-            this(properties.getSchema().getSystem(), properties.isRequired(), properties.getSchema().getType(), FieldEditorFactory.create(properties));
+        private FieldEditorInfo(JiraIssueFieldProperties properties, String issueKey) {
+            this(properties.getSchema().getSystem(), properties.isRequired(), properties.getSchema().getType(), FieldEditorFactory.create(properties, issueKey));
         }
 
         private FieldEditorInfo(String system, boolean required, String type, FieldEditor fieldEditor) {

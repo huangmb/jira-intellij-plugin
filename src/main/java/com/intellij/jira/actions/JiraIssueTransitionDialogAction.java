@@ -15,13 +15,13 @@ import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
-public class JiraIssueTransitionPopupAction extends JiraIssueAction {
+public class JiraIssueTransitionDialogAction extends JiraIssueAction {
     private static final ActionProperties properties = ActionProperties.of("Transit",  AllIcons.Actions.Forward);
 
     private JiraIssueFactory issueFactory;
 
 
-    public JiraIssueTransitionPopupAction(JiraIssueFactory factory) {
+    public JiraIssueTransitionDialogAction(JiraIssueFactory factory) {
         super(properties);
         this.issueFactory = factory;
     }
@@ -36,7 +36,7 @@ public class JiraIssueTransitionPopupAction extends JiraIssueAction {
                 JiraIssue issue = issueFactory.create();
                 List<JiraIssueTransition> transitions = jiraServer.get().getTransitions(issue.getId());
 
-                IssueTransitionDialog dialog = new IssueTransitionDialog(project, issue.getId(), transitions);
+                IssueTransitionDialog dialog = new IssueTransitionDialog(project, issue, transitions);
                 dialog.show();
 
             }

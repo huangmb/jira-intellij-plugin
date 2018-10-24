@@ -12,8 +12,8 @@ public class CustomDateTextFieldEditor extends AbstractFieldEditor {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private JFormattedTextField myFormattedTextField;
 
-    public CustomDateTextFieldEditor(String fieldName) {
-        super(fieldName);
+    public CustomDateTextFieldEditor(String fieldName, String issueKey) {
+        super(fieldName, issueKey);
     }
 
     @Override

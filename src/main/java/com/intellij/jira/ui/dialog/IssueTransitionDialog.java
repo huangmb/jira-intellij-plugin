@@ -2,6 +2,7 @@ package com.intellij.jira.ui.dialog;
 
 import com.intellij.jira.helper.TransitionFieldHelper;
 import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
+import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueFieldProperties;
 import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.tasks.TransitIssueTask;
@@ -41,7 +42,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 public class IssueTransitionDialog extends DialogWrapper {
 
     private Project project;
-    private String issueId;
+    private JiraIssue issue;
 
     private List<JiraIssueTransition> transitions;
     private JiraIssueTransition selectedIssueTransition;
@@ -54,10 +55,10 @@ public class IssueTransitionDialog extends DialogWrapper {
     private Map<String, FieldEditorInfo> optionalFields = new HashMap<>();
 
 
-    public IssueTransitionDialog(@Nullable Project project, @NotNull String issueId, List<JiraIssueTransition> transitions) {
+    public IssueTransitionDialog(@Nullable Project project, @NotNull JiraIssue issue, List<JiraIssueTransition> transitions) {
         super(project, false);
         this.project = project;
-        this.issueId = issueId;
+        this.issue = issue;
         this.transitions = transitions;
         myOKAction = new TransitIssueExecuteAction().disabled();
         init();
@@ -87,9 +88,8 @@ public class IssueTransitionDialog extends DialogWrapper {
 
         transitionsPanel.add(transitionList, BorderLayout.CENTER);
         transitionFieldsPanel = new JBPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
         transitionFieldsPanel.setBorder(JBUI.Borders.empty(5));
-        transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("Select transition"), constraints);
+        transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("Select transition"), new GridBagConstraints());
 
         panel.add(transitionsPanel, BorderLayout.WEST);
         panel.add(ScrollPaneFactory.createScrollPane(transitionFieldsPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
@@ -107,11 +107,18 @@ public class IssueTransitionDialog extends DialogWrapper {
                 .collect(Collectors.toList());
 
 
+        requiredFields.clear();
+        optionalFields.clear();
+
         transitionFieldsPanel.removeAll();
+        transitionFieldsPanel.setLayout(new GridBagLayout());
 
+        if(transitionFields.isEmpty()){
+            transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("No fields are required"), new GridBagConstraints());
+        }else{
+            createTransitionFields(transitionFields);
+        }
 
-        // Create transition fields
-        createTransitionFields(transitionFields);
 
         transitionFieldsPanel.revalidate();
         transitionFieldsPanel.repaint();
@@ -119,8 +126,6 @@ public class IssueTransitionDialog extends DialogWrapper {
     }
 
     private void createTransitionFields(List<JiraIssueFieldProperties> transitionFields) {
-        requiredFields.clear();
-        optionalFields.clear();
 
         if(!transitionFields.isEmpty()){
             FormBuilder formBuilder = FormBuilder.createFormBuilder().setAlignLabelOnRight(true);
@@ -128,7 +133,7 @@ public class IssueTransitionDialog extends DialogWrapper {
 
             transitionFields.forEach(fieldProperties -> {
 
-                FieldEditorInfo info = TransitionFieldHelper.createFieldEditorInfo(fieldProperties);
+                FieldEditorInfo info = TransitionFieldHelper.createFieldEditorInfo(fieldProperties, issue.getKey());
                 if(info.isRequired()){
                     requiredFields.put(info.getSystem(), info);
                 }else{
@@ -139,7 +144,7 @@ public class IssueTransitionDialog extends DialogWrapper {
 
             });
 
-            FieldEditorInfo commentInfo = createCommentFieldEditorInfo(createCommentFieldEditor());
+            FieldEditorInfo commentInfo = createCommentFieldEditorInfo(createCommentFieldEditor(issue.getKey()));
             optionalFields.put(commentInfo.getSystem(), commentInfo);
             formBuilder.addComponent(commentInfo.getPanel());
 
@@ -150,7 +155,7 @@ public class IssueTransitionDialog extends DialogWrapper {
             constraints.weighty = 1;
 
 
-            transitionFieldsPanel.setLayout(new GridBagLayout());
+
             transitionFieldsPanel.add(formBuilder.getPanel(), constraints);
 
         }
@@ -181,7 +186,7 @@ public class IssueTransitionDialog extends DialogWrapper {
     @Override
     protected void doOKAction() {
         if(nonNull(project)){
-            new TransitIssueTask(project, issueId, selectedIssueTransition.getId(), requiredFields, optionalFields).queue();
+            new TransitIssueTask(project, issue.getId(), selectedIssueTransition.getId(), requiredFields, optionalFields).queue();
         }
         close(0);
     }

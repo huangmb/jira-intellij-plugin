@@ -14,10 +14,10 @@ import static com.intellij.openapi.util.text.StringUtil.trim;
 
 public class CustomTextFieldEditor extends AbstractFieldEditor {
 
-    private JBTextField myTextField;
+    protected JBTextField myTextField;
 
-    public CustomTextFieldEditor(String fieldName) {
-        super(fieldName);
+    public CustomTextFieldEditor(String fieldName, String issueKey) {
+        super(fieldName, issueKey);
     }
 
     @Override

@@ -20,7 +20,6 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.ui.FormBuilder;
-import com.intellij.util.ui.JBDimension;
 import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,8 +49,8 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
     private JiraIssueLinkTypeInfo mySelectedLinkType;
     private String mySelectedIssue;
 
-    public LinkedIssueFieldEditor(String fieldName) {
-        super(fieldName);
+    public LinkedIssueFieldEditor(String fieldName, String issueKey) {
+        super(fieldName, issueKey);
     }
 
     @Override
@@ -59,9 +58,10 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
         this.myTextField = new JTextField();
         this.myTextField.setEnabled(false);
         this.myTextField.setEditable(false);
-        this.myTextField.setPreferredSize(UI.size(255, this.myTextField.getHeight()));
+        this.myTextField.setPreferredSize(UI.size(280, this.myTextField.getHeight()));
 
         this.myButton = new JButton(PlatformIcons.UP_DOWN_ARROWS);
+        this.myButton.setPreferredSize(UI.size(20, this.myButton.getHeight()));
         this.myButton.addActionListener(e -> {
             InputEvent inputEvent = e.getSource() instanceof InputEvent ? (InputEvent)e.getSource() : null;
             AddIssueLinkDialogAction myAction = new AddIssueLinkDialogAction();
@@ -69,6 +69,7 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
         });
 
         JPanel panel = new JBPanel(new GridLayout(1,1));
+        panel.setPreferredSize(UI.size(300, panel.getHeight()));
         panel.add(myTextField);
         panel.add(myButton);
 
@@ -139,13 +140,14 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
             this.linkTypes = new JBList<>();
             this.linkTypes.setModel(new JiraIssueLinkTypeInfoListModel(linkTypes));
             this.linkTypes.setSelectionMode(SINGLE_SELECTION);
-            this.linkTypes.setPreferredSize(new JBDimension(75, 250));
+            this.linkTypes.setPreferredSize(UI.size(85, 250));
 
-            //issuesKey.remove(issueKey);
+            issuesKey.remove(issueKey);
             this.issuesKey = new JBList(issuesKey);
             this.issuesKey.setSelectionMode(SINGLE_SELECTION);
-            this.issuesKey.setPreferredSize(new JBDimension(75, 250));
+            this.issuesKey.setPreferredSize(UI.size(85, 250));
 
+            setTitle("Issue Link");
             init();
         }
 
@@ -153,9 +155,9 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
         @Override
         protected JComponent createCenterPanel() {
             JBPanel panel = new JBPanel(new BorderLayout());
-            panel.setPreferredSize(UI.size(150, 250));
+            panel.setPreferredSize(UI.size(200, 250));
             panel.add(ScrollPaneFactory.createScrollPane(linkTypes, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED), WEST);
-            panel.add(issuesKey, EAST);
+            panel.add(ScrollPaneFactory.createScrollPane(issuesKey, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED), EAST);
 
             return panel;
         }
