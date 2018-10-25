@@ -135,9 +135,9 @@ public class IssueTransitionDialog extends DialogWrapper {
 
                 FieldEditorInfo info = TransitionFieldHelper.createFieldEditorInfo(fieldProperties, issue.getKey());
                 if(info.isRequired()){
-                    requiredFields.put(info.getSystem(), info);
+                    requiredFields.put(info.getName(), info);
                 }else{
-                    optionalFields.put(info.getSystem(), info);
+                    optionalFields.put(info.getName(), info);
                 }
 
                 formBuilder.addComponent(info.getPanel());
@@ -145,7 +145,7 @@ public class IssueTransitionDialog extends DialogWrapper {
             });
 
             FieldEditorInfo commentInfo = createCommentFieldEditorInfo(createCommentFieldEditor(issue.getKey()));
-            optionalFields.put(commentInfo.getSystem(), commentInfo);
+            optionalFields.put(commentInfo.getName(), commentInfo);
             formBuilder.addComponent(commentInfo.getPanel());
 
             GridBagConstraints constraints = new GridBagConstraints();

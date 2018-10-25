@@ -1,9 +1,7 @@
 package com.intellij.jira.rest;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
 import com.intellij.jira.rest.model.*;
 import com.intellij.tasks.jira.JiraRepository;
@@ -16,7 +14,6 @@ import java.util.Map;
 
 import static com.intellij.jira.rest.JiraIssueParser.*;
 import static com.intellij.jira.util.JiraGsonUtil.createIdObject;
-import static com.intellij.jira.util.JiraGsonUtil.createNameObject;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -136,6 +133,14 @@ public class JiraRestClient {
         return parseIssueLinkTypes(response);
     }
 
+    public List<JiraGroup> getGroups() throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("groups", "picker"));
+        String response = jiraRepository.executeMethod(method);
+        return parseGroups(response);
+    }
+
+
+
     private String getTransitionRequestBody(String transitionId, Map<String, FieldEditorInfo> requiredFields, Map<String, FieldEditorInfo> optionalFields) {
         JsonObject transition = new JsonObject();
         transition.add("transition", createIdObject(transitionId));
@@ -186,15 +191,6 @@ public class JiraRestClient {
     }
 
 
-
-    private JsonElement createJsonObject(String name, String value, boolean isArray){
-        if(name.equals("summary") || name.equals("description")
-                || name.equals("environment") || name.equals("duedate")){
-            return new JsonPrimitive(value);
-        }
-
-        return createNameObject(value, isArray);
-    }
 
 }
 

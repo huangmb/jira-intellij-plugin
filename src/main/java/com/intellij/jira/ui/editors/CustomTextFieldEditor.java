@@ -2,13 +2,13 @@ package com.intellij.jira.ui.editors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import com.google.gson.JsonPrimitive;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 
 import javax.swing.*;
 import java.util.Map;
 
-import static com.intellij.jira.util.JiraGsonUtil.createNameObject;
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static com.intellij.openapi.util.text.StringUtil.trim;
 
@@ -42,6 +42,6 @@ public class CustomTextFieldEditor extends AbstractFieldEditor {
             return JsonNull.INSTANCE;
         }
 
-        return createNameObject(myTextField.getText());
+        return new JsonPrimitive(myTextField.getText());
     }
 }

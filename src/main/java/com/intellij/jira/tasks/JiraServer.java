@@ -152,4 +152,13 @@ public class JiraServer {
         }
     }
 
+    public List<JiraGroup> getGroups(){
+        try {
+            return jiraRestClient.getGroups();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ContainerUtil.emptyList();
+        }
+    }
+
 }

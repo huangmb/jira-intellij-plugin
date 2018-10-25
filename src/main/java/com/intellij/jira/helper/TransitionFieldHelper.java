@@ -16,25 +16,23 @@ public final class TransitionFieldHelper {
     }
 
     public static FieldEditorInfo createCommentFieldEditorInfo(FieldEditor fieldEditor){
-        return new FieldEditorInfo("comment", false, "string", fieldEditor);
+        return new FieldEditorInfo("comment", false, fieldEditor);
     }
 
 
     public static class FieldEditorInfo {
 
         private FieldEditor editor;
-        private String system;
+        private String name;
         private boolean required;
-        private boolean array;
 
         private FieldEditorInfo(JiraIssueFieldProperties properties, String issueKey) {
-            this(properties.getSchema().getSystem(), properties.isRequired(), properties.getSchema().getType(), FieldEditorFactory.create(properties, issueKey));
+            this(properties.getSchema().getSystem(), properties.isRequired(), FieldEditorFactory.create(properties, issueKey));
         }
 
-        private FieldEditorInfo(String system, boolean required, String type, FieldEditor fieldEditor) {
-            this.system = system;
+        private FieldEditorInfo(String fieldName, boolean required, FieldEditor fieldEditor) {
+            this.name = fieldName;
             this.required = required;
-            this.array = "array".equals(type);
             this.editor = fieldEditor;
         }
 
@@ -52,17 +50,14 @@ public final class TransitionFieldHelper {
             return editor.getJsonValue();
         }
 
-        public String getSystem(){
-            return system;
+        public String getName(){
+            return name;
         }
 
         public boolean isRequired(){
             return required;
         }
 
-        public boolean isArray(){
-            return array;
-        }
 
     }
 

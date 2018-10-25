@@ -23,6 +23,7 @@ public class CustomComboBoxFieldEditor<T> extends AbstractFieldEditor {
         super(fieldName, issueKey);
         this.myComboBoxItems = new CollectionComboBoxModel<>(items);
         this.myComboBox = new ComboBox(myComboBoxItems, 300);
+
     }
 
     @Override

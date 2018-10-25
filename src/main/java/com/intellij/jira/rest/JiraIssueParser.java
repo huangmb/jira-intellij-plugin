@@ -62,4 +62,13 @@ public class JiraIssueParser {
         return wrapper.getIssueLinkTypes();
     }
 
+    public static List<JiraGroup> parseGroups(String response){
+        JiraGroupsWrapper wrapper = JiraRepository.GSON.fromJson(response, JiraGroupsWrapper.class);
+        if(wrapper == null){
+            return ContainerUtil.emptyList();
+        }
+
+        return wrapper.getGroups();
+    }
+
 }

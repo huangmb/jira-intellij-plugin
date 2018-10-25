@@ -5,6 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import java.util.Collections;
+import java.util.List;
+
 import static java.util.Objects.nonNull;
 
 public class JiraGsonUtil {
@@ -15,9 +18,15 @@ public class JiraGsonUtil {
     }
 
     public static JsonArray createArrayNameObject(String value){
+        return createArrayNameObjects(Collections.singletonList(value));
+    }
+
+    public static JsonArray createArrayNameObjects(List<String>  values){
         JsonArray array = new JsonArray();
         JsonObject name = new JsonObject();
-        name.add("name", new JsonPrimitive(value));
+        for(String value : values){
+            name.add("name", new JsonPrimitive(value));
+        }
 
         array.add(name);
         return array;
