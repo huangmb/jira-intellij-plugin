@@ -36,7 +36,7 @@ public class FieldEditorFactory {
         }else if(TEXT_AREA_FIELDS.contains(fieldType)){
             return new CustomTextAreaFieldEditor(getFieldName(properties), issueKey);
         }else if(DATE_FIELDS.contains(fieldType)){
-            return new CustomDateTextFieldEditor(getFieldName(properties), issueKey);
+            return new CustomDateFieldEditor(getFieldName(properties), issueKey);
         }else if(USER_PICKER_FIELDS.contains(fieldType)) {
             return new UserSelectFieldEditor(getFieldName(properties), issueKey);
         }else if("timetracking".equals(fieldType)){
@@ -76,7 +76,7 @@ public class FieldEditorFactory {
         }
 
 
-        return new CustomComboBoxFieldEditor(getFieldName(properties), items, issueKey);
+        return new CustomComboBoxFieldEditor(getFieldName(properties), items, issueKey, isArray);
     }
 
     private static FieldEditor createCustomFieldEditor(JiraIssueFieldProperties properties, String issueKey) {
@@ -91,9 +91,12 @@ public class FieldEditorFactory {
                 return new UserSelectFieldEditor(getFieldName(properties), issueKey, isArray);
             }else if("grouppicker".equals(customFieldType) || "multigrouppicker".equals(customFieldType)){
                 return new GroupSelectFieldEditor(getFieldName(properties), issueKey, isArray);
-            }else if("datapicker".equals(customFieldType)){
-                return new CustomDateTextFieldEditor(getFieldName(properties), issueKey);
-            }else{
+            }else if("datepicker".equals(customFieldType)){
+                return new CustomDateFieldEditor(getFieldName(properties), issueKey);
+            }else if("datetime".equals(customFieldType)){
+                return new CustomDateTimeFieldEditor(getFieldName(properties), issueKey);
+            }
+            else{
                 return new CustomLabelFieldEditor(getFieldName(properties), issueKey);
             }
 
@@ -110,11 +113,11 @@ public class FieldEditorFactory {
         }
 
 
-        return new CustomComboBoxFieldEditor(getFieldName(properties), items, issueKey);
+        return new CustomComboBoxFieldEditor(getFieldName(properties), items, issueKey, isArray);
     }
 
     private static String getFieldName(JiraIssueFieldProperties properties){
-        return properties.getName() + (properties.isRequired() ? "*" : "");
+        return properties.getName();
     }
 
 

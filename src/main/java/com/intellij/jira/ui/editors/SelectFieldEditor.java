@@ -11,7 +11,6 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
-import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +30,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
 public abstract class SelectFieldEditor extends AbstractFieldEditor {
 
+    protected JPanel myPanel;
     protected JTextField myTextField;
     protected JButton myButton;
     protected PickerDialogAction myButtonAction;
@@ -47,26 +47,13 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
 
     @Override
     public JComponent createPanel() {
-        this.myTextField = new JBTextField();
-        this.myTextField.setEnabled(false);
-        this.myTextField.setEditable(false);
-        this.myTextField.setPreferredSize(UI.size(280, this.myTextField.getHeight()));
-
-        this.myButton = new JButton("...");
-        this.myButton.setPreferredSize(UI.size(20, this.myButton.getHeight()));
         this.myButton.addActionListener(e -> {
             InputEvent inputEvent = e.getSource() instanceof InputEvent ? (InputEvent)e.getSource() : null;
             myButtonAction.actionPerformed(AnActionEvent.createFromAnAction(myButtonAction, inputEvent, ActionPlaces.UNKNOWN, DataManager.getInstance().getDataContext(myTextField)));
         });
 
-        JPanel panel = new JBPanel(new GridLayout(1,1));
-        panel.setPreferredSize(UI.size(300, panel.getHeight()));
-        panel.add(myTextField);
-        panel.add(myButton);
-
-
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(this.myFieldLabel, panel)
+                .addLabeledComponent(this.myFieldLabel, myPanel)
                 .getPanel();
     }
 
@@ -76,6 +63,9 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
         return myInputValues;
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 
 
     abstract class PickerDialogAction extends AnAction{

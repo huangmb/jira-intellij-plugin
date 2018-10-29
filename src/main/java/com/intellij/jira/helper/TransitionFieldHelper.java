@@ -27,7 +27,7 @@ public final class TransitionFieldHelper {
         private boolean required;
 
         private FieldEditorInfo(JiraIssueFieldProperties properties, String issueKey) {
-            this(properties.getSchema().getSystem(), properties.isRequired(), FieldEditorFactory.create(properties, issueKey));
+            this(properties.getSchema().getFieldName(), properties.isRequired(), FieldEditorFactory.create(properties, issueKey));
         }
 
         private FieldEditorInfo(String fieldName, boolean required, FieldEditor fieldEditor) {

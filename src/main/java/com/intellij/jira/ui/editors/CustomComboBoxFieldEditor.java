@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.util.List;
 import java.util.Map;
 
-import static com.intellij.jira.util.JiraGsonUtil.createArrayNameObject;
+import static com.intellij.jira.util.JiraGsonUtil.createNameObject;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -18,11 +18,13 @@ public class CustomComboBoxFieldEditor<T> extends AbstractFieldEditor {
 
     private ComboBox<T> myComboBox;
     private CollectionComboBoxModel<T> myComboBoxItems;
+    private boolean isMultiSelect;
 
-    public CustomComboBoxFieldEditor(String fieldName, List<T> items, String issueKey) {
+    public CustomComboBoxFieldEditor(String fieldName, List<T> items, String issueKey, boolean isMultiSelect) {
         super(fieldName, issueKey);
         this.myComboBoxItems = new CollectionComboBoxModel<>(items);
         this.myComboBox = new ComboBox(myComboBoxItems, 300);
+        this.isMultiSelect = isMultiSelect;
 
     }
 
@@ -45,7 +47,7 @@ public class CustomComboBoxFieldEditor<T> extends AbstractFieldEditor {
             return JsonNull.INSTANCE;
         }
 
-        return createArrayNameObject(getSelectedValue());
+        return createNameObject(getSelectedValue(), isMultiSelect);
     }
 
     private String getSelectedValue(){

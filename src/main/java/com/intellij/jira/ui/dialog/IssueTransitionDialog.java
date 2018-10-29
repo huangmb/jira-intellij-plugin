@@ -66,7 +66,7 @@ public class IssueTransitionDialog extends DialogWrapper {
 
     @Override
     protected void init() {
-        setTitle("Transit Issue");
+        setTitle("Transit Issue " + issue.getKey());
         super.init();
     }
 
@@ -114,7 +114,7 @@ public class IssueTransitionDialog extends DialogWrapper {
         transitionFieldsPanel.setLayout(new GridBagLayout());
 
         if(transitionFields.isEmpty()){
-            transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("No fields are required"), new GridBagConstraints());
+            transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("No fields required"), new GridBagConstraints());
         }else{
             createTransitionFields(transitionFields);
         }
@@ -129,7 +129,6 @@ public class IssueTransitionDialog extends DialogWrapper {
 
         if(!transitionFields.isEmpty()){
             FormBuilder formBuilder = FormBuilder.createFormBuilder().setAlignLabelOnRight(true);
-
 
             transitionFields.forEach(fieldProperties -> {
 
@@ -188,6 +187,7 @@ public class IssueTransitionDialog extends DialogWrapper {
         if(nonNull(project)){
             new TransitIssueTask(project, issue.getId(), selectedIssueTransition.getId(), requiredFields, optionalFields).queue();
         }
+
         close(0);
     }
 
