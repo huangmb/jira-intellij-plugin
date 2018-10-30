@@ -132,7 +132,7 @@ public class IssueTransitionDialog extends DialogWrapper {
 
             transitionFields.forEach(fieldProperties -> {
 
-                FieldEditorInfo info = TransitionFieldHelper.createFieldEditorInfo(fieldProperties, issue.getKey());
+                FieldEditorInfo info = TransitionFieldHelper.createFieldEditorInfo(fieldProperties, issue);
                 if(info.isRequired()){
                     requiredFields.put(info.getName(), info);
                 }else{

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.intellij.ide.DataManager;
+import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueLinkType;
 import com.intellij.jira.rest.model.JiraIssueLinkTypeInfo;
 import com.intellij.jira.tasks.JiraServer;
@@ -18,7 +19,6 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
-import com.intellij.util.PlatformIcons;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.Nullable;
@@ -43,8 +43,10 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
 public class LinkedIssueFieldEditor extends AbstractFieldEditor {
 
-    private JTextField myTextField;
-    private JButton myButton;
+    protected JPanel myPanel;
+    protected JTextField myTextField;
+    protected JButton myButton;
+
 
     private JiraIssueLinkTypeInfo mySelectedLinkType;
     private String mySelectedIssue;
@@ -55,26 +57,16 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
 
     @Override
     public JComponent createPanel() {
-        this.myTextField = new JTextField();
-        this.myTextField.setEnabled(false);
-        this.myTextField.setEditable(false);
-        this.myTextField.setPreferredSize(UI.size(280, this.myTextField.getHeight()));
 
-        this.myButton = new JButton(PlatformIcons.UP_DOWN_ARROWS);
-        this.myButton.setPreferredSize(UI.size(20, this.myButton.getHeight()));
         this.myButton.addActionListener(e -> {
             InputEvent inputEvent = e.getSource() instanceof InputEvent ? (InputEvent)e.getSource() : null;
             AddIssueLinkDialogAction myAction = new AddIssueLinkDialogAction();
             myAction.actionPerformed(AnActionEvent.createFromAnAction(myAction, inputEvent, ActionPlaces.UNKNOWN, DataManager.getInstance().getDataContext(myTextField)));
         });
 
-        JPanel panel = new JBPanel(new GridLayout(1,1));
-        panel.setPreferredSize(UI.size(300, panel.getHeight()));
-        panel.add(myTextField);
-        panel.add(myButton);
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(myFieldLabel, panel)
+                .addLabeledComponent(myFieldLabel, myPanel)
                 .getPanel();
     }
 
@@ -106,7 +98,7 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
     private class AddIssueLinkDialogAction extends AnAction {
 
         public AddIssueLinkDialogAction() {
-            super(PlatformIcons.UP_DOWN_ARROWS);
+            super();
         }
 
 
@@ -118,7 +110,7 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
                 Optional<JiraServer> jiraServer = serverManager.getConfiguredJiraServer();
                 if(jiraServer.isPresent()){
                     List<JiraIssueLinkType> issueLinkTypes = jiraServer.get().getIssueLinkTypes();
-                    List<String> issues = jiraServer.get().getIssues().stream().map(issue -> issue.getKey()).collect(toList());
+                    List<String> issues = jiraServer.get().getIssues().stream().map(JiraIssue::getKey).collect(toList());
 
                     AddIssueLinkDialog dialog = new AddIssueLinkDialog(project, issueLinkTypes, issues);
                     dialog.show();

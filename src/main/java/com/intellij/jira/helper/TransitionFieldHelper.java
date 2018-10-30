@@ -1,6 +1,7 @@
 package com.intellij.jira.helper;
 
 import com.google.gson.JsonElement;
+import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueFieldProperties;
 import com.intellij.jira.ui.editors.FieldEditor;
 import com.intellij.jira.ui.editors.FieldEditorFactory;
@@ -11,7 +12,7 @@ import java.util.Map;
 public final class TransitionFieldHelper {
 
 
-    public static FieldEditorInfo createFieldEditorInfo(JiraIssueFieldProperties properties, String issueKey){
+    public static FieldEditorInfo createFieldEditorInfo(JiraIssueFieldProperties properties, JiraIssue issueKey){
         return new FieldEditorInfo(properties, issueKey);
     }
 
@@ -26,12 +27,12 @@ public final class TransitionFieldHelper {
         private String name;
         private boolean required;
 
-        private FieldEditorInfo(JiraIssueFieldProperties properties, String issueKey) {
-            this(properties.getSchema().getFieldName(), properties.isRequired(), FieldEditorFactory.create(properties, issueKey));
+        private FieldEditorInfo(JiraIssueFieldProperties properties, JiraIssue issue) {
+            this(properties.getSchema().getFieldName(), properties.isRequired(), FieldEditorFactory.create(properties, issue));
         }
 
-        private FieldEditorInfo(String fieldName, boolean required, FieldEditor fieldEditor) {
-            this.name = fieldName;
+        private FieldEditorInfo(String jsonFieldName, boolean required, FieldEditor fieldEditor) {
+            this.name = jsonFieldName;
             this.required = required;
             this.editor = fieldEditor;
         }
@@ -39,8 +40,6 @@ public final class TransitionFieldHelper {
         public JComponent getPanel(){
             return editor.createPanel();
         }
-
-
 
         public Map<String, String> getInputValues(){
             return editor.getInputValues();
@@ -57,7 +56,6 @@ public final class TransitionFieldHelper {
         public boolean isRequired(){
             return required;
         }
-
 
     }
 

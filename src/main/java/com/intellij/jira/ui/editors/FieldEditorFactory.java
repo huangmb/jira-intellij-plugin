@@ -24,28 +24,30 @@ public class FieldEditorFactory {
 
     private static final Set<String> CF_TEXT_FIELDS = ContainerUtil.immutableSet( "float", "textfield");
 
-    public static FieldEditor create(JiraIssueFieldProperties properties, String issueKey){
+    public static FieldEditor create(JiraIssueFieldProperties properties, JiraIssue issue){
 
         if(properties.getSchema().isCustomField()){
-            return createCustomFieldEditor(properties, issueKey);
+            return createCustomFieldEditor(properties, issue);
         }
 
         String fieldType = properties.getSchema().getSystem();
         if(TEXT_FIELDS.contains(fieldType)){
-            return new CustomTextFieldEditor(getFieldName(properties), issueKey);
+            return new CustomTextFieldEditor(getFieldName(properties), issue.getKey());
         }else if(TEXT_AREA_FIELDS.contains(fieldType)){
-            return new CustomTextAreaFieldEditor(getFieldName(properties), issueKey);
+            return new CustomTextAreaFieldEditor(getFieldName(properties), issue.getKey());
         }else if(DATE_FIELDS.contains(fieldType)){
-            return new CustomDateFieldEditor(getFieldName(properties), issueKey);
+            return new CustomDateFieldEditor(getFieldName(properties), issue.getKey());
         }else if(USER_PICKER_FIELDS.contains(fieldType)) {
-            return new UserSelectFieldEditor(getFieldName(properties), issueKey);
+            return new UserSelectFieldEditor(getFieldName(properties), issue.getKey());
         }else if("timetracking".equals(fieldType)){
-            return new TimeTrackingFieldEditor(issueKey);
+            return new TimeTrackingFieldEditor(issue.getKey());
         }else if("issuelinks".equals(fieldType)){
-            return new LinkedIssueFieldEditor(getFieldName(properties), issueKey);
+            return new LinkedIssueFieldEditor(getFieldName(properties), issue.getKey());
+        }else if("issuetype".equals(fieldType)){
+            return new CustomLabelFieldEditor(getFieldName(properties), issue.getIssuetype().getName(), issue.getKey());
         }
 
-        return createCustomComboBoxFieldEditor(properties, issueKey);
+        return createCustomComboBoxFieldEditor(properties, issue.getKey());
     }
 
     public static FieldEditor createCommentFieldEditor(String issueKey){
@@ -79,25 +81,25 @@ public class FieldEditorFactory {
         return new CustomComboBoxFieldEditor(getFieldName(properties), items, issueKey, isArray);
     }
 
-    private static FieldEditor createCustomFieldEditor(JiraIssueFieldProperties properties, String issueKey) {
+    private static FieldEditor createCustomFieldEditor(JiraIssueFieldProperties properties, JiraIssue issue) {
         List<?> items = new ArrayList<>();
         boolean isArray = properties.getSchema().getType().equals("array");
         String customFieldType = properties.getSchema().getCustom();
         JsonArray values = properties.getAllowedValues();
         if(isNull(values) || isEmpty(values)){
             if(CF_TEXT_FIELDS.contains(customFieldType)){
-                return new CustomTextFieldEditor(getFieldName(properties), issueKey);
+                return new CustomTextFieldEditor(getFieldName(properties), issue.getKey());
             }else if("userpicker".equals(customFieldType) || "multiuserpicker".equals(customFieldType)){
-                return new UserSelectFieldEditor(getFieldName(properties), issueKey, isArray);
+                return new UserSelectFieldEditor(getFieldName(properties), issue.getKey(), isArray);
             }else if("grouppicker".equals(customFieldType) || "multigrouppicker".equals(customFieldType)){
-                return new GroupSelectFieldEditor(getFieldName(properties), issueKey, isArray);
+                return new GroupSelectFieldEditor(getFieldName(properties), issue.getKey(), isArray);
             }else if("datepicker".equals(customFieldType)){
-                return new CustomDateFieldEditor(getFieldName(properties), issueKey);
+                return new CustomDateFieldEditor(getFieldName(properties), issue.getKey());
             }else if("datetime".equals(customFieldType)){
-                return new CustomDateTimeFieldEditor(getFieldName(properties), issueKey);
+                return new CustomDateTimeFieldEditor(getFieldName(properties), issue.getKey());
             }
             else{
-                return new CustomLabelFieldEditor(getFieldName(properties), issueKey);
+                return new CustomLabelFieldEditor(getFieldName(properties), issue.getKey());
             }
 
         }
@@ -113,11 +115,11 @@ public class FieldEditorFactory {
         }
 
 
-        return new CustomComboBoxFieldEditor(getFieldName(properties), items, issueKey, isArray);
+        return new CustomComboBoxFieldEditor(getFieldName(properties), items, issue.getKey(), isArray);
     }
 
     private static String getFieldName(JiraIssueFieldProperties properties){
-        return properties.getName();
+        return properties.getName() + (properties.isRequired() ? " *" : "");
     }
 
 
