@@ -8,6 +8,8 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
@@ -19,7 +21,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.util.List;
-import java.util.Map;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.util.Objects.nonNull;
@@ -36,12 +37,9 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
     protected PickerDialogAction myButtonAction;
     protected boolean isMultiSelect;
 
-    public SelectFieldEditor(String fieldName, String issueKey) {
-        this(fieldName, issueKey, false);
-    }
 
-    public SelectFieldEditor(String fieldName, String issueKey, boolean isMultiSelect) {
-        super(fieldName, issueKey);
+    public SelectFieldEditor(String fieldName, String issueKey, boolean required, boolean isMultiSelect) {
+        super(fieldName, issueKey, required);
         this.isMultiSelect = isMultiSelect;
     }
 
@@ -53,20 +51,23 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
         });
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(this.myFieldLabel, myPanel)
+                .addLabeledComponent(this.myLabel, myPanel)
                 .getPanel();
-    }
-
-    @Override
-    public Map<String, String> getInputValues() {
-        myInputValues.put(myFieldLabel.getText(), myTextField.getText());
-        return myInputValues;
     }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
     }
 
+    @Nullable
+    @Override
+    public ValidationInfo validate() {
+        if(isRequired() && StringUtil.isEmpty(myTextField.getText())){
+            return new ValidationInfo(myLabel.getMyLabelText() + " is required.");
+        }
+
+        return null;
+    }
 
     abstract class PickerDialogAction extends AnAction{
 

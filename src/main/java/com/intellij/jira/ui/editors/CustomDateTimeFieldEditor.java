@@ -1,5 +1,8 @@
 package com.intellij.jira.ui.editors;
 
+import com.intellij.openapi.ui.ValidationInfo;
+import org.jetbrains.annotations.Nullable;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -7,16 +10,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import static com.intellij.openapi.util.text.StringUtil.isEmpty;
+import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
+import static com.intellij.openapi.util.text.StringUtil.trim;
 
 
 public class CustomDateTimeFieldEditor extends CustomDateFieldEditor {
 
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static final String ISO_FORMAT = "yyy-MM-dd'T'HH:mm:ss.ss+0000";
+    private static final String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.ss+0000";
 
-    public CustomDateTimeFieldEditor(String fieldName, String issueKey) {
-        super(fieldName, issueKey);
-        this.myDescriptionField = "Usage: YYYY-MM-DD HH:mm:ss";
+    public CustomDateTimeFieldEditor(String fieldName, String issueKey, boolean required) {
+        super(fieldName, issueKey, required);
+        this.myDescriptionField = "(e.g. yyyy-MM-dd HH:mm:ss)";
     }
 
 
@@ -31,9 +39,7 @@ public class CustomDateTimeFieldEditor extends CustomDateFieldEditor {
         LocalDate ld = Date.valueOf(words[0]).toLocalDate();
         LocalTime lt = Time.valueOf(words[1]).toLocalTime();
 
-        String isoDateTime = DateTimeFormatter.ofPattern(ISO_FORMAT).format(LocalDateTime.of(ld, lt));
-
-        return isoDateTime;
+        return DateTimeFormatter.ofPattern(ISO_FORMAT).format(LocalDateTime.of(ld, lt));
     }
 
     @Override
@@ -41,4 +47,23 @@ public class CustomDateTimeFieldEditor extends CustomDateFieldEditor {
         return DATE_TIME_FORMAT;
     }
 
+
+    @Nullable
+    @Override
+    public ValidationInfo validate() {
+        if(isRequired() && isEmpty(trim(myFormattedTextField.getText()))){
+            return new ValidationInfo(myLabel.getMyLabelText() + " is required.");
+        }else{
+            if(isNotEmpty(trim(myFormattedTextField.getText()))){
+                try{
+                    LocalDateTime.parse(myFormattedTextField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                }catch (DateTimeParseException e){
+                    return new ValidationInfo("Wrong format in " + myLabel.getMyLabelText() + " field.");
+                }
+            }
+
+        }
+
+        return null;
+    }
 }

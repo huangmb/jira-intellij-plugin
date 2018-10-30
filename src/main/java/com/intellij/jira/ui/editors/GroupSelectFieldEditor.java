@@ -22,12 +22,8 @@ public class GroupSelectFieldEditor extends SelectFieldEditor {
 
     private List<String> selectedGroups = new ArrayList<>();
 
-    public GroupSelectFieldEditor(String fieldName, String issueKey) {
-        this(fieldName, issueKey, false);
-    }
-
-    public GroupSelectFieldEditor(String fieldName, String issueKey, boolean isMultiSelect) {
-        super(fieldName, issueKey, isMultiSelect);
+    public GroupSelectFieldEditor(String fieldName, String issueKey, boolean required, boolean isMultiSelect) {
+        super(fieldName, issueKey, required, isMultiSelect);
         myButtonAction = new GroupPickerDialogAction();
     }
 

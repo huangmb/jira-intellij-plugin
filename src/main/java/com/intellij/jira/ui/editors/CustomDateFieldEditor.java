@@ -3,16 +3,21 @@ package com.intellij.jira.ui.editors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonPrimitive;
+import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.UI;
 import com.intellij.util.ui.UIUtil;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.text.SimpleDateFormat;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
+import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static com.intellij.openapi.util.text.StringUtil.trim;
 import static java.util.Objects.nonNull;
 
@@ -23,9 +28,9 @@ public class CustomDateFieldEditor extends AbstractFieldEditor {
     protected JFormattedTextField myFormattedTextField;
     protected String myDescriptionField;
 
-    public CustomDateFieldEditor(String fieldName, String issueKey) {
-        super(fieldName, issueKey);
-        this.myDescriptionField = "Usage: YYYY-MM-DD";
+    public CustomDateFieldEditor(String fieldName, String issueKey, boolean required) {
+        super(fieldName, issueKey, required);
+        this.myDescriptionField = "(e.g. yyyy-MM-dd)";
     }
 
     @Override
@@ -38,7 +43,7 @@ public class CustomDateFieldEditor extends AbstractFieldEditor {
         myDescriptionLabel.setText(myDescriptionField);
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(this.myFieldLabel, this.myFormattedTextField)
+                .addLabeledComponent(this.myLabel, this.myFormattedTextField)
                 .addComponentToRightColumn(myDescriptionLabel)
                 .getPanel();
     }
@@ -46,13 +51,6 @@ public class CustomDateFieldEditor extends AbstractFieldEditor {
 
     public SimpleDateFormat getDateFormat(){
         return DATE_FORMAT;
-    }
-
-
-    @Override
-    public Map<String, String> getInputValues() {
-        myInputValues.put(myFieldLabel.getText(), getValue());
-        return myInputValues;
     }
 
 
@@ -67,5 +65,23 @@ public class CustomDateFieldEditor extends AbstractFieldEditor {
         }
 
         return new JsonPrimitive(getValue());
+    }
+
+    @Nullable
+    @Override
+    public ValidationInfo validate() {
+        if(isRequired() && isEmpty(trim(myFormattedTextField.getText()))){
+            return new ValidationInfo(myLabel.getMyLabelText() + " is required.");
+        }else{
+            if(isNotEmpty(trim(myFormattedTextField.getText()))){
+                try{
+                    LocalDate.parse(myFormattedTextField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                }catch (DateTimeParseException e){
+                    return new ValidationInfo("Wrong format in " + myLabel.getMyLabelText() + " field.");
+                }
+            }
+        }
+
+        return null;
     }
 }

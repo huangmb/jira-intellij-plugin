@@ -22,12 +22,12 @@ public class UserSelectFieldEditor extends SelectFieldEditor {
 
     private List<String> selectedUsers = new ArrayList<>();
 
-    public UserSelectFieldEditor(String fieldName, String issueKey) {
-        this(fieldName, issueKey, false);
+    public UserSelectFieldEditor(String fieldName, String issueKey, boolean required) {
+        this(fieldName, issueKey, required, false);
     }
 
-    public UserSelectFieldEditor(String fieldName, String issueKey, boolean isMultiSelect) {
-        super(fieldName, issueKey, isMultiSelect);
+    public UserSelectFieldEditor(String fieldName, String issueKey, boolean required, boolean isMultiSelect) {
+        super(fieldName, issueKey, required, isMultiSelect);
         myButtonAction = new UserPickerDialogAction();
     }
 

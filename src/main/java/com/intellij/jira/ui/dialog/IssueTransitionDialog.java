@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.intellij.jira.helper.TransitionFieldHelper.createCommentFieldEditorInfo;
-import static com.intellij.jira.ui.editors.FieldEditorFactory.createCommentFieldEditor;
-import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
@@ -143,7 +141,7 @@ public class IssueTransitionDialog extends DialogWrapper {
 
             });
 
-            FieldEditorInfo commentInfo = createCommentFieldEditorInfo(createCommentFieldEditor(issue.getKey()));
+            FieldEditorInfo commentInfo = createCommentFieldEditorInfo(issue.getKey());
             optionalFields.put(commentInfo.getName(), commentInfo);
             formBuilder.addComponent(commentInfo.getPanel());
 
@@ -169,10 +167,17 @@ public class IssueTransitionDialog extends DialogWrapper {
         }
 
         for(FieldEditorInfo info : requiredFields.values()){
-            for(Map.Entry<String, String> entry : info.getInputValues().entrySet()){
-                if(isEmpty(entry.getValue())){
-                    return new ValidationInfo(String.format("%s is required", entry.getKey()));
-                }
+            ValidationInfo fieldValidation = info.validateField();
+            if(nonNull(fieldValidation)){
+                return fieldValidation;
+            }
+
+        }
+
+        for(FieldEditorInfo info : optionalFields.values()){
+            ValidationInfo fieldValidation = info.validateField();
+            if(nonNull(fieldValidation)){
+                return fieldValidation;
             }
 
         }

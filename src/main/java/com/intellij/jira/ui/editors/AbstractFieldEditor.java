@@ -2,25 +2,42 @@ package com.intellij.jira.ui.editors;
 
 import com.intellij.ui.components.JBLabel;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static javax.swing.SwingConstants.RIGHT;
-
 public abstract class AbstractFieldEditor implements FieldEditor {
 
     protected String issueKey;
-    protected JBLabel myFieldLabel;
-    protected Map<String, String> myInputValues;
+    protected MyLabel myLabel;
+    private boolean required;
 
     public AbstractFieldEditor(String fieldName, String issueKey) {
+        this(fieldName, issueKey, false);
+    }
+
+    public AbstractFieldEditor(String fieldName, String issueKey, boolean required) {
         this.issueKey = issueKey;
-        this.myFieldLabel = new JBLabel(fieldName, RIGHT);
-        this.myInputValues = new HashMap<>();
+        this.myLabel = new MyLabel(fieldName, required);
+        this.required = required;
+    }
+
+    @Override
+    public boolean isRequired() {
+        return required;
     }
 
 
+    class MyLabel extends JBLabel{
+        private String myLabelText;
+
+        public MyLabel(String myLabelText, boolean required) {
+            super();
+            this.myLabelText = myLabelText;
+            setText(myLabelText + (required ? " *" : ""));
+        }
 
 
+        public String getMyLabelText() {
+            return myLabelText;
+        }
+
+    }
 
 }

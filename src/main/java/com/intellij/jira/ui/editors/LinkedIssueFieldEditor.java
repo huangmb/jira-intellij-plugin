@@ -16,6 +16,8 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
@@ -27,7 +29,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.intellij.jira.util.JiraGsonUtil.createNameObject;
@@ -51,8 +52,8 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
     private JiraIssueLinkTypeInfo mySelectedLinkType;
     private String mySelectedIssue;
 
-    public LinkedIssueFieldEditor(String fieldName, String issueKey) {
-        super(fieldName, issueKey);
+    public LinkedIssueFieldEditor(String fieldName, String issueKey, boolean required) {
+        super(fieldName, issueKey, required);
     }
 
     @Override
@@ -66,16 +67,10 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
 
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(myFieldLabel, myPanel)
+                .addLabeledComponent(myLabel, myPanel)
                 .getPanel();
     }
 
-    @Override
-    public Map<String, String> getInputValues() {
-        myInputValues.put(myFieldLabel.getText(), myTextField.getText());
-
-        return myInputValues;
-    }
 
     @Override
     public JsonElement getJsonValue() {
@@ -93,6 +88,16 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
         rootObject.add("add", addObject);
         array.add(rootObject);
         return array;
+    }
+
+    @Nullable
+    @Override
+    public ValidationInfo validate() {
+        if(isRequired() && StringUtil.isEmpty(myTextField.getText())){
+            return new ValidationInfo(myLabel.getMyLabelText() + " is required.");
+        }
+
+        return null;
     }
 
     private class AddIssueLinkDialogAction extends AnAction {

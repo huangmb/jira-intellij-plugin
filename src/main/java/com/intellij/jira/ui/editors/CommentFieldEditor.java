@@ -12,7 +12,7 @@ import static com.intellij.openapi.util.text.StringUtil.trim;
 public class CommentFieldEditor extends CustomTextAreaFieldEditor {
 
     public CommentFieldEditor(String issueKey) {
-        super("Comment", issueKey);
+        super("Comment", issueKey, false);
     }
 
 

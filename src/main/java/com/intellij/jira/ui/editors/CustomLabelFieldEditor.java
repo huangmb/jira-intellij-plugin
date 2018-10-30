@@ -3,11 +3,12 @@ package com.intellij.jira.ui.editors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.intellij.jira.util.JiraLabelUtil;
+import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.Map;
 
 public class CustomLabelFieldEditor extends AbstractFieldEditor {
 
@@ -28,17 +29,19 @@ public class CustomLabelFieldEditor extends AbstractFieldEditor {
         this.myLabelText = JiraLabelUtil.createBoldLabel(labelText);
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(this.myFieldLabel, this.myLabelText)
+                .addLabeledComponent(this.myLabel, this.myLabelText)
                 .getPanel();
     }
 
-    @Override
-    public Map<String, String> getInputValues() {
-        return null;
-    }
 
     @Override
     public JsonElement getJsonValue() {
         return JsonNull.INSTANCE;
+    }
+
+    @Nullable
+    @Override
+    public ValidationInfo validate() {
+        return null;
     }
 }

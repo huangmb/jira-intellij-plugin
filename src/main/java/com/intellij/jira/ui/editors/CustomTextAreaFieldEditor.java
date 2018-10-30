@@ -2,11 +2,12 @@ package com.intellij.jira.ui.editors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.FormBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.Map;
 
 import static com.intellij.jira.util.JiraGsonUtil.createNameObject;
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
@@ -16,8 +17,8 @@ public class CustomTextAreaFieldEditor extends AbstractFieldEditor {
 
     protected JTextArea myTextArea;
 
-    public CustomTextAreaFieldEditor(String fieldName, String issueKey) {
-        super(fieldName, issueKey);
+    public CustomTextAreaFieldEditor(String fieldName, String issueKey, boolean required) {
+        super(fieldName, issueKey, required);
     }
 
     @Override
@@ -27,14 +28,10 @@ public class CustomTextAreaFieldEditor extends AbstractFieldEditor {
 
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(myFieldLabel.getText(), this.myTextArea)
+                .addLabeledComponent(myLabel.getText(), this.myTextArea)
                 .getPanel();
     }
 
-    @Override
-    public Map<String, String> getInputValues() {
-        return null;
-    }
 
     @Override
     public JsonElement getJsonValue() {
@@ -43,5 +40,15 @@ public class CustomTextAreaFieldEditor extends AbstractFieldEditor {
         }
 
         return createNameObject(myTextArea.getText());
+    }
+
+    @Nullable
+    @Override
+    public ValidationInfo validate() {
+        if(isRequired() && isEmpty(trim(myTextArea.getText()))){
+            return new ValidationInfo(myLabel.getMyLabelText() + " is required.");
+        }
+
+        return null;
     }
 }
