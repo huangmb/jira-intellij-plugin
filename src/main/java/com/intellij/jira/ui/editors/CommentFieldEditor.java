@@ -9,7 +9,7 @@ import static com.intellij.jira.util.JiraGsonUtil.createObject;
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static com.intellij.openapi.util.text.StringUtil.trim;
 
-public class CommentFieldEditor extends CustomTextAreaFieldEditor {
+public class CommentFieldEditor extends TextAreaFieldEditor {
 
     public CommentFieldEditor(String issueKey) {
         super("Comment", issueKey, false);

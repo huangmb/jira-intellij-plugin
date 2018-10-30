@@ -17,12 +17,12 @@ import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static com.intellij.openapi.util.text.StringUtil.trim;
 
 
-public class CustomDateTimeFieldEditor extends CustomDateFieldEditor {
+public class DateTimeFieldEditor extends DateFieldEditor {
 
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.ss+0000";
 
-    public CustomDateTimeFieldEditor(String fieldName, String issueKey, boolean required) {
+    public DateTimeFieldEditor(String fieldName, String issueKey, boolean required) {
         super(fieldName, issueKey, required);
         this.myDescriptionField = "(e.g. yyyy-MM-dd HH:mm:ss)";
     }

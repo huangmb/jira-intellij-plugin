@@ -16,13 +16,13 @@ import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class CustomComboBoxFieldEditor<T> extends AbstractFieldEditor {
+public class ComboBoxFieldEditor<T> extends AbstractFieldEditor {
 
     private ComboBox<T> myComboBox;
     private CollectionComboBoxModel<T> myComboBoxItems;
     private boolean isMultiSelect;
 
-    public CustomComboBoxFieldEditor(String fieldName, List<T> items, String issueKey, boolean required, boolean isMultiSelect) {
+    public ComboBoxFieldEditor(String fieldName, List<T> items, String issueKey, boolean required, boolean isMultiSelect) {
         super(fieldName, issueKey, required);
         this.myComboBoxItems = new CollectionComboBoxModel<>(items);
         this.myComboBox = new ComboBox(myComboBoxItems, 300);

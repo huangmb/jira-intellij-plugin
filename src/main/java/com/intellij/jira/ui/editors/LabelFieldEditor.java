@@ -10,16 +10,16 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class CustomLabelFieldEditor extends AbstractFieldEditor {
+public class LabelFieldEditor extends AbstractFieldEditor {
 
     private JBLabel myLabelText;
     private String labelText;
 
-    public CustomLabelFieldEditor(String fieldName, String issueKey) {
+    public LabelFieldEditor(String fieldName, String issueKey) {
         this(fieldName, "None", issueKey);
     }
 
-    public CustomLabelFieldEditor(String fieldName, String labelText, String issueKey) {
+    public LabelFieldEditor(String fieldName, String labelText, String issueKey) {
         super(fieldName, issueKey);
         this.labelText = labelText;
     }

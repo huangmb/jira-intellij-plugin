@@ -32,11 +32,11 @@ public class FieldEditorFactory {
 
         String fieldType = properties.getSchema().getSystem();
         if(TEXT_FIELDS.contains(fieldType)){
-            return new CustomTextFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+            return new TextFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
         }else if(TEXT_AREA_FIELDS.contains(fieldType)){
-            return new CustomTextAreaFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+            return new TextAreaFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
         }else if(DATE_FIELDS.contains(fieldType)){
-            return new CustomDateFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+            return new DateFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
         }else if(USER_PICKER_FIELDS.contains(fieldType)) {
             return new UserSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
         }else if("timetracking".equals(fieldType)){
@@ -44,7 +44,7 @@ public class FieldEditorFactory {
         }else if("issuelinks".equals(fieldType)){
             return new LinkedIssueFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
         }else if("issuetype".equals(fieldType)){
-            return new CustomLabelFieldEditor(properties.getName(), issue.getIssuetype().getName(), issue.getKey());
+            return new LabelFieldEditor(properties.getName(), issue.getIssuetype().getName(), issue.getKey());
         }
 
         return createCustomComboBoxFieldEditor(properties, issue.getKey());
@@ -60,7 +60,7 @@ public class FieldEditorFactory {
         JsonArray values = properties.getAllowedValues();
         if(isNull(values) || isEmpty(values)){
             if(StringUtil.isEmpty(properties.getAutoCompleteUrl())){
-                return new CustomLabelFieldEditor(properties.getName(), issueKey);
+                return new LabelFieldEditor(properties.getName(), issueKey);
             }
 
         }
@@ -78,7 +78,7 @@ public class FieldEditorFactory {
         }
 
 
-        return new CustomComboBoxFieldEditor(properties.getName(), items, issueKey, properties.isRequired(), isArray);
+        return new ComboBoxFieldEditor(properties.getName(), items, issueKey, properties.isRequired(), isArray);
     }
 
     private static FieldEditor createCustomFieldEditor(JiraIssueFieldProperties properties, JiraIssue issue) {
@@ -88,18 +88,18 @@ public class FieldEditorFactory {
         JsonArray values = properties.getAllowedValues();
         if(isNull(values) || isEmpty(values)){
             if(CF_TEXT_FIELDS.contains(customFieldType)){
-                return new CustomTextFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+                return new TextFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
             }else if("userpicker".equals(customFieldType) || "multiuserpicker".equals(customFieldType)){
                 return new UserSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired(), isArray);
             }else if("grouppicker".equals(customFieldType) || "multigrouppicker".equals(customFieldType)){
                 return new GroupSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired(), isArray);
             }else if("datepicker".equals(customFieldType)){
-                return new CustomDateFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+                return new DateFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
             }else if("datetime".equals(customFieldType)){
-                return new CustomDateTimeFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+                return new DateTimeFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
             }
             else{
-                return new CustomLabelFieldEditor(properties.getName(), issue.getKey());
+                return new LabelFieldEditor(properties.getName(), issue.getKey());
             }
 
         }
@@ -115,7 +115,7 @@ public class FieldEditorFactory {
         }
 
 
-        return new CustomComboBoxFieldEditor(properties.getName(), items, issue.getKey(), properties.isRequired(), isArray);
+        return new ComboBoxFieldEditor(properties.getName(), items, issue.getKey(), properties.isRequired(), isArray);
     }
 
 

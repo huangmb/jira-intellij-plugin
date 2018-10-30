@@ -3,7 +3,6 @@ package com.intellij.jira.ui.editors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
@@ -13,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.regex.Pattern;
 
+import static com.intellij.jira.util.JiraGsonUtil.createPrimitive;
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static java.util.Objects.nonNull;
@@ -58,11 +58,11 @@ public class TimeTrackingFieldEditor extends AbstractFieldEditor {
 
         JsonObject timeObject = new JsonObject();
         if(isNotEmpty(getOriginalEstimate())){
-            timeObject.add("originalEstimate", new JsonPrimitive(getOriginalEstimate()));
+            timeObject.add("originalEstimate", createPrimitive(getOriginalEstimate()));
         }
 
         if(isNotEmpty(getRemainingEstimate())){
-            timeObject.add("remainingEstimate", new JsonPrimitive(getRemainingEstimate()));
+            timeObject.add("remainingEstimate", createPrimitive(getRemainingEstimate()));
         }
 
         return timeObject;

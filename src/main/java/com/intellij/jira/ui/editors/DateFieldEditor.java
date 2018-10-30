@@ -2,7 +2,6 @@ package com.intellij.jira.ui.editors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import com.google.gson.JsonPrimitive;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
@@ -16,19 +15,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import static com.intellij.openapi.util.text.StringUtil.isEmpty;
-import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
-import static com.intellij.openapi.util.text.StringUtil.trim;
+import static com.intellij.jira.util.JiraGsonUtil.createPrimitive;
+import static com.intellij.openapi.util.text.StringUtil.*;
 import static java.util.Objects.nonNull;
 
-public class CustomDateFieldEditor extends AbstractFieldEditor {
+public class DateFieldEditor extends AbstractFieldEditor {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     protected JFormattedTextField myFormattedTextField;
     protected String myDescriptionField;
 
-    public CustomDateFieldEditor(String fieldName, String issueKey, boolean required) {
+    public DateFieldEditor(String fieldName, String issueKey, boolean required) {
         super(fieldName, issueKey, required);
         this.myDescriptionField = "(e.g. yyyy-MM-dd)";
     }
@@ -64,7 +62,7 @@ public class CustomDateFieldEditor extends AbstractFieldEditor {
             return JsonNull.INSTANCE;
         }
 
-        return new JsonPrimitive(getValue());
+        return createPrimitive(getValue());
     }
 
     @Nullable

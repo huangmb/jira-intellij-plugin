@@ -8,6 +8,7 @@ import com.google.gson.JsonPrimitive;
 import java.util.Collections;
 import java.util.List;
 
+import static com.intellij.openapi.util.text.StringUtil.trim;
 import static java.util.Objects.nonNull;
 
 public class JiraGsonUtil {
@@ -25,7 +26,7 @@ public class JiraGsonUtil {
         JsonArray array = new JsonArray();
         JsonObject name = new JsonObject();
         for(String value : values){
-            name.add("name", new JsonPrimitive(value));
+            name.add("name", createPrimitive(value));
         }
 
         array.add(name);
@@ -42,7 +43,7 @@ public class JiraGsonUtil {
 
     public static JsonObject createObject(String property, String value){
         JsonObject name = new JsonObject();
-        name.add(property, new JsonPrimitive(value));
+        name.add(property, createPrimitive(value));
 
         return name;
     }
@@ -52,5 +53,8 @@ public class JiraGsonUtil {
         return nonNull(jsonArray) && jsonArray.size() == 0;
     }
 
+    public static JsonElement createPrimitive(String value){
+        return new JsonPrimitive(trim(value));
+    }
 
 }
