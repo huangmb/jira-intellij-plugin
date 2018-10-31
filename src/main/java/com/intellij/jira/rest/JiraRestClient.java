@@ -14,7 +14,6 @@ import java.util.Map;
 
 import static com.intellij.jira.rest.JiraIssueParser.*;
 import static com.intellij.jira.util.JiraGsonUtil.createIdObject;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public class JiraRestClient {
@@ -52,8 +51,8 @@ public class JiraRestClient {
     }
 
 
-    public String transitIssue(String issueId, String transitionId, Map<String, FieldEditorInfo> requiredFields, Map<String, FieldEditorInfo> optionalFields) throws Exception {
-        String requestBody = getTransitionRequestBody(transitionId, requiredFields, optionalFields);
+    public String transitIssue(String issueId, String transitionId, Map<String, FieldEditorInfo> fields) throws Exception {
+        String requestBody = getTransitionRequestBody(transitionId, fields);
         PostMethod method = new PostMethod(this.jiraRepository.getRestUrl(ISSUE, issueId, TRANSITIONS));
         method.setRequestEntity(createJsonEntity(requestBody));
         return jiraRepository.executeMethod(method);
@@ -141,7 +140,7 @@ public class JiraRestClient {
 
 
 
-    private String getTransitionRequestBody(String transitionId, Map<String, FieldEditorInfo> requiredFields, Map<String, FieldEditorInfo> optionalFields) {
+    private String getTransitionRequestBody(String transitionId, Map<String, FieldEditorInfo> fields) {
         JsonObject transition = new JsonObject();
         transition.add("transition", createIdObject(transitionId));
 
@@ -149,17 +148,13 @@ public class JiraRestClient {
         JsonObject updateObject = new JsonObject();
 
         // Comment
-        FieldEditorInfo commentField = optionalFields.remove("comment");
+        FieldEditorInfo commentField = fields.remove("comment");
         if(nonNull(commentField) && !(commentField.getJsonValue() instanceof JsonNull)){
             updateObject.add("comment", commentField.getJsonValue());
         }
 
         // Linked Issues
-        FieldEditorInfo issueLinkField = optionalFields.remove("issuelinks");
-        if(isNull(issueLinkField)){
-            issueLinkField = requiredFields.remove("issuelinks");
-        }
-
+        FieldEditorInfo issueLinkField = fields.remove("issuelinks");
         if(nonNull(issueLinkField) && !(issueLinkField.getJsonValue() instanceof JsonNull)){
             updateObject.add("issuelinks", issueLinkField.getJsonValue());
         }
@@ -170,13 +165,7 @@ public class JiraRestClient {
 
         //Fields
         JsonObject fieldsObject = new JsonObject();
-        requiredFields.forEach((key, value) -> {
-            if(!(value.getJsonValue() instanceof JsonNull)){
-                fieldsObject.add(key, value.getJsonValue());
-            }
-        });
-
-        optionalFields.forEach((key, value) -> {
+        fields.forEach((key, value) -> {
             if(!(value.getJsonValue() instanceof JsonNull)){
                 fieldsObject.add(key, value.getJsonValue());
             }

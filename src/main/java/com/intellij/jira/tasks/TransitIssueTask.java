@@ -2,7 +2,6 @@ package com.intellij.jira.tasks;
 
 import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.exceptions.InvalidResultException;
-import com.intellij.jira.helper.TransitionFieldHelper;
 import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.util.Result;
@@ -16,21 +15,19 @@ public class TransitIssueTask extends AbstractBackgroundableTask {
 
     private String issueId;
     private String transitionId;
-    private Map<String, FieldEditorInfo> requiredFields;
-    private Map<String, FieldEditorInfo> optionalFields;
+    private Map<String, FieldEditorInfo> fields;
 
-    public TransitIssueTask(@NotNull Project project, String issueId, String transitionId, Map<String, FieldEditorInfo> requiredFields, Map<String, FieldEditorInfo> optionalFields) {
+    public TransitIssueTask(@NotNull Project project, String issueId, String transitionId, Map<String, FieldEditorInfo> transitionFields) {
         super(project, "Transiting Issue...");
         this.issueId = issueId;
         this.transitionId = transitionId;
-        this.requiredFields = requiredFields;
-        this.optionalFields = optionalFields;
+        this.fields = transitionFields;
     }
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
         JiraServer jiraServer = getJiraServer();
-        Result result = jiraServer.transitIssue(issueId, transitionId, requiredFields, optionalFields);
+        Result result = jiraServer.transitIssue(issueId, transitionId, fields);
         if(!result.isValid()) {
             throw new InvalidResultException("Transition error", "Issue has not been updated");
         }

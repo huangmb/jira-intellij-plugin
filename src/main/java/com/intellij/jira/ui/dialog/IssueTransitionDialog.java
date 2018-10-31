@@ -53,9 +53,7 @@ public class IssueTransitionDialog extends DialogWrapper {
     private JPanel transitionFieldsPanel;
     private JPanel transitionPreviewPanel;
 
-
-    private Map<String, FieldEditorInfo> requiredFields = new HashMap<>();
-    private Map<String, FieldEditorInfo> optionalFields = new HashMap<>();
+    private Map<String, FieldEditorInfo> transitionFields = new HashMap<>();
 
 
     public IssueTransitionDialog(@Nullable Project project, @NotNull JiraIssue issue, List<JiraIssueTransition> transitions) {
@@ -118,8 +116,7 @@ public class IssueTransitionDialog extends DialogWrapper {
                 .collect(Collectors.toList());
 
 
-        requiredFields.clear();
-        optionalFields.clear();
+        this.transitionFields.clear();
 
         transitionFieldsPanel.removeAll();
         transitionFieldsPanel.setLayout(new GridBagLayout());
@@ -164,38 +161,27 @@ public class IssueTransitionDialog extends DialogWrapper {
 
 
     private void createTransitionFields(List<JiraIssueFieldProperties> transitionFields) {
+        FormBuilder formBuilder = FormBuilder.createFormBuilder().setAlignLabelOnRight(true);
 
-        if(!transitionFields.isEmpty()){
-            FormBuilder formBuilder = FormBuilder.createFormBuilder().setAlignLabelOnRight(true);
+        transitionFields.forEach(fieldProperties -> {
+            FieldEditorInfo info = TransitionFieldHelper.createFieldEditorInfo(fieldProperties, issue);
+            this.transitionFields.put(info.getName(), info);
 
-            transitionFields.forEach(fieldProperties -> {
+            formBuilder.addComponent(info.getPanel());
+        });
 
-                FieldEditorInfo info = TransitionFieldHelper.createFieldEditorInfo(fieldProperties, issue);
-                if(info.isRequired()){
-                    requiredFields.put(info.getName(), info);
-                }else{
-                    optionalFields.put(info.getName(), info);
-                }
+        FieldEditorInfo commentInfo = createCommentFieldEditorInfo(issue.getKey());
+        this.transitionFields.put(commentInfo.getName(), commentInfo);
+        formBuilder.addComponent(commentInfo.getPanel());
 
-                formBuilder.addComponent(info.getPanel());
-
-            });
-
-            FieldEditorInfo commentInfo = createCommentFieldEditorInfo(issue.getKey());
-            optionalFields.put(commentInfo.getName(), commentInfo);
-            formBuilder.addComponent(commentInfo.getPanel());
-
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.anchor = GridBagConstraints.NORTH;
-            constraints.gridx = 0;
-            constraints.gridy = 0;
-            constraints.weighty = 1;
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.NORTH;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weighty = 1;
 
 
-
-            transitionFieldsPanel.add(formBuilder.getPanel(), constraints);
-
-        }
+        transitionFieldsPanel.add(formBuilder.getPanel(), constraints);
 
     }
 
@@ -206,22 +192,13 @@ public class IssueTransitionDialog extends DialogWrapper {
             return new ValidationInfo("You must select transition");
         }
 
-        for(FieldEditorInfo info : requiredFields.values()){
+        for(FieldEditorInfo info : transitionFields.values()){
             ValidationInfo fieldValidation = info.validateField();
             if(nonNull(fieldValidation)){
                 return fieldValidation;
             }
 
         }
-
-        for(FieldEditorInfo info : optionalFields.values()){
-            ValidationInfo fieldValidation = info.validateField();
-            if(nonNull(fieldValidation)){
-                return fieldValidation;
-            }
-
-        }
-
 
         return null;
     }
@@ -230,7 +207,7 @@ public class IssueTransitionDialog extends DialogWrapper {
     @Override
     protected void doOKAction() {
         if(nonNull(project)){
-            new TransitIssueTask(project, issue.getId(), selectedIssueTransition.getId(), requiredFields, optionalFields).queue();
+            new TransitIssueTask(project, issue.getId(), selectedIssueTransition.getId(), transitionFields).queue();
         }
 
         close(0);

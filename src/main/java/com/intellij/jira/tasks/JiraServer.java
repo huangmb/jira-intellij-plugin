@@ -58,9 +58,9 @@ public class JiraServer {
     }
 
 
-    public Result transitIssue(String issueId, String transitionId, Map<String, FieldEditorInfo> requiredFields, Map<String, FieldEditorInfo> optionalFields){
+    public Result transitIssue(String issueId, String transitionId, Map<String, FieldEditorInfo> fields){
         try {
-            String response = jiraRestClient.transitIssue(issueId, transitionId, requiredFields, optionalFields);
+            String response = jiraRestClient.transitIssue(issueId, transitionId, fields);
             return EmptyResult.create(response);
         } catch (Exception e) {
             log.error(String.format("Error executing transition '%s' in issue '%s'", transitionId, issueId));

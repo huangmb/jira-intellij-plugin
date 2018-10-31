@@ -10,6 +10,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+import static javax.swing.SwingConstants.CENTER;
+
 public class JiraPanelUtil {
 
     public static final Border MARGIN_BOTTOM = JBUI.Borders.emptyBottom(10);
@@ -21,13 +23,11 @@ public class JiraPanelUtil {
 
 
     public static JBPanel createPlaceHolderPanel(String text) {
-        JBPanel panel = new JBPanel(new BorderLayout());
-        JBPanel labelPanel = new JBPanel();
+        JBPanel panel = new JBPanel(new GridBagLayout());
         JBLabel messageLabel = new JBLabel(text);
-        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        messageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        labelPanel.add(messageLabel);
-        panel.add(labelPanel, BorderLayout.CENTER);
+        messageLabel.setHorizontalAlignment(CENTER);
+        messageLabel.setVerticalAlignment(CENTER);
+        panel.add(messageLabel, new GridBagConstraints());
         return panel;
     }
 
