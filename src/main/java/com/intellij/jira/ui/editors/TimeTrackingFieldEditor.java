@@ -3,10 +3,9 @@ package com.intellij.jira.ui.editors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.ui.ValidationInfo;
-import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
-import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -19,13 +18,20 @@ import static java.util.Objects.nonNull;
 
 public class TimeTrackingFieldEditor extends AbstractFieldEditor {
 
-    private static final Pattern TIME_TRACKING_PATTERN = Pattern.compile("((\\d+)[wdhm]\\s)+");
+    private static final Pattern TIME_TRACKING_PATTERN = Pattern.compile("((\\d+)[wdhm](\\s)*)+");
     private static final String ORIGINAL_ESTIMATE_FIELD = "Original Estimate";
     private static final String REMAINING_ESTIMATE_FIELD = "Remaining Estimate";
+    private static final String INFO_MESSAGE = "You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm, to represent weeks (w), days (d), hours (h) and minutes (m), respectively.";
 
+    private JPanel myFirstPanel;
     private JTextField myFirstField;
+    private JLabel myFirstInfoLabel;
+
+    private JPanel mySecondPanel;
     private MyLabel mySecondLabel;
     private JTextField mySecondField;
+    private JLabel mySecondInfoLabel;
+
 
 
     public TimeTrackingFieldEditor(String issueKey, boolean required) {
@@ -35,17 +41,16 @@ public class TimeTrackingFieldEditor extends AbstractFieldEditor {
 
     @Override
     public JComponent createPanel() {
-        this.myFirstField = new JBTextField();
-        this.myFirstField.setPreferredSize(UI.size(255, 24));
 
+        myFirstInfoLabel.setToolTipText(INFO_MESSAGE);
+        myFirstInfoLabel.setIcon(AllIcons.Actions.Help);
 
-        this.mySecondField = new JBTextField();
-        this.mySecondField.setPreferredSize(UI.size(255, 24));
-
+        mySecondInfoLabel.setToolTipText(INFO_MESSAGE);
+        mySecondInfoLabel.setIcon(AllIcons.Actions.Help);
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(this.myLabel, this.myFirstField)
-                .addLabeledComponent(this.mySecondLabel, this.mySecondField)
+                .addLabeledComponent(this.myLabel, this.myFirstPanel)
+                .addLabeledComponent(this.mySecondLabel, this.mySecondPanel)
                 .getPanel();
     }
 

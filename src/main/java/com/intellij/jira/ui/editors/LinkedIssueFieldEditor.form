@@ -31,7 +31,6 @@
         </constraints>
         <properties>
           <horizontalTextPosition value="0"/>
-          <icon value="ide/upDown.png"/>
           <text value=""/>
         </properties>
       </component>

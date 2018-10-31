@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.DataManager;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueLinkType;
@@ -59,6 +60,7 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
     @Override
     public JComponent createPanel() {
 
+        this.myButton.setIcon(AllIcons.Ide.UpDown);
         this.myButton.addActionListener(e -> {
             InputEvent inputEvent = e.getSource() instanceof InputEvent ? (InputEvent)e.getSource() : null;
             AddIssueLinkDialogAction myAction = new AddIssueLinkDialogAction();

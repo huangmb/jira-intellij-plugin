@@ -2,14 +2,14 @@ package com.intellij.jira.ui.editors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.ui.ValidationInfo;
-import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
-import com.intellij.util.ui.UI;
-import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
+import javax.swing.text.DefaultFormatterFactory;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,36 +21,35 @@ import static java.util.Objects.nonNull;
 
 public class DateFieldEditor extends AbstractFieldEditor {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormatter DATE_FORMATTER = new DateFormatter(new SimpleDateFormat("yyyy-MM-dd"));
 
+    private JPanel myPanel;
     protected JFormattedTextField myFormattedTextField;
-    protected String myDescriptionField;
+    protected JLabel myInfoLabel;
 
     public DateFieldEditor(String fieldName, String issueKey, boolean required) {
         super(fieldName, issueKey, required);
-        this.myDescriptionField = "(e.g. yyyy-MM-dd)";
     }
 
     @Override
     public JComponent createPanel() {
-        this.myFormattedTextField = new JFormattedTextField(getDateFormat());
-        this.myFormattedTextField.setPreferredSize(UI.size(250, 24));
-
-        JBLabel myDescriptionLabel = new JBLabel();
-        myDescriptionLabel.setComponentStyle(UIUtil.ComponentStyle.SMALL);
-        myDescriptionLabel.setText(myDescriptionField);
+        myFormattedTextField.setFormatterFactory(new DefaultFormatterFactory(getDateFormatter()));
+        myInfoLabel.setToolTipText(getToolTipMessage());
+        myInfoLabel.setIcon(AllIcons.Actions.Help);
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent(this.myLabel, this.myFormattedTextField)
-                .addComponentToRightColumn(myDescriptionLabel)
+                .addLabeledComponent(this.myLabel, this.myPanel)
                 .getPanel();
     }
 
 
-    public SimpleDateFormat getDateFormat(){
-        return DATE_FORMAT;
+    public DateFormatter getDateFormatter(){
+        return DATE_FORMATTER;
     }
 
+    public String getToolTipMessage(){
+        return "E.g. yyyy-MM-dd";
+    }
 
     protected String getValue(){
         return nonNull(myFormattedTextField) ? trim(myFormattedTextField.getText()) : "";

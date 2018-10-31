@@ -3,6 +3,7 @@ package com.intellij.jira.ui.editors;
 import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.text.DateFormatter;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -19,14 +20,17 @@ import static com.intellij.openapi.util.text.StringUtil.trim;
 
 public class DateTimeFieldEditor extends DateFieldEditor {
 
-    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateFormatter DATE_TIME_FORMATTER = new DateFormatter(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     private static final String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.ss+0000";
 
     public DateTimeFieldEditor(String fieldName, String issueKey, boolean required) {
         super(fieldName, issueKey, required);
-        this.myDescriptionField = "(e.g. yyyy-MM-dd HH:mm:ss)";
     }
 
+    @Override
+    public String getToolTipMessage() {
+        return "E.g. yyyy-MM-dd HH:mm:ss";
+    }
 
     @Override
     protected String getValue() {
@@ -43,10 +47,9 @@ public class DateTimeFieldEditor extends DateFieldEditor {
     }
 
     @Override
-    public SimpleDateFormat getDateFormat() {
-        return DATE_TIME_FORMAT;
+    public DateFormatter getDateFormatter() {
+        return DATE_TIME_FORMATTER;
     }
-
 
     @Nullable
     @Override

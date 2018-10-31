@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.JBColor;
-import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -15,7 +14,10 @@ import static com.intellij.openapi.util.text.StringUtil.trim;
 
 public class TextAreaFieldEditor extends AbstractFieldEditor {
 
+    private JPanel myPanel;
+    private JLabel myTextAreaLabel;
     protected JTextArea myTextArea;
+
 
     public TextAreaFieldEditor(String fieldName, String issueKey, boolean required) {
         super(fieldName, issueKey, required);
@@ -23,13 +25,10 @@ public class TextAreaFieldEditor extends AbstractFieldEditor {
 
     @Override
     public JComponent createPanel() {
-        this.myTextArea = new JTextArea(6, 60);
         this.myTextArea.setBorder(BorderFactory.createLineBorder(JBColor.border()));
+        this.myTextAreaLabel.setText(myLabel.getText());
 
-
-        return FormBuilder.createFormBuilder()
-                .addLabeledComponent(myLabel.getText(), this.myTextArea)
-                .getPanel();
+        return myPanel;
     }
 
 
@@ -50,5 +49,9 @@ public class TextAreaFieldEditor extends AbstractFieldEditor {
         }
 
         return null;
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }
