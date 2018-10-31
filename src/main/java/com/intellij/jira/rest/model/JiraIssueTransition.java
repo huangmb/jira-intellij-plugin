@@ -6,6 +6,7 @@ public class JiraIssueTransition {
 
     private String id;
     private String name;
+    private JiraIssueStatus to;
     private JsonObject fields;
 
     public JiraIssueTransition() { }
@@ -16,6 +17,10 @@ public class JiraIssueTransition {
 
     public String getName() {
         return name;
+    }
+
+    public JiraIssueStatus getTo() {
+        return to;
     }
 
     public JsonObject getFields() {

@@ -31,4 +31,32 @@ public class JiraPanelUtil {
         return panel;
     }
 
+
+    public static JPanel createPanelWithVerticalLine(){
+        return createPanelWithLine(false);
+    }
+
+    public static JPanel createPanelWithHorizontalLine(){
+        return createPanelWithLine(true);
+    }
+
+    private static JPanel createPanelWithLine(boolean horizontal){
+        return new JPanel(){
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                g.setColor(JBColor.border());
+                if(horizontal){
+                    g.drawLine(0,getHeight()/2, getWidth(), getHeight()/2);
+                }else{
+                    g.drawLine(getWidth()/2,0, getWidth()/2, getHeight());
+                }
+            }
+        };
+    }
+
+
+
+
+
 }

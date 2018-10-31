@@ -8,6 +8,7 @@ import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.tasks.TransitIssueTask;
 import com.intellij.jira.ui.JiraIssueTransitionListModel;
 import com.intellij.jira.ui.renders.JiraIssueTransitionListCellRenderer;
+import com.intellij.jira.util.JiraLabelUtil;
 import com.intellij.jira.util.JiraPanelUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -15,11 +16,13 @@ import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBDimension;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.intellij.jira.helper.TransitionFieldHelper.createCommentFieldEditorInfo;
+import static com.intellij.jira.util.JiraPanelUtil.createPanelWithVerticalLine;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
@@ -47,6 +51,7 @@ public class IssueTransitionDialog extends DialogWrapper {
 
     private JPanel transitionsPanel;
     private JPanel transitionFieldsPanel;
+    private JPanel transitionPreviewPanel;
 
 
     private Map<String, FieldEditorInfo> requiredFields = new HashMap<>();
@@ -81,17 +86,25 @@ public class IssueTransitionDialog extends DialogWrapper {
         transitionList.setPreferredSize(new JBDimension(100, 300));
         transitionList.setBorder(BorderFactory.createLineBorder(JBColor.border()));
         transitionList.addListSelectionListener(e -> {
-                SwingUtilities.invokeLater(() -> updateTransitionFieldPanel(transitionList.getSelectedValue()));
+                SwingUtilities.invokeLater(() -> {
+                    updateTransitionFieldPanel(transitionList.getSelectedValue());
+                    updateTransitionPreviewPanel(transitionList.getSelectedValue());
+                });
         });
 
         transitionsPanel.add(transitionList, BorderLayout.CENTER);
+
         transitionFieldsPanel = new JBPanel(new GridBagLayout());
         transitionFieldsPanel.setBorder(JBUI.Borders.empty(5));
         transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("Select transition"), new GridBagConstraints());
 
+        transitionPreviewPanel = new JBPanel(new BorderLayout());
+        transitionPreviewPanel.setPreferredSize(UI.size(100, 300));
+
         panel.add(transitionsPanel, BorderLayout.WEST);
         panel.add(ScrollPaneFactory.createScrollPane(transitionFieldsPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
-        panel.setPreferredSize(new JBDimension(500, 300));
+        panel.add(transitionPreviewPanel, BorderLayout.EAST);
+        panel.setPreferredSize(new JBDimension(600, 300));
 
         return panel;
     }
@@ -122,6 +135,33 @@ public class IssueTransitionDialog extends DialogWrapper {
         transitionFieldsPanel.repaint();
 
     }
+
+
+    private void updateTransitionPreviewPanel(JiraIssueTransition transition){
+        transitionPreviewPanel.removeAll();
+
+        JBPanel sourceStatusPanel = new JBPanel();
+        sourceStatusPanel.setBorder(JBUI.Borders.empty(5));
+        JBLabel sourceStatusLabel = JiraLabelUtil.createStatusLabel(issue.getStatus());
+        sourceStatusPanel.add(sourceStatusLabel);
+
+        JPanel verticalLinePanel = createPanelWithVerticalLine();
+
+        JBPanel targetStatusPanel = new JBPanel();
+        targetStatusPanel.setBorder(JBUI.Borders.empty(5));
+        JBLabel targetStatusLabel = JiraLabelUtil.createStatusLabel(transition.getTo());
+        targetStatusPanel.add(targetStatusLabel);
+
+        transitionPreviewPanel.add(sourceStatusPanel, BorderLayout.PAGE_START);
+        transitionPreviewPanel.add(verticalLinePanel, BorderLayout.CENTER);
+        transitionPreviewPanel.add(targetStatusPanel, BorderLayout.PAGE_END);
+
+        transitionPreviewPanel.revalidate();
+        transitionPreviewPanel.repaint();
+    }
+
+
+
 
     private void createTransitionFields(List<JiraIssueFieldProperties> transitionFields) {
 
