@@ -29,4 +29,9 @@ public class JiraProjectVersion {
     public boolean isReleased() {
         return released;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

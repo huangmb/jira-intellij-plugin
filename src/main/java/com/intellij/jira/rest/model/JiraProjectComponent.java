@@ -1,13 +1,12 @@
 package com.intellij.jira.rest.model;
 
-public class JiraIssuePriority {
+public class JiraProjectComponent {
 
     private String id;
     private String self;
     private String name;
-    private String iconUrl;
 
-    public JiraIssuePriority() { }
+    public JiraProjectComponent() { }
 
     public String getId() {
         return id;
@@ -21,12 +20,8 @@ public class JiraIssuePriority {
         return name;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
     @Override
     public String toString() {
-        return name ;
+        return name;
     }
 }

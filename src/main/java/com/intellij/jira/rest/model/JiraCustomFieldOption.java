@@ -1,13 +1,12 @@
 package com.intellij.jira.rest.model;
 
-public class JiraIssuePriority {
+public class JiraCustomFieldOption {
 
     private String id;
     private String self;
-    private String name;
-    private String iconUrl;
+    private String value;
 
-    public JiraIssuePriority() { }
+    public JiraCustomFieldOption() { }
 
     public String getId() {
         return id;
@@ -17,16 +16,13 @@ public class JiraIssuePriority {
         return self;
     }
 
-    public String getName() {
-        return name;
+    public String getValue() {
+        return value;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
-    }
 
     @Override
     public String toString() {
-        return name ;
+        return value;
     }
 }

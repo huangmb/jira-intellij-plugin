@@ -17,4 +17,8 @@ public class JiraIssueLinkType {
     public String getOutward() {
         return outward;
     }
+
+    public String getName() {
+        return name;
+    }
 }

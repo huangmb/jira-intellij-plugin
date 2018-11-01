@@ -61,4 +61,22 @@ public class JiraIssueParser {
         return  Arrays.asList(JiraRepository.GSON.fromJson(response, JiraProjectVersionDetails[].class));
     }
 
+    public static List<JiraIssueLinkType> parseIssueLinkTypes(String response){
+        JiraIssueLinkTypesWrapper wrapper = JiraRepository.GSON.fromJson(response, JiraIssueLinkTypesWrapper.class);
+        if(wrapper == null){
+            return ContainerUtil.emptyList();
+        }
+
+        return wrapper.getIssueLinkTypes();
+    }
+
+    public static List<JiraGroup> parseGroups(String response){
+        JiraGroupsWrapper wrapper = JiraRepository.GSON.fromJson(response, JiraGroupsWrapper.class);
+        if(wrapper == null){
+            return ContainerUtil.emptyList();
+        }
+
+        return wrapper.getGroups();
+    }
+
 }

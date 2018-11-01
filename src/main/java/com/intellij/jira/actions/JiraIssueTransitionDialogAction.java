@@ -5,9 +5,8 @@ import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueTransition;
 import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.tasks.JiraServerManager;
-import com.intellij.jira.ui.popup.JiraIssueTransitionsPopup;
+import com.intellij.jira.ui.dialog.IssueTransitionDialog;
 import com.intellij.jira.util.JiraIssueFactory;
-import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 
@@ -16,13 +15,13 @@ import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
-public class JiraIssueTransitionPopupAction extends JiraIssueAction {
+public class JiraIssueTransitionDialogAction extends JiraIssueAction {
     private static final ActionProperties properties = ActionProperties.of("Transit",  AllIcons.Actions.Forward);
 
     private JiraIssueFactory issueFactory;
 
 
-    public JiraIssueTransitionPopupAction(JiraIssueFactory factory) {
+    public JiraIssueTransitionDialogAction(JiraIssueFactory factory) {
         super(properties);
         this.issueFactory = factory;
     }
@@ -36,8 +35,9 @@ public class JiraIssueTransitionPopupAction extends JiraIssueAction {
             if(jiraServer.isPresent()){
                 JiraIssue issue = issueFactory.create();
                 List<JiraIssueTransition> transitions = jiraServer.get().getTransitions(issue.getId());
-                JiraIssueTransitionsPopup popup = new JiraIssueTransitionsPopup(createActionGroup(transitions, issue), project);
-                popup.showInCenterOf(getComponent());
+
+                IssueTransitionDialog dialog = new IssueTransitionDialog(project, issue, transitions);
+                dialog.show();
 
             }
         }
@@ -50,12 +50,7 @@ public class JiraIssueTransitionPopupAction extends JiraIssueAction {
     }
 
 
-    private ActionGroup createActionGroup(List<JiraIssueTransition> transitions, JiraIssue issue){
-        JiraIssueActionGroup group = new JiraIssueActionGroup(getComponent());
-        transitions.forEach(t -> group.add(new JiraIssueTransitionExecuteAction(t.getName(), t.getId(), issue.getId())));
 
-        return group;
-    }
 
 
 }

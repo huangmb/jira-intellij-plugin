@@ -30,8 +30,8 @@ public class JiraIssueUtil {
         return nonNull(user) ? user.getAvatarIcon(): "";
     }
 
-    public static String getType(@NotNull JiraIssue jiraIssue) {
-        return jiraIssue.getIssuetype().getName();
+    public static String getIssueType(@NotNull JiraIssue jiraIssue) {
+        return nonNull(jiraIssue.getIssuetype()) ? jiraIssue.getIssuetype().getName() : "";
     }
 
     public static String getPriority(@NotNull JiraIssue jiraIssue) {

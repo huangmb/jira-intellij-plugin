@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 
 import static com.intellij.jira.util.JiraIssueUtil.*;
+import static java.util.Objects.nonNull;
 
 public class ColumnInfoHelper {
 
@@ -108,7 +109,7 @@ public class ColumnInfoHelper {
         @Nullable
         @Override
         public String valueOf(JiraIssue issue) {
-            return issue.getIssuetype().getName();
+            return getIssueType(issue);
         }
 
 
@@ -123,13 +124,13 @@ public class ColumnInfoHelper {
         @Nullable
         @Override
         public String valueOf(JiraIssue issue) {
-            return issue.getPriority().getName();
+            return getPriority(issue);
         }
 
 
         @Override
         public TableCellRenderer getCustomizedRenderer(JiraIssue issue, TableCellRenderer renderer) {
-            if(renderer instanceof JiraIconAndTextTableCellRenderer){
+            if(renderer instanceof JiraIconAndTextTableCellRenderer && nonNull(issue.getPriority())){
                 ((JiraIconAndTextTableCellRenderer) renderer).setIconUrl(issue.getPriority().getIconUrl());
                 ((JiraIconAndTextTableCellRenderer) renderer).emptyText();
                 ((JiraIconAndTextTableCellRenderer) renderer).setToolTipText(valueOf(issue));
@@ -148,7 +149,7 @@ public class ColumnInfoHelper {
         @Nullable
         @Override
         public String valueOf(JiraIssue issue) {
-            return issue.getStatus().getName();
+            return getStatus(issue);
         }
 
         @Nullable

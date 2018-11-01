@@ -21,6 +21,8 @@ public class DefaultJiraListCellRender extends JPanel implements ListCellRendere
         setBorder(DEFAULT_LINE_BORDER);
         setComponentOrientation(list.getComponentOrientation());
 
+        setEnabled(list.isEnabled());
+        setFont(list.getFont());
 
         if (isSelected) {
             setBackground(list.getSelectionBackground());
@@ -31,8 +33,6 @@ public class DefaultJiraListCellRender extends JPanel implements ListCellRendere
             setForeground(list.getForeground());
         }
 
-        setEnabled(list.isEnabled());
-        setFont(list.getFont());
 
         return this;
     }
