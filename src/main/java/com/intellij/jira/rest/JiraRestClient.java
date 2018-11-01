@@ -138,7 +138,6 @@ public class JiraRestClient {
         String response = jiraRepository.executeMethod(method);
         return parseProjectVersionsDetails(response);
     }
-}
 
 
     public List<JiraIssueLinkType> getIssueLinkTypes() throws Exception {

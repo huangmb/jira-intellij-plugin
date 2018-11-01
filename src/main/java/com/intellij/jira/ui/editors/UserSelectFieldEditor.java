@@ -2,7 +2,7 @@ package com.intellij.jira.ui.editors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import com.intellij.jira.rest.model.JiraIssueUser;
+import com.intellij.jira.rest.model.JiraUser;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
@@ -55,7 +55,7 @@ public class UserSelectFieldEditor extends SelectFieldEditor {
         public void actionPerformed(AnActionEvent e) {
             super.actionPerformed(e);
             if(nonNull(myJiraServer)){
-                List<String> users = myJiraServer.getAssignableUsers(issueKey).stream().map(JiraIssueUser::getKey).collect(toList());
+                List<String> users = myJiraServer.getAssignableUsers(issueKey).stream().map(JiraUser::getKey).collect(toList());
                 UserPickerDialog dialog = new UserPickerDialog(myProject, users);
                 dialog.show();
             }
