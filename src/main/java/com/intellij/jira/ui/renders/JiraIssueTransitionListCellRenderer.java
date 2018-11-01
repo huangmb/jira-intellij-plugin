@@ -28,7 +28,7 @@ public class JiraIssueTransitionListCellRenderer extends DefaultJiraListCellRend
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         JiraIssueTransition transition = (JiraIssueTransition) value;
 
-        setBorder(JBUI.Borders.emptyBottom(2));
+        setBorder(JBUI.Borders.empty(2));
         transitionNameLabel.setText(transition.getName());
 
 

@@ -5,6 +5,7 @@ import com.google.gson.JsonNull;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
+import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class TextFieldEditor extends AbstractFieldEditor {
     @Override
     public JComponent createPanel() {
         this.myTextField = new JBTextField();
+        this.myTextField.setPreferredSize(UI.size(250, 24));
 
         return FormBuilder.createFormBuilder()
                 .addLabeledComponent(this.myLabel, this.myTextField)

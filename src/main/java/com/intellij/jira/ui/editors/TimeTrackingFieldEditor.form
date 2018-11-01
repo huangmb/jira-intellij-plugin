@@ -22,7 +22,9 @@
                 <preferred-size width="200" height="24"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <horizontalAlignment value="2"/>
+            </properties>
           </component>
           <component id="78d8f" class="javax.swing.JLabel" binding="myFirstInfoLabel">
             <constraints>
@@ -52,7 +54,9 @@
                 <preferred-size width="200" height="24"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <horizontalAlignment value="2"/>
+            </properties>
           </component>
           <component id="9322f" class="javax.swing.JLabel" binding="mySecondInfoLabel">
             <constraints>

@@ -93,16 +93,17 @@ public class IssueTransitionDialog extends DialogWrapper {
         transitionsPanel.add(transitionList, BorderLayout.CENTER);
 
         transitionFieldsPanel = new JBPanel(new GridBagLayout());
+        transitionFieldsPanel.setMinimumSize(UI.size(450, 300));
         transitionFieldsPanel.setBorder(JBUI.Borders.empty(5));
         transitionFieldsPanel.add(JiraPanelUtil.createPlaceHolderPanel("Select transition"), new GridBagConstraints());
 
         transitionPreviewPanel = new JBPanel(new BorderLayout());
-        transitionPreviewPanel.setPreferredSize(UI.size(100, 300));
+        transitionPreviewPanel.setMinimumSize(UI.size(100, 300));
 
         panel.add(transitionsPanel, BorderLayout.WEST);
         panel.add(ScrollPaneFactory.createScrollPane(transitionFieldsPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         panel.add(transitionPreviewPanel, BorderLayout.EAST);
-        panel.setPreferredSize(new JBDimension(600, 300));
+        panel.setMinimumSize(UI.size(650, 300));
 
         return panel;
     }
