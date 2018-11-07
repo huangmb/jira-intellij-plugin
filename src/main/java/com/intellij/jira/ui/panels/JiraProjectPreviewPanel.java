@@ -1,5 +1,6 @@
 package com.intellij.jira.ui.panels;
 
+
 import com.intellij.jira.actions.VersionPreviewDetailsAction;
 import com.intellij.jira.actions.VersionUpdateAction;
 import com.intellij.jira.actions.VersionsComboBoxAction;
@@ -17,7 +18,9 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
+import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -51,22 +54,14 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
     public void showProject(@NotNull JiraProject project){
         this.project = project;
         this.verionsDetails = jiraServer.getProjectVersionDetails(project.getKey());
-        JComponent content = verionsDetails.isEmpty() ? createProjectPanel() : createProjectWithVersionsPanel();
-        setContent(content);
+        setContent(createProjectWithVersionsPanel());
     }
 
-
-
-
-
-    private JComponent createProjectPanel(){
-        return new ProjectDetailsPanel(project);
-    }
 
     private JComponent createProjectWithVersionsPanel(){
         JBSplitter splitter = new JBSplitter();
         splitter.setProportion(0.5f);
-        JComponent leftPanel = createProjectPanel();
+        JComponent leftPanel = new ProjectDetailsPanel(project);
         leftPanel.setBorder(IdeBorderFactory.createBorder(SideBorder.RIGHT));
         splitter.setFirstComponent(leftPanel);
         splitter.setSecondComponent(new VersionsDetailsPanel(verionsDetails));
@@ -97,17 +92,19 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
                     .withBackground(JBColor.WHITE)
                     .withBorder(JBUI.Borders.empty(1, 5, 1, 0));
 
-            JBPanel projectDetails = new JBPanel(new GridBagLayout()).withBackground(JBColor.WHITE);
-            //projectDetails.setLayout(new BoxLayout(projectDetails, Y_AXIS));
-            GridBagConstraints constraints = new GridBagConstraints();
+
+            FormBuilder formBuilder = FormBuilder.createFormBuilder().setVerticalGap(0);
 
             // Key and name
             JBPanel keyAndNamePanel = JiraPanelUtil.createWhitePanel(new BorderLayout()).withBorder(MARGIN_BOTTOM);
+            keyAndNamePanel.setPreferredSize(UI.size(450, 34));
             JBLabel keyAndNameLabel = JiraLabelUtil.createLabel(String.format("(%s) - %s", project.getKey(), project.getName()));
             keyAndNamePanel.add(keyAndNameLabel, LINE_START);
 
+
             // Type and lead
             JBPanel typeAndLeadPanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
+            typeAndLeadPanel.setPreferredSize(UI.size(450, 34));
             JBPanel typePanel = JiraPanelUtil.createWhitePanel(new BorderLayout());
             JBLabel typeLabel = JiraLabelUtil.createLabel("Type: ").withFont(BOLD);
             JBLabel typeValueLabel = JiraLabelUtil.createLabel(project.getProjectTypeKey());
@@ -125,20 +122,20 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
             typeAndLeadPanel.add(typePanel);
             typeAndLeadPanel.add(leadPanel);
 
+            formBuilder.addComponent(keyAndNamePanel);
+            formBuilder.addComponent(typeAndLeadPanel);
 
             // Roles
             // TODO
 
+            JBPanel projectDetails = new JBPanel(new GridBagLayout()).withBackground(JBColor.WHITE);
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.NORTH;
             constraints.gridx = 0;
             constraints.gridy = 0;
             constraints.weightx = 1;
             constraints.weighty = 1;
-            constraints.anchor = GridBagConstraints.NORTHWEST;
-            constraints.fill = GridBagConstraints.NONE;
-            projectDetails.add(keyAndNamePanel, constraints);
-
-            constraints.gridy = 1;
-            projectDetails.add(typeAndLeadPanel, constraints);
+            projectDetails.add(formBuilder.getPanel(), constraints);
 
             previewPanel.add(ScrollPaneFactory.createScrollPane(projectDetails, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED), CENTER);
 
@@ -182,6 +179,9 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
                 initToolbar();
                 initContent(version);
             }
+            else{
+                setContent(JiraPanelUtil.createPlaceHolderPanel("No versions"));
+            }
         }
 
         private void initToolbar() {
@@ -207,12 +207,11 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
                     .withBackground(JBColor.WHITE)
                     .withBorder(JBUI.Borders.empty(1, 5, 1, 0));
 
-            JBPanel versionDetails = new JBPanel(new GridBagLayout()).withBackground(JBColor.WHITE);
-            //versionDetails.setLayout(new BoxLayout(versionDetails, Y_AXIS));
-
+            FormBuilder formBuilder = FormBuilder.createFormBuilder().setVerticalGap(0);
 
             // Open
             JBPanel openPanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
+            openPanel.setPreferredSize(UI.size(500, 34));
             JBLabel openLabel = JiraLabelUtil.createBoldLabel("To Do");
             JBLabel openValue = JiraLabelUtil.createLabel(version.getStatus().getToDo().getCount(), RIGHT);
 
@@ -221,6 +220,7 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
 
             // In progress
             JBPanel inProgressPanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
+            inProgressPanel.setPreferredSize(UI.size(450, 34));
             JBLabel inProgressLabel = JiraLabelUtil.createBoldLabel("In Progress");
             JBLabel inProgressValue = JiraLabelUtil.createLabel(version.getStatus().getInProgress().getCount(), RIGHT);
 
@@ -229,6 +229,7 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
 
             // Done
             JBPanel donePanel = JiraPanelUtil.createWhitePanel(new GridLayout(1, 2)).withBorder(MARGIN_BOTTOM);
+            donePanel.setPreferredSize(UI.size(420, 34));
             JBLabel doneLabel = JiraLabelUtil.createBoldLabel("Done");
             JBLabel doneValue = JiraLabelUtil.createLabel(version.getStatus().getComplete().getCount(), RIGHT);
 
@@ -236,26 +237,22 @@ public class JiraProjectPreviewPanel extends SimpleToolWindowPanel {
             donePanel.add(doneValue);
 
 
+            formBuilder.addComponent(openPanel);
+            formBuilder.addComponent(inProgressPanel);
+            formBuilder.addComponent(donePanel);
+
+            JBPanel versionDetails = new JBPanel(new GridBagLayout()).withBackground(JBColor.WHITE);
             GridBagConstraints c = new GridBagConstraints();
+            c.anchor = GridBagConstraints.NORTH;
             c.gridx = 0;
             c.gridy = 0;
-            c.weightx = 1;
-            c.weighty = 0;
-            c.fill = GridBagConstraints.BOTH;
-            c.anchor = GridBagConstraints.NORTH;
-
-            versionDetails.add(openPanel, c);
-
-            c.gridy = 1;
-            versionDetails.add(inProgressPanel, c);
-
-            c.gridy = 2;
-            versionDetails.add(donePanel, c);
+            c.weighty = 1;
+            versionDetails.add(formBuilder.getPanel(), c);
 
 
-            setContent(ScrollPaneFactory.createScrollPane(versionDetails, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            previewPanel.add(ScrollPaneFactory.createScrollPane(versionDetails, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED));
 
-           // setContent(previewPanel);
+            setContent(previewPanel);
 
         }
 
