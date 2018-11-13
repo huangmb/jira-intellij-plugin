@@ -28,4 +28,9 @@ public class JiraProject {
     public String getUrl(){
         return self.replaceFirst("(/rest([\\w/]+))", "/projects/" + getKey() + "/summary");
     }
+
+    @Override
+    public String toString() {
+        return key;
+    }
 }

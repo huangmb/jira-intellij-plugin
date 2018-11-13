@@ -45,7 +45,7 @@ public class TextFieldEditor extends AbstractFieldEditor {
     @Nullable
     @Override
     public ValidationInfo validate() {
-        if(isEmpty(trim(myTextField.getText()))){
+        if(isRequired() && isEmpty(trim(myTextField.getText()))){
             return new ValidationInfo(myLabel.getMyLabelText() + " is required");
         }
 

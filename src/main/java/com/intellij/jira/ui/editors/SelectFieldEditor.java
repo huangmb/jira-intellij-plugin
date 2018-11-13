@@ -15,6 +15,7 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.UI;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -55,9 +56,6 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
                 .getPanel();
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 
     @Nullable
     @Override
@@ -94,14 +92,14 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
 
         protected JBList<E> myList;
 
-        public PickerDialog(@Nullable Project project, List<E> items) {
+        public PickerDialog(@Nullable Project project, @NotNull String title, List<E> items ) {
             super(project, false);
+            setTitle(title);
             this.myList = new JBList(items);
             this.myList.setPreferredSize(getPreferredSizeList());
             this.myList.setSelectionMode(isMultiSelect ? MULTIPLE_INTERVAL_SELECTION: SINGLE_SELECTION);
 
             init();
-
         }
 
         public Dimension getPreferredSizeList(){

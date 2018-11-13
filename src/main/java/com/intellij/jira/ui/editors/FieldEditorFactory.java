@@ -82,40 +82,51 @@ public class FieldEditorFactory {
     }
 
     private static FieldEditor createCustomFieldEditor(JiraIssueFieldProperties properties, JiraIssue issue) {
-        List<?> items = new ArrayList<>();
+
         boolean isArray = properties.getSchema().getType().equals("array");
+        String type =  isArray ? properties.getSchema().getItems() : properties.getSchema().getType();
         String customFieldType = properties.getSchema().getCustom();
+
+        if(!isArray){
+            if("string".equals(type)){
+                if("textarea".equals(customFieldType)){
+                    return new TextAreaFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+                }
+                return new TextFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+            }else if("number".equals(type)){
+                return new NumberFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+            }else if("date".equals(type)){
+                return new DateFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+            }else if("datetime".equals(type)){
+                return new DateTimeFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
+            }
+        }
+
+        // The field has not values so we have to retrieve them
         JsonArray values = properties.getAllowedValues();
         if(isNull(values) || isEmpty(values)){
-            if(CF_TEXT_FIELDS.contains(customFieldType)){
-                return new TextFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
-            }else if("userpicker".equals(customFieldType) || "multiuserpicker".equals(customFieldType)){
+            if("user".equals(type)){
                 return new UserSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired(), isArray);
-            }else if("grouppicker".equals(customFieldType) || "multigrouppicker".equals(customFieldType)){
+            }else if("group".equals(type)){
                 return new GroupSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired(), isArray);
-            }else if("datepicker".equals(customFieldType)){
-                return new DateFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
-            }else if("datetime".equals(customFieldType)){
-                return new DateTimeFieldEditor(properties.getName(), issue.getKey(), properties.isRequired());
             }
             else{
                 return new LabelFieldEditor(properties.getName(), issue.getKey());
             }
-
         }
 
-
-        String type =  isArray ? properties.getSchema().getItems() : properties.getSchema().getType();
-        if("option".equals(type)){
-            items = Arrays.asList(GSON.fromJson(values, JiraCustomFieldOption[].class));
-        }else if("project".equals(type)){
-            items = Arrays.asList(GSON.fromJson(values, JiraProject[].class));
+        // The field has values
+        if("project".equals(type)){
+            List<JiraProject> projects = Arrays.asList(GSON.fromJson(values, JiraProject[].class));
+            return new ProjectSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired(), isArray, projects);
         }else if("version".equals(type)){
-            items = Arrays.asList(GSON.fromJson(values, JiraProjectVersion[].class));
+            List<JiraProjectVersion> versions = Arrays.asList(GSON.fromJson(values, JiraProjectVersion[].class));
+            return new VersionSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired(), isArray, versions);
         }
 
+        List<JiraCustomFieldOption> options = Arrays.asList(GSON.fromJson(values, JiraCustomFieldOption[].class));
+        return new OptionSelectFieldEditor(properties.getName(), issue.getKey(), properties.isRequired(), isArray, options);
 
-        return new ComboBoxFieldEditor(properties.getName(), items, issue.getKey(), properties.isRequired(), isArray);
     }
 
 

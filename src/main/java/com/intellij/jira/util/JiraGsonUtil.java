@@ -22,7 +22,7 @@ public class JiraGsonUtil {
         return createArrayNameObjects(Collections.singletonList(value));
     }
 
-    public static JsonArray createArrayNameObjects(List<String>  values){
+    public static JsonArray createArrayNameObjects(List<String> values){
         JsonArray array = new JsonArray();
         JsonObject name = new JsonObject();
         for(String value : values){
@@ -48,6 +48,17 @@ public class JiraGsonUtil {
         return name;
     }
 
+    public static JsonArray createArrayObject(String property, List<String> values){
+        JsonArray array = new JsonArray();
+        JsonObject o = new JsonObject();
+        for(String value : values){
+            o.add(property, createPrimitive(value));
+        }
+
+        array.add(o);
+        return array;
+    }
+
 
     public static boolean isEmpty(JsonArray jsonArray){
         return nonNull(jsonArray) && jsonArray.size() == 0;
@@ -55,6 +66,10 @@ public class JiraGsonUtil {
 
     public static JsonElement createPrimitive(String value){
         return new JsonPrimitive(trim(value));
+    }
+
+    public static JsonElement createPrimitive(Double value){
+        return new JsonPrimitive(value);
     }
 
 }

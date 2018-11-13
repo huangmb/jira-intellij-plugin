@@ -67,8 +67,7 @@ public class UserSelectFieldEditor extends SelectFieldEditor {
     class UserPickerDialog extends PickerDialog<String> {
 
         public UserPickerDialog(@Nullable Project project, List<String> items) {
-            super(project, items);
-            setTitle("Users");
+            super(project, "Users", items);
         }
 
         @Override
