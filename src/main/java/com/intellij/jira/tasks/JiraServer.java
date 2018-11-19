@@ -38,6 +38,15 @@ public class JiraServer {
     }
 
 
+    public List<JiraIssue> getIssues(String searchQuery) {
+        try {
+            return this.jiraRestClient.findIssues(searchQuery);
+        } catch (Exception e) {
+            log.error("No issues found");
+            return ContainerUtil.emptyList();
+        }
+    }
+
     public List<JiraIssue> getIssues() {
         try {
             return this.jiraRestClient.findIssues();
@@ -159,6 +168,10 @@ public class JiraServer {
             e.printStackTrace();
             return ContainerUtil.emptyList();
         }
+    }
+
+    public String getDefaultSearchQuery(){
+        return jiraRestClient.getDefaultSearchQuery();
     }
 
 }

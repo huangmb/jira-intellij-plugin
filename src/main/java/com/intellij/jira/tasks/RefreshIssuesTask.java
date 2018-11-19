@@ -1,8 +1,10 @@
 package com.intellij.jira.tasks;
 
+import com.intellij.jira.components.JQLSearcherManager;
 import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.exceptions.JiraServerConfigurationNotFoundException;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.rest.model.jql.JQLSearcher;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +26,10 @@ public class RefreshIssuesTask extends AbstractBackgroundableTask {
             throw new JiraServerConfigurationNotFoundException("Cannot connect to server for updating issues");
         }
 
-        List<JiraIssue> issues = jiraServer.get().getIssues();
+        JQLSearcherManager jqlSearcherManager = myProject.getComponent(JQLSearcherManager.class);
+        JQLSearcher searcher = jqlSearcherManager.getDeafaultJQLSearcher();
+
+        List<JiraIssue> issues = jiraServer.get().getIssues(searcher.getJql());
         JiraIssueUpdater.getInstance().update(issues);
     }
 

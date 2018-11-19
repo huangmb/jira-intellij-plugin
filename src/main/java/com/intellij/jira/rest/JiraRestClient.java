@@ -35,11 +35,15 @@ public class JiraRestClient {
         return parseIssue(response);
     }
 
-    public List<JiraIssue> findIssues() throws Exception {
-        GetMethod method = getBasicSearchMethod(this.jiraRepository.getSearchQuery(), DEFAULT_MAX_ISSUES_RESULTS);
+    public List<JiraIssue> findIssues(String searchQuery) throws Exception {
+        GetMethod method = getBasicSearchMethod(searchQuery, DEFAULT_MAX_ISSUES_RESULTS);
         method.setQueryString(method.getQueryString() + "&fields=" + JiraIssue.REQUIRED_FIELDS);
         String response = jiraRepository.executeMethod(method);
         return parseIssues(response);
+    }
+
+    public List<JiraIssue> findIssues() throws Exception {
+        return findIssues(this.jiraRepository.getSearchQuery());
     }
 
 
@@ -180,6 +184,8 @@ public class JiraRestClient {
     }
 
 
-
+    public String getDefaultSearchQuery() {
+        return jiraRepository.getSearchQuery();
+    }
 }
 

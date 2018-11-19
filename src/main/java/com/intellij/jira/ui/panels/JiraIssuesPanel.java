@@ -15,10 +15,12 @@ import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.Separator;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
@@ -34,12 +36,14 @@ import static java.util.Objects.nonNull;
 public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueEventListener {
 
     private Optional<JiraServer> jiraServer;
+    private Project myProject;
     private JiraIssueTableView issueTable;
     private JiraIssueDetailsPanel issueDetailsPanel;
 
-    public JiraIssuesPanel(Optional<JiraServer> jiraServer) {
+    public JiraIssuesPanel(Optional<JiraServer> jiraServer, Project project) {
         super(false, true);
         this.jiraServer = jiraServer;
+        this.myProject = project;
         init();
     }
 
@@ -69,6 +73,12 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
 
             JPanel issuesPanel = new JPanel(new BorderLayout());
             issuesPanel.setBorder(JBUI.Borders.customLine(JBColor.border(),0, 0, 0, 1));
+
+            JPanel jqlPanel = new JBPanel(new BorderLayout());
+            jqlPanel.setBorder(JBUI.Borders.customLine(JBColor.border(),0, 0, 1, 0));
+            jqlPanel.add(new JiraJQLSearcherPanel(myProject), BorderLayout.WEST);
+
+            issuesPanel.add(jqlPanel, BorderLayout.PAGE_START);
             issuesPanel.add(ScrollPaneFactory.createScrollPane(issueTable), BorderLayout.CENTER);
 
 

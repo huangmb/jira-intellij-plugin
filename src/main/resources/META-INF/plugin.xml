@@ -39,6 +39,9 @@
         <component>
             <implementation-class>com.intellij.jira.tasks.JiraServerManager</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.intellij.jira.components.JQLSearcherManager</implementation-class>
+        </component>
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">

@@ -38,7 +38,7 @@ public class JiraToolWindowFactory implements ToolWindowFactory {
         contentManager.removeAllContents(true);
 
         Optional<JiraServer> jiraServer =  getJiraServer(project);
-        issuesPanel = new JiraIssuesPanel(jiraServer);
+        issuesPanel = new JiraIssuesPanel(jiraServer, project);
 
         Content content = contentManager.getFactory().createContent(issuesPanel, TAB_ISSUES, false);
         contentManager.addDataProvider(issuesPanel);
