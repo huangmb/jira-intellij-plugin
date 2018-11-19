@@ -1,5 +1,8 @@
 package com.intellij.jira.rest.model.jql;
 
+import com.intellij.openapi.util.text.StringUtil;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
 import static com.intellij.openapi.util.text.StringUtil.trim;
@@ -11,20 +14,33 @@ public class JQLSearcher {
     private boolean selected;
 
     public JQLSearcher(String jql) {
-        this("Undefined", jql);
+        this(null, jql, false);
     }
 
-    public JQLSearcher(String alias, String jql) {
-        this.alias = trim(alias);
-        this.jql = trim(jql);
+    public JQLSearcher(@Nullable String alias, String jql) {
+        this(alias, jql, false);
+    }
+
+    public JQLSearcher(@Nullable String alias, String jql, boolean isDefault) {
+        setAlias(alias);
+        setJql(jql);
+        setSelected(isDefault);
     }
 
     public String getAlias() {
         return alias;
     }
 
+    private void setAlias(String alias) {
+        this.alias = StringUtil.isEmpty(alias) ? "Undefined" : trim(alias);
+    }
+
     public String getJql() {
         return jql;
+    }
+
+    private void setJql(String jql) {
+        this.jql = trim(jql);
     }
 
     public boolean isDefault(){

@@ -2,6 +2,7 @@ package com.intellij.jira.ui.panels;
 
 import com.google.common.util.concurrent.SettableFuture;
 import com.intellij.jira.actions.GoToIssuePopupAction;
+import com.intellij.jira.actions.JQLSearcherActionGroup;
 import com.intellij.jira.actions.JiraIssueActionGroup;
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.components.JiraIssueUpdater;
@@ -109,6 +110,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
     private ActionGroup createActionGroup(){
         JiraIssueActionGroup group = new JiraIssueActionGroup(this);
         group.add(JiraActionManager.getInstance().getJiraIssuesRefreshAction());
+        group.add(new JQLSearcherActionGroup());
         group.add(new GoToIssuePopupAction());
         group.add(Separator.getInstance());
         group.add(ActionManager.getInstance().getAction("tasks.configure.servers"));
