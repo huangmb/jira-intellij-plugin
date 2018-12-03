@@ -66,13 +66,11 @@ public class JQLSearcher {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JQLSearcher that = (JQLSearcher) o;
-        return selected == that.selected &&
-                Objects.equals(alias, that.alias) &&
-                Objects.equals(jql, that.jql);
+        return Objects.equals(alias, that.alias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(alias, jql, selected);
+        return Objects.hash(alias);
     }
 }

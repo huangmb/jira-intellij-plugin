@@ -2,6 +2,7 @@ package com.intellij.jira.tasks;
 
 import com.intellij.concurrency.JobScheduler;
 import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.TaskManager;
 import com.intellij.tasks.TaskRepository;
@@ -14,15 +15,16 @@ import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class JiraServerManager extends AbstractProjectComponent {
+public class JiraServerManager implements ProjectComponent {
     private static final String JIRA = "JIRA";
 
+    private final Project myProject;
     private List<Runnable> listeners = new ArrayList();
     private Long currentJiraServerHash = 0L;
     private ScheduledFuture checkJiraServerChangesJob;
 
     public JiraServerManager(Project project) {
-        super(project);
+        this.myProject = project;
     }
 
 
