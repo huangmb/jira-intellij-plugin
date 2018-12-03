@@ -9,7 +9,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 
 group 'com.intellij'
-version '1.0'
+version '1.4'
 
 sourceCompatibility = 1.8
 
@@ -22,16 +22,13 @@ dependencies {
 }
 
 intellij {
-    version '2018.2.1'
+    version '2018.3'
     plugins 'tasks'
 }
 patchPluginXml {
     changeNotes """
-      Version 1.1<br>
+      Version 1.4<br>
       <ul>
-        <li>Notifications when user has not permissions to do an action</li>
-        <li>Link to project in issue details preview</li>
-        <li>Darcula theme</li>
-        <li>Bug fixed</li>
+        <li>Support 2018.3+</li>
       </ul>"""
 }
