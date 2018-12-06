@@ -77,17 +77,6 @@ public class ConfigureJQLSearchersDialog extends DialogWrapper {
                                 myModel.fireTableDataChanged();
                             }
                         })
-                        .setRemoveAction(button -> {
-                            if (Messages.showOkCancelDialog(myProject, "You are going to delete this searcher, are you sure?","Delete Searcher", Messages.getQuestionIcon()) == Messages.OK) {
-
-                                JQLSearcher selectedSearcher = myModel.getItem(myTable.getSelectedRow());
-                                this.myProject.getComponent(JQLSearcherManager.class).remove(selectedSearcher);
-
-                                mySearchers.remove(myTable.getSelectedRow());
-                                myModel.fireTableDataChanged();
-
-                            }
-                        })
                         .setEditAction(button -> {
                             int selRow = myTable.getSelectedRow();
                             JQLSearcher selectedSearcher = myModel.getItem(myTable.getSelectedRow());
@@ -97,6 +86,17 @@ public class ConfigureJQLSearchersDialog extends DialogWrapper {
                                 mySearchers.remove(selRow);
                                 mySearchers.add(selRow, dlg.getJqlSearcher());
                                 myModel.fireTableDataChanged();
+                            }
+                        })
+                        .setRemoveAction(button -> {
+                            if (Messages.showOkCancelDialog(myProject, "You are going to delete this searcher, are you sure?","Delete Searcher", Messages.getQuestionIcon()) == Messages.OK) {
+
+                                JQLSearcher selectedSearcher = myModel.getItem(myTable.getSelectedRow());
+                                this.myProject.getComponent(JQLSearcherManager.class).remove(selectedSearcher);
+
+                                mySearchers.remove(myTable.getSelectedRow());
+                                myModel.fireTableDataChanged();
+
                             }
                         })
                         .disableUpDownActions().createPanel(), BorderLayout.CENTER);

@@ -9,8 +9,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.components.JBPanel;
+import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,13 +27,14 @@ public class JiraJQLSearcherPanel extends JBPanel implements JQLSearcherEventLis
     private JQLSearcher mySelectedSearcher;
 
     public JiraJQLSearcherPanel(Project project) {
-        super();
+        super(new BorderLayout());
         this.myProject = project;
         init();
         installListeners();
     }
 
     private void init() {
+        setBorder(JBUI.Borders.empty(2, 4));
         List<JQLSearcher> jqlSearchers = getJQLSearcherManager().getJQLSearchers();
         mySelectedSearcher = getJQLSearcherManager().getDeafaultJQLSearcher();
         if(jqlSearchers.isEmpty()){
@@ -41,7 +44,7 @@ public class JiraJQLSearcherPanel extends JBPanel implements JQLSearcherEventLis
         myComboBoxItems = new CollectionComboBoxModel(new ArrayList(jqlSearchers));
         myComboBox = new ComboBox(myComboBoxItems, 300);
         myComboBox.setSelectedItem(mySelectedSearcher);
-        add(myComboBox);
+        add(myComboBox, BorderLayout.WEST);
     }
 
     private void installListeners() {

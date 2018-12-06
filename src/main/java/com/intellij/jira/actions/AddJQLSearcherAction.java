@@ -11,7 +11,7 @@ import static java.util.Objects.nonNull;
 public class AddJQLSearcherAction extends AnAction {
 
     public AddJQLSearcherAction() {
-        super("New JQL searcher...", null, AllIcons.General.Add);
+        super("New JQL searcher", null, AllIcons.General.Add);
     }
 
     @Override
