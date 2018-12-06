@@ -1,5 +1,6 @@
 package com.intellij.jira.components;
 
+import com.intellij.jira.events.JQLSearcherEventListener;
 import com.intellij.jira.rest.model.jql.JQLSearcher;
 import com.intellij.jira.ui.panels.JiraJQLSearcherPanel;
 import com.intellij.openapi.components.ProjectComponent;
@@ -12,7 +13,7 @@ public class JQLSearcherObserver implements ProjectComponent, Updater<JQLSearche
 
     private final Project myProject;
 
-    private List<JiraJQLSearcherPanel> myListeners;
+    private List<JQLSearcherEventListener> myListeners;
 
     public JQLSearcherObserver(Project myProject) {
         this.myProject = myProject;

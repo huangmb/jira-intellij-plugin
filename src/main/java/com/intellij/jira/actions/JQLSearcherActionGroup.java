@@ -5,6 +5,7 @@ import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.tasks.JiraServerManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.Separator;
 import com.intellij.openapi.project.Project;
 
 import java.util.Optional;
@@ -18,6 +19,8 @@ public class JQLSearcherActionGroup extends DefaultActionGroup {
         getTemplatePresentation().setIcon(AllIcons.Vcs.Changelist);
         add(new AddJQLSearcherAction());
         add(new EditJQLSearcherAction());
+        add(new Separator());
+        add(new ConfigureJQLSearchersAction());
     }
 
     @Override

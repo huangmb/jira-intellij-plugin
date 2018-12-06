@@ -28,11 +28,18 @@ public class JQLSearcherManager implements ProjectComponent {
     public void add(JQLSearcher searcher){
         checkDefault(searcher);
         this.jqlSearchers.putIfAbsent(searcher.getAlias(), searcher);
+        notifyViews();
+    }
+
+    public void remove(JQLSearcher selectedSearcher) {
+        this.jqlSearchers.remove(selectedSearcher.getAlias());
+        notifyViews();
     }
 
     public void update(String oldAliasSearcher, JQLSearcher updatedSearcher){
         checkDefault(updatedSearcher);
         this.jqlSearchers.put(oldAliasSearcher, updatedSearcher);
+        notifyViews();
     }
 
     public boolean alreadyExistJQLSearcherWithAlias(String alias){
@@ -48,7 +55,7 @@ public class JQLSearcherManager implements ProjectComponent {
             return defaultJqlSearcher;
         }
 
-        // Find de default jql in configured server jira
+        // Find default jql in configured server jira
         JiraServerManager jiraServerManager = myProject.getComponent(JiraServerManager.class);
         Optional<JiraServer> configuredJiraServer = jiraServerManager.getConfiguredJiraServer();
         if(configuredJiraServer.isPresent()){
@@ -64,6 +71,15 @@ public class JQLSearcherManager implements ProjectComponent {
             jqlSearchers.values().forEach(s -> s.setSelected(false));
             defaultJqlSearcher = searcher;
         }
+    }
+
+
+    private void notifyViews(){
+        getJqlSearcherObserver().update(getJQLSearchers());
+    }
+
+    private JQLSearcherObserver getJqlSearcherObserver(){
+        return myProject.getComponent(JQLSearcherObserver.class);
     }
 
 }

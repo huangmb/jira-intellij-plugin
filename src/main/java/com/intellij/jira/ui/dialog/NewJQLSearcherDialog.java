@@ -37,12 +37,17 @@ public class NewJQLSearcherDialog extends EditJQLSearcherDialog {
     @Override
     protected void doOKAction() {
         if(nonNull(myProject)){
-            JQLSearcher jqlSearcher = new JQLSearcher(myAliasField.getText(), mySearchQueryField.getText(), mySetDefaultCheckBox.isSelected());
-            JQLSearcherManager jqlManager = myProject.getComponent(JQLSearcherManager.class);
-            jqlManager.add(jqlSearcher);
-            myProject.getComponent(JQLSearcherObserver.class).update(jqlManager.getJQLSearchers());
+            JQLSearcherManager jqlManager = getJqlSearcherManager();
+            jqlManager.add(getJqlSearcher());
+            //getJqlSearcherObserver().update(jqlManager.getJQLSearchers());
         }
 
         close(0);
     }
+
+
+
+
+
+
 }

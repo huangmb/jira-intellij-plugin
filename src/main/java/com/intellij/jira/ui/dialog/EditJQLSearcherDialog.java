@@ -108,13 +108,34 @@ public class EditJQLSearcherDialog extends DialogWrapper {
     @Override
     protected void doOKAction() {
         if(nonNull(myProject)){
-            JQLSearcher jqlSearcher = new JQLSearcher(myAliasField.getText(), mySearchQueryField.getText(), mySetDefaultCheckBox.isSelected());
-            JQLSearcherManager jqlManager = myProject.getComponent(JQLSearcherManager.class);
-            // TODO: 03/12/2018
-
+            JQLSearcher jqlSearcher = getJqlSearcher();
+            JQLSearcherManager jqlManager = getJqlSearcherManager();
+            jqlManager.update(myJQLSearcher.getAlias(), jqlSearcher);
+           //getJqlSearcherObserver().update(jqlManager.getJQLSearchers());
         }
-        
 
         super.doOKAction();
     }
+
+
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return myAliasField;
+    }
+
+
+    public JQLSearcherManager getJqlSearcherManager(){
+        return myProject.getComponent(JQLSearcherManager.class);
+    }
+
+    public JQLSearcherObserver getJqlSearcherObserver(){
+        return  myProject.getComponent(JQLSearcherObserver.class);
+    }
+
+    public JQLSearcher getJqlSearcher(){
+        return new JQLSearcher(myAliasField.getText(), mySearchQueryField.getText(), mySetDefaultCheckBox.isSelected());
+    }
+
+
 }
