@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.JBColor;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBPanel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,7 @@ import java.awt.*;
 
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static java.util.Objects.nonNull;
+import static javax.swing.ScrollPaneConstants.*;
 
 public class AddCommentDialog extends DialogWrapper {
 
@@ -40,8 +42,10 @@ public class AddCommentDialog extends DialogWrapper {
     protected JComponent createCenterPanel() {
         JBPanel panel = new JBPanel(new BorderLayout());
         commentArea = new JTextArea(6, 60);
-        commentArea.setBorder(BorderFactory.createLineBorder(JBColor.darkGray));
-        panel.add(commentArea, BorderLayout.CENTER);
+        commentArea.setBorder(BorderFactory.createLineBorder(JBColor.border()));
+        commentArea.setLineWrap(true);
+        commentArea.setWrapStyleWord(true);
+        panel.add(ScrollPaneFactory.createScrollPane(commentArea, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
 
         return panel;
     }
@@ -56,6 +60,12 @@ public class AddCommentDialog extends DialogWrapper {
 
     @Nullable
     @Override
+    public JComponent getPreferredFocusedComponent() {
+        return commentArea;
+    }
+
+    @Nullable
+    @Override
     protected ValidationInfo doValidate() {
         if(isEmpty(commentArea.getText())){
             return new ValidationInfo("Comment body can not be empty!", commentArea);
@@ -67,7 +77,7 @@ public class AddCommentDialog extends DialogWrapper {
     @Override
     protected void doOKAction() {
         if(nonNull(project)){
-            new AddCommentTask(project, issueKey, commentArea.getText()).queue();
+            new AddCommentTask(project, issueKey, escapeComment()).queue();
         }
         close(0);
     }
@@ -77,6 +87,9 @@ public class AddCommentDialog extends DialogWrapper {
     }
 
 
+    private String escapeComment(){
+        return commentArea.getText().replace("\n", "\\r\\n");
+    }
 
 
 

@@ -43,6 +43,7 @@ public class JiraIssueCommentListCellRenderer extends DefaultJiraListCellRender 
 
         commentArea = new JTextArea();
         commentArea.setLineWrap(true);
+        commentArea.setWrapStyleWord(true);
         commentArea.setEditable(false);
 
         subPanel.add(priorityPanel, BorderLayout.PAGE_START);
