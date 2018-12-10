@@ -1,11 +1,9 @@
 package com.intellij.jira.components;
 
-import com.intellij.jira.events.JiraIssueEventListener;
 import com.intellij.jira.rest.model.jql.JQLSearcher;
 import com.intellij.jira.rest.model.jql.JiraServerJQLSearcher;
 import com.intellij.jira.tasks.JiraServer;
 import com.intellij.jira.tasks.JiraServerManager;
-import com.intellij.jira.ui.panels.JiraJQLSearcherPanel;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 
@@ -31,15 +29,35 @@ public class JQLSearcherManager implements ProjectComponent {
         notifyViews();
     }
 
+
+    public void addJiraServerJqlSearcher(){
+        JiraServerManager jiraServerManager = myProject.getComponent(JiraServerManager.class);
+        Optional<JiraServer> configuredJiraServer = jiraServerManager.getConfiguredJiraServer();
+        if(configuredJiraServer.isPresent()){
+            JQLSearcher jqlSearcher = new JiraServerJQLSearcher(configuredJiraServer.get());
+            jqlSearchers.put(jqlSearcher.getAlias(), jqlSearcher);
+            defaultJqlSearcher = jqlSearcher;
+        }
+
+    }
+
     public void remove(JQLSearcher selectedSearcher) {
         this.jqlSearchers.remove(selectedSearcher.getAlias());
         notifyViews();
     }
 
     public void update(String oldAliasSearcher, JQLSearcher updatedSearcher){
-        checkDefault(updatedSearcher);
-        this.jqlSearchers.put(oldAliasSearcher, updatedSearcher);
-        notifyViews();
+        if(jqlSearchers.containsKey(oldAliasSearcher)){
+            checkDefault(updatedSearcher);
+            if(oldAliasSearcher.equals(updatedSearcher.getAlias())){
+                this.jqlSearchers.put(oldAliasSearcher, updatedSearcher);
+            }else{
+                this.jqlSearchers.remove(oldAliasSearcher);
+                this.jqlSearchers.put(updatedSearcher.getAlias(), updatedSearcher);
+            }
+
+            notifyViews();
+        }
     }
 
     public boolean alreadyExistJQLSearcherWithAlias(String alias){
@@ -55,14 +73,7 @@ public class JQLSearcherManager implements ProjectComponent {
             return defaultJqlSearcher;
         }
 
-        // Find default jql in configured server jira
-        JiraServerManager jiraServerManager = myProject.getComponent(JiraServerManager.class);
-        Optional<JiraServer> configuredJiraServer = jiraServerManager.getConfiguredJiraServer();
-        if(configuredJiraServer.isPresent()){
-            return new JiraServerJQLSearcher(configuredJiraServer.get());
-        }
-
-        return new JQLSearcher("assignee = currentUser()");
+        return new JQLSearcher("Assigned to me","assignee = currentUser()");
     }
 
 

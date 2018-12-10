@@ -1,12 +1,10 @@
 package com.intellij.jira.ui.dialog;
 
 import com.intellij.jira.components.JQLSearcherManager;
-import com.intellij.jira.components.JQLSearcherObserver;
 import com.intellij.jira.rest.model.jql.JQLSearcher;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.tasks.jira.jql.JqlLanguage;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.LanguageTextField;
@@ -19,9 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 
-import static com.intellij.openapi.util.text.StringUtil.*;
+import static com.intellij.openapi.util.text.StringUtil.isEmpty;
+import static com.intellij.openapi.util.text.StringUtil.trim;
 import static java.util.Objects.nonNull;
 
 public class EditJQLSearcherDialog extends DialogWrapper {
@@ -94,10 +92,6 @@ public class EditJQLSearcherDialog extends DialogWrapper {
             return new ValidationInfo("Alias field is required");
         }
 
-        if(myProject.getComponent(JQLSearcherManager.class).alreadyExistJQLSearcherWithAlias(trim(myAliasField.getText()))){
-            return new ValidationInfo("Alias already exist");
-        }
-
         if(isEmpty(trim(mySearchQueryField.getText()))){
             return new ValidationInfo("JQL field is required");
         }
@@ -111,7 +105,6 @@ public class EditJQLSearcherDialog extends DialogWrapper {
             JQLSearcher jqlSearcher = getJqlSearcher();
             JQLSearcherManager jqlManager = getJqlSearcherManager();
             jqlManager.update(myJQLSearcher.getAlias(), jqlSearcher);
-           //getJqlSearcherObserver().update(jqlManager.getJQLSearchers());
         }
 
         super.doOKAction();
@@ -129,9 +122,6 @@ public class EditJQLSearcherDialog extends DialogWrapper {
         return myProject.getComponent(JQLSearcherManager.class);
     }
 
-    public JQLSearcherObserver getJqlSearcherObserver(){
-        return  myProject.getComponent(JQLSearcherObserver.class);
-    }
 
     public JQLSearcher getJqlSearcher(){
         return new JQLSearcher(myAliasField.getText(), mySearchQueryField.getText(), mySetDefaultCheckBox.isSelected());

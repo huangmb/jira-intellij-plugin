@@ -14,7 +14,6 @@ import com.intellij.util.ui.JBUI;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -35,11 +34,9 @@ public class JiraJQLSearcherPanel extends JBPanel implements JQLSearcherEventLis
 
     private void init() {
         setBorder(JBUI.Borders.empty(2, 4));
+        getJQLSearcherManager().addJiraServerJqlSearcher();
         List<JQLSearcher> jqlSearchers = getJQLSearcherManager().getJQLSearchers();
         mySelectedSearcher = getJQLSearcherManager().getDeafaultJQLSearcher();
-        if(jqlSearchers.isEmpty()){
-            jqlSearchers.add(mySelectedSearcher);
-        }
 
         myComboBoxItems = new CollectionComboBoxModel(new ArrayList(jqlSearchers));
         myComboBox = new ComboBox(myComboBoxItems, 300);
@@ -52,7 +49,7 @@ public class JiraJQLSearcherPanel extends JBPanel implements JQLSearcherEventLis
             JQLSearcher selectedItem = (JQLSearcher) this.myComboBox.getSelectedItem();
             if(nonNull(selectedItem)){
                 selectedItem.setSelected(true);
-                getJQLSearcherManager().update(mySelectedSearcher.getAlias(), selectedItem);
+                getJQLSearcherManager().update(selectedItem.getAlias(), selectedItem);
                 mySelectedSearcher = selectedItem;
                 SwingUtilities.invokeLater(() -> new RefreshIssuesTask(myProject).queue());
             }
