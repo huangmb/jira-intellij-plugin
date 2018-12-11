@@ -45,6 +45,9 @@
         <component>
             <implementation-class>com.intellij.jira.components.JQLSearcherObserver</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.intellij.jira.server.JiraServerManager2</implementation-class>
+        </component>
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
