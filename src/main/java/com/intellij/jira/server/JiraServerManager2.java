@@ -1,7 +1,10 @@
 package com.intellij.jira.server;
 
 import com.intellij.configurationStore.XmlSerializer;
+import com.intellij.jira.util.SimpleSelectableList;
 import com.intellij.openapi.components.*;
+import com.intellij.tasks.jira.JiraRepository;
+import com.intellij.tasks.jira.JiraRepositoryType;
 import com.intellij.util.xmlb.XmlSerializationException;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
@@ -18,15 +21,14 @@ import static java.util.Objects.nonNull;
 public class JiraServerManager2 implements ProjectComponent, PersistentStateComponent<JiraServerManager2.Config> {
 
 
-    private final List<JiraServer2> myJiraServers = new ArrayList<>();
-    private int mySelectedJiraServer = -1;
+    private SimpleSelectableList<JiraServer2> myJiraServers = new SimpleSelectableList<>();
     private Config myConfig = new Config();
 
     @Nullable
     @Override
     public Config getState() {
-        myConfig.selected = mySelectedJiraServer;
-        myConfig.servers = XmlSerializer.serialize(getAllJiraServers());
+        myConfig.selected = myJiraServers.getSelectedItemIndex();
+        myConfig.servers = XmlSerializer.serialize(getAllJiraServersAsArray());
         return myConfig;
     }
 
@@ -39,7 +41,7 @@ public class JiraServerManager2 implements ProjectComponent, PersistentStateComp
         List<JiraServer2> servers = loadServers(element);
         myJiraServers.addAll(servers);
 
-        mySelectedJiraServer = config.selected;
+        myJiraServers.selectItem(config.selected);
     }
 
     private List<JiraServer2> loadServers(Element element) {
@@ -58,61 +60,40 @@ public class JiraServerManager2 implements ProjectComponent, PersistentStateComp
         return servers;
     }
 
-    public List<JiraServer2> getAllJiraServers() {
+    public SimpleSelectableList<JiraServer2> getJiraServers() {
         return myJiraServers;
     }
 
-    public int getSelectedJiraServer(){
-        if(getAllJiraServers().isEmpty()){
-            return -1;
-        }
-
-        return mySelectedJiraServer;
+    private JiraServer2[] getAllJiraServersAsArray(){
+        return myJiraServers.getItems().toArray(new JiraServer2[0]);
     }
 
-    public void add(JiraServer2 jiraServer, boolean isSetDefault) {
-        // First time
-        if(myJiraServers.isEmpty()){
-            myJiraServers.add(jiraServer);
-            mySelectedJiraServer = 0;
-            // update issues
-        }else{
-            myJiraServers.add(jiraServer);
-            if(isSetDefault){
-                mySelectedJiraServer = myJiraServers.size() - 1;
-                // update issues
-            }
-        }
-
+    public int getSelectedJiraServerIndex(){
+        return myJiraServers.getSelectedItemIndex();
     }
 
-    public void update(JiraServer2 jiraServer, int index, boolean isSetDefault) {
-        if(index >= 0){
-            myJiraServers.remove(index);
-            myJiraServers.add(index, jiraServer);
-            if(isSetDefault){
-                mySelectedJiraServer = index;
-                // update issues
-            }
-        }
-
+    public JiraServer2 getCurrentJiraServer(){
+        return myJiraServers.getItems().get(getSelectedJiraServerIndex());
     }
 
-    public void remove(int index) {
-        if(index >= 0){
-            myJiraServers.remove(index);
-            if(index < mySelectedJiraServer){
-                mySelectedJiraServer = index;
-            }
-
-            if(mySelectedJiraServer > myJiraServers.size() - 1){
-                mySelectedJiraServer--;
-            }
-
-            //update issues
-        }
-
+    public void setJiraServers(SimpleSelectableList<JiraServer2> servers) {
+        this.myJiraServers = servers;
     }
+
+    public JiraRepository getJiraRestApi(){
+        return convertFrom(getCurrentJiraServer());
+    }
+
+    private JiraRepository convertFrom(JiraServer2 jiraServer){
+        JiraRepository repository = new JiraRepositoryType().createRepository();
+        repository.setUrl(jiraServer.getUrl());
+        repository.setUsername(jiraServer.getUsername());
+        repository.setPassword(jiraServer.getPassword());
+
+        return repository;
+    }
+
+
 
     public static class Config{
 

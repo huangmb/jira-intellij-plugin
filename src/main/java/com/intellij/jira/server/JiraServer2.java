@@ -1,8 +1,10 @@
 package com.intellij.jira.server;
 
 import com.intellij.openapi.util.PasswordUtil;
+import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.Transient;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -13,6 +15,7 @@ public class JiraServer2 {
     private String username;
     private String password;
 
+    public JiraServer2() { }
 
     public JiraServer2(String url, String username, String password) {
         this.url = url;
@@ -20,7 +23,11 @@ public class JiraServer2 {
         this.password = password;
     }
 
-    @Tag("url")
+    public JiraServer2(JiraServer2 other){
+        this(other.getUrl(), other.getUsername(), other.getPassword());
+    }
+
+    @Attribute("url")
     public String getUrl() {
         return url;
     }
@@ -29,7 +36,7 @@ public class JiraServer2 {
         this.url = url;
     }
 
-    @Tag("username")
+    @Attribute("username")
     public String getUsername() {
         return username;
     }
@@ -47,7 +54,7 @@ public class JiraServer2 {
         this.password = password;
     }
 
-    @Tag("password")
+    @Attribute("password")
     public String getEncodedPassword() {
         return PasswordUtil.encodePassword(this.getPassword());
     }
@@ -58,6 +65,11 @@ public class JiraServer2 {
         } catch (NumberFormatException var3) { }
     }
 
+    @NotNull
+    @Override
+    public JiraServer2 clone(){
+        return new JiraServer2(this);
+    }
 
     @Override
     public boolean equals(Object o) {

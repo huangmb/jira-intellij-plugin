@@ -67,13 +67,14 @@ public class SimpleSelectableList<E>{
 
     public E remove(int index){
         E element = items.remove(index);
+        if(this.selectedItem > getLastSelectableItemIndex()){
+            selectItem(getSelectedItemIndex() - 1);
+        }
+
         if(index < this.selectedItem){
             selectItem(index);
         }
 
-        if(this.selectedItem > getLastSelectableItemIndex()){
-            selectItem(getSelectedItemIndex() - 1);
-        }
 
         return element;
     }
@@ -110,7 +111,7 @@ public class SimpleSelectableList<E>{
         }
     }
 
-    private boolean hasSelectedItem(){
+    public boolean hasSelectedItem(){
         return getSelectedItemIndex() != UNSELECTED;
     }
 
