@@ -9,8 +9,8 @@ import com.intellij.ide.DataManager;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.JiraIssueLinkType;
 import com.intellij.jira.rest.model.JiraIssueLinkTypeInfo;
-import com.intellij.jira.tasks.JiraServer;
-import com.intellij.jira.tasks.JiraServerManager;
+import com.intellij.jira.server.JiraServerManager;
+import com.intellij.jira.server.JiraRestApi;
 import com.intellij.jira.ui.JiraIssueLinkTypeInfoListModel;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -30,7 +30,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.util.List;
-import java.util.Optional;
 
 import static com.intellij.jira.util.JiraGsonUtil.createNameObject;
 import static com.intellij.jira.util.JiraGsonUtil.createObject;
@@ -113,11 +112,11 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
         public void actionPerformed(AnActionEvent e) {
             Project project = e.getProject();
             if(nonNull(project)){
-                JiraServerManager serverManager = project.getComponent(JiraServerManager.class);
-                Optional<JiraServer> jiraServer = serverManager.getConfiguredJiraServer();
-                if(jiraServer.isPresent()){
-                    List<JiraIssueLinkType> issueLinkTypes = jiraServer.get().getIssueLinkTypes();
-                    List<String> issues = jiraServer.get().getIssues().stream().map(JiraIssue::getKey).collect(toList());
+                JiraServerManager manager = project.getComponent(JiraServerManager.class);
+                JiraRestApi jiraRestApi = manager.getJiraRestApi();
+                if(nonNull(jiraRestApi)){
+                    List<JiraIssueLinkType> issueLinkTypes = jiraRestApi.getIssueLinkTypes();
+                    List<String> issues = jiraRestApi.getIssues().stream().map(JiraIssue::getKey).collect(toList());
 
                     AddIssueLinkDialog dialog = new AddIssueLinkDialog(project, issueLinkTypes, issues);
                     dialog.show();

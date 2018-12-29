@@ -28,7 +28,7 @@
             <implementation-class>com.intellij.jira.components.JiraActionManager</implementation-class>
         </component>
         <component>
-            <implementation-class>com.intellij.jira.notifications.JiraNotificationComponent</implementation-class>
+            <implementation-class>com.intellij.jira.components.JiraNotificationManager</implementation-class>
         </component>
         <component>
             <implementation-class>com.intellij.jira.components.JiraIssueUpdater</implementation-class>
@@ -37,16 +37,13 @@
 
     <project-components>
         <component>
-            <implementation-class>com.intellij.jira.tasks.JiraServerManager</implementation-class>
-        </component>
-        <component>
             <implementation-class>com.intellij.jira.components.JQLSearcherManager</implementation-class>
         </component>
         <component>
             <implementation-class>com.intellij.jira.components.JQLSearcherObserver</implementation-class>
         </component>
         <component>
-            <implementation-class>com.intellij.jira.server.JiraServerManager2</implementation-class>
+            <implementation-class>com.intellij.jira.server.JiraServerManager</implementation-class>
         </component>
     </project-components>
 

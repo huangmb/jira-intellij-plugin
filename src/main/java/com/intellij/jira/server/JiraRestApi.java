@@ -1,4 +1,4 @@
-package com.intellij.jira.tasks;
+package com.intellij.jira.server;
 
 import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
 import com.intellij.jira.rest.JiraRestClient;
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JiraServer {
+public class JiraRestApi {
 
-    private static final Logger log = LoggerFactory.getLogger(JiraServer.class);
+    private static final Logger log = LoggerFactory.getLogger(JiraRestApi.class);
 
     private JiraRestClient jiraRestClient;
 
-    public JiraServer(JiraRepository jiraRepository) {
+    public JiraRestApi(JiraRepository jiraRepository) {
         this.jiraRestClient = new JiraRestClient(jiraRepository);
     }
 

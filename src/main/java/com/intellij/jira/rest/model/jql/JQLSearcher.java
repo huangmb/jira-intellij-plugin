@@ -51,10 +51,6 @@ public class JQLSearcher {
         this.selected = selected;
     }
 
-    public boolean isEditable(){
-        return true;
-    }
-
 
     @Override
     public String toString() {

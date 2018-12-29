@@ -4,6 +4,7 @@ import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.exceptions.InvalidPermissionException;
 import com.intellij.jira.exceptions.InvalidResultException;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.server.JiraRestApi;
 import com.intellij.jira.util.Result;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -25,20 +26,20 @@ public class AddCommentTask extends AbstractBackgroundableTask {
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
-        JiraServer jiraServer = getJiraServer();
+        JiraRestApi jiraRestApi = getJiraRestApi();
         // Check user permissions
-        boolean hasPermission = jiraServer.userHasPermissionOnIssue(issueKey, COMMENT_ISSUE);
+        boolean hasPermission = jiraRestApi.userHasPermissionOnIssue(issueKey, COMMENT_ISSUE);
         if(!hasPermission){
             throw new InvalidPermissionException("Jira", "You don't have permission to add a comment");
         }
 
-        Result result = jiraServer.addCommentToIssue(body, issueKey);
+        Result result = jiraRestApi.addCommentToIssue(body, issueKey);
         if(!result.isValid()) {
             throw new InvalidResultException("Error", "Issue comment has not been added");
         }
 
         // Retrieve updated issue
-        Result issueResult = jiraServer.getIssue(issueKey);
+        Result issueResult = jiraRestApi.getIssue(issueKey);
         if(issueResult.isValid()){
             JiraIssue issue = (JiraIssue) issueResult.get();
             // Update panels

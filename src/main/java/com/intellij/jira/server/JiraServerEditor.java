@@ -12,10 +12,16 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import static com.intellij.openapi.util.text.StringUtil.trim;
 import static java.lang.String.valueOf;
 
 public class JiraServerEditor {
+
+    private final static int DEFAULT_WIDTH = 450;
+    private final static int DEFAULT_HEIGHT = 24;
 
     private JLabel myUrlLabel;
     private JTextField myUrlField;
@@ -30,17 +36,18 @@ public class JiraServerEditor {
 
     private JPanel myPanel;
 
-    private final JiraServer2 myServer;
+    private final JiraServer myServer;
     private final boolean mySelectedServer;
 
+    private BiConsumer<JiraServer, Boolean> myChangeListener;
+    private Consumer<JiraServer> myChangeUrlListener;
 
-    public JiraServerEditor(final JiraServer2 server) {
-        this(server, false);
-    }
 
-    public JiraServerEditor(final JiraServer2 server, boolean selected) {
+    public JiraServerEditor(final JiraServer server, boolean selected, BiConsumer<JiraServer, Boolean> changeListener, Consumer<JiraServer> changeUrlListener) {
         this.myServer = server;
         this.mySelectedServer = selected;
+        this.myChangeListener = changeListener;
+        this.myChangeUrlListener = changeUrlListener;
         init();
     }
 
@@ -49,17 +56,17 @@ public class JiraServerEditor {
         this.myUrlLabel = new JBLabel("Server URL:", 4);
         this.myUrlField = new JBTextField();
         this.myUrlField.setText(myServer.getUrl());
-        this.myUrlField.setPreferredSize(UI.size(300, 24));
+        this.myUrlField.setPreferredSize(UI.size(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
         this.myUsernameLabel = new JBLabel("Username:", 4);
         this.myUsernameField = new JBTextField();
         this.myUsernameField.setText(myServer.getUsername());
-        this.myUsernameField.setPreferredSize(UI.size(300, 24));
+        this.myUsernameField.setPreferredSize(UI.size(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
         this.myPasswordLabel = new JBLabel("Password:", 4);
         this.myPasswordField = new JPasswordField();
         this.myPasswordField.setText(myServer.getPassword());
-        this.myPasswordField.setPreferredSize(UI.size(300, 24));
+        this.myPasswordField.setPreferredSize(UI.size(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
         this.myDefaultServerCheckbox = new JCheckBox("Set Default");
         this.myDefaultServerCheckbox.setBorder(JBUI.Borders.emptyRight(4));
@@ -93,7 +100,7 @@ public class JiraServerEditor {
     }
 
     private void installListener(JCheckBox checkBox) {
-        checkBox.addActionListener(e -> apply());
+        checkBox.addActionListener(e -> defaultServerChanged());
     }
 
 
@@ -104,44 +111,16 @@ public class JiraServerEditor {
 
 
 
-    public void apply(){
+    private void apply(){
         this.myServer.setUrl(trim(myUrlField.getText()));
         this.myServer.setUsername(trim(myUsernameField.getText()));
         this.myServer.setPassword(trim(valueOf(myPasswordField.getPassword())));
+        this.myChangeUrlListener.accept(myServer);
     }
 
-
-
-    public JiraServer2 getJiraServer(){
-        JiraServer2 jiraServer = new JiraServer2();
-        jiraServer.setUrl(myUrlField.getText());
-        jiraServer.setUsername(myUsernameField.getText());
-        jiraServer.setPassword(valueOf(myPasswordField.getPassword()));
-
-        return jiraServer;
+    private void defaultServerChanged(){
+        this.myChangeListener.accept(myServer, myDefaultServerCheckbox.isSelected());
     }
 
-    public boolean isSetDefault(){
-        return myDefaultServerCheckbox.isSelected();
-    }
-
-    public void setDefault(boolean isDefault){
-        myDefaultServerCheckbox.setSelected(isDefault);
-    }
-
-
-    public void reset(){
-        myUrlField.setText("");
-        myUsernameField.setText("");
-        myPasswordField.setText("");
-        myDefaultServerCheckbox.setSelected(false);
-    }
-
-    public void show(@NotNull JiraServer2 jiraServer, boolean selected){
-        myUrlField.setText(jiraServer.getUrl());
-        myUsernameField.setText(jiraServer.getUsername());
-        myPasswordField.setText(jiraServer.getPassword());
-        myDefaultServerCheckbox.setSelected(selected);
-    }
 
 }

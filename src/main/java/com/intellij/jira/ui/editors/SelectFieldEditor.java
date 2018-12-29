@@ -1,8 +1,8 @@
 package com.intellij.jira.ui.editors;
 
 import com.intellij.ide.DataManager;
-import com.intellij.jira.tasks.JiraServer;
-import com.intellij.jira.tasks.JiraServerManager;
+import com.intellij.jira.server.JiraServerManager;
+import com.intellij.jira.server.JiraRestApi;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -69,7 +69,7 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
 
     abstract class PickerDialogAction extends AnAction{
 
-        protected JiraServer myJiraServer;
+        protected JiraRestApi myJiraRestApi;
         protected Project myProject;
 
         public PickerDialogAction() {
@@ -81,8 +81,7 @@ public abstract class SelectFieldEditor extends AbstractFieldEditor {
             Project project = e.getProject();
             if(nonNull(project)){
                 myProject = project;
-                JiraServerManager serverManager = project.getComponent(JiraServerManager.class);
-                myJiraServer = serverManager.getConfiguredJiraServer().get();
+                myJiraRestApi = project.getComponent(JiraServerManager.class).getJiraRestApi();
             }
         }
     }

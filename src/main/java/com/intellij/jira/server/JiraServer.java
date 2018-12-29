@@ -8,22 +8,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-@Tag("JiraServer")
-public class JiraServer2 {
+@Tag("JiraRestApi")
+public class JiraServer {
 
     private String url;
     private String username;
     private String password;
 
-    public JiraServer2() { }
+    public JiraServer() { }
 
-    public JiraServer2(String url, String username, String password) {
+    public JiraServer(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
     }
 
-    public JiraServer2(JiraServer2 other){
+    public JiraServer(JiraServer other){
         this(other.getUrl(), other.getUsername(), other.getPassword());
     }
 
@@ -67,15 +67,15 @@ public class JiraServer2 {
 
     @NotNull
     @Override
-    public JiraServer2 clone(){
-        return new JiraServer2(this);
+    public JiraServer clone(){
+        return new JiraServer(this);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JiraServer2 that = (JiraServer2) o;
+        JiraServer that = (JiraServer) o;
         return url.equals(that.url);
     }
 

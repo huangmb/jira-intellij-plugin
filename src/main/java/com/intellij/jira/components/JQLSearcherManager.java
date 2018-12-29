@@ -1,18 +1,20 @@
 package com.intellij.jira.components;
 
 import com.intellij.jira.rest.model.jql.JQLSearcher;
-import com.intellij.jira.rest.model.jql.JiraServerJQLSearcher;
-import com.intellij.jira.tasks.JiraServer;
-import com.intellij.jira.tasks.JiraServerManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 
 public class JQLSearcherManager implements ProjectComponent {
 
+    private final static JQLSearcher DEFAULT_JQL = new JQLSearcher("Assigned to me", "assignee = currentUser()", true);
     private final Project myProject;
 
     private Map<String, JQLSearcher> jqlSearchers = new HashMap<>();
@@ -20,6 +22,7 @@ public class JQLSearcherManager implements ProjectComponent {
 
     protected JQLSearcherManager(Project project) {
         this.myProject = project;
+        this.jqlSearchers.put(DEFAULT_JQL.getAlias(), DEFAULT_JQL);
     }
 
 
@@ -29,17 +32,6 @@ public class JQLSearcherManager implements ProjectComponent {
         notifyViews();
     }
 
-
-    public void addJiraServerJqlSearcher(){
-        JiraServerManager jiraServerManager = myProject.getComponent(JiraServerManager.class);
-        Optional<JiraServer> configuredJiraServer = jiraServerManager.getConfiguredJiraServer();
-        if(configuredJiraServer.isPresent()){
-            JQLSearcher jqlSearcher = new JiraServerJQLSearcher(configuredJiraServer.get());
-            jqlSearchers.put(jqlSearcher.getAlias(), jqlSearcher);
-            defaultJqlSearcher = jqlSearcher;
-        }
-
-    }
 
     public void remove(JQLSearcher selectedSearcher) {
         this.jqlSearchers.remove(selectedSearcher.getAlias());
@@ -68,12 +60,13 @@ public class JQLSearcherManager implements ProjectComponent {
         return new ArrayList<>(jqlSearchers.values());
     }
 
+    @NotNull
     public JQLSearcher getDeafaultJQLSearcher(){
         if(nonNull(defaultJqlSearcher)){
             return defaultJqlSearcher;
         }
 
-        return new JQLSearcher("Assigned to me","assignee = currentUser()");
+        return DEFAULT_JQL;
     }
 
 

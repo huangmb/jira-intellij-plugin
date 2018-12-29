@@ -4,6 +4,7 @@ import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.exceptions.InvalidResultException;
 import com.intellij.jira.helper.TransitionFieldHelper.FieldEditorInfo;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.server.JiraRestApi;
 import com.intellij.jira.util.Result;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -26,14 +27,14 @@ public class TransitIssueTask extends AbstractBackgroundableTask {
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
-        JiraServer jiraServer = getJiraServer();
-        Result result = jiraServer.transitIssue(issueId, transitionId, fields);
+        JiraRestApi jiraRestApi = getJiraRestApi();
+        Result result = jiraRestApi.transitIssue(issueId, transitionId, fields);
         if(!result.isValid()) {
             throw new InvalidResultException("Transition error", "Issue has not been updated");
         }
 
         // Retrieve updated issue
-        Result issueResult = jiraServer.getIssue(issueId);
+        Result issueResult = jiraRestApi.getIssue(issueId);
         if(issueResult.isValid()){
             JiraIssue issue = (JiraIssue) issueResult.get();
             // Update panels

@@ -54,8 +54,8 @@ public class UserSelectFieldEditor extends SelectFieldEditor {
         @Override
         public void actionPerformed(AnActionEvent e) {
             super.actionPerformed(e);
-            if(nonNull(myJiraServer)){
-                List<String> users = myJiraServer.getAssignableUsers(issueKey).stream().map(JiraIssueUser::getKey).collect(toList());
+            if(nonNull(myJiraRestApi)){
+                List<String> users = myJiraRestApi.getAssignableUsers(issueKey).stream().map(JiraIssueUser::getKey).collect(toList());
                 UserPickerDialog dialog = new UserPickerDialog(myProject, users);
                 dialog.show();
             }

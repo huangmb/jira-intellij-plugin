@@ -3,6 +3,7 @@ package com.intellij.jira.tasks;
 import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.exceptions.InvalidResultException;
 import com.intellij.jira.rest.model.JiraIssue;
+import com.intellij.jira.server.JiraRestApi;
 import com.intellij.jira.util.Result;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -21,14 +22,14 @@ public class AssignUserTask extends AbstractBackgroundableTask {
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
-        JiraServer jiraServer = getJiraServer();
-        Result result = jiraServer.assignUserToIssue(username, issueKey);
+        JiraRestApi jiraRestApi = getJiraRestApi();
+        Result result = jiraRestApi.assignUserToIssue(username, issueKey);
         if(!result.isValid()) {
             throw new InvalidResultException("Assignment error", "Issue has not been updated");
         }
 
         // Retrieve updated issue
-        Result issueResult = jiraServer.getIssue(issueKey);
+        Result issueResult = jiraRestApi.getIssue(issueKey);
         if(issueResult.isValid()){
             JiraIssue issue = (JiraIssue) issueResult.get();
             // Update panels

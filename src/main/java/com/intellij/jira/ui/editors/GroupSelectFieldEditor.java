@@ -50,8 +50,8 @@ public class GroupSelectFieldEditor extends SelectFieldEditor {
         @Override
         public void actionPerformed(AnActionEvent e) {
             super.actionPerformed(e);
-            if(nonNull(myJiraServer)){
-                List<String> users = myJiraServer.getGroups().stream().map(JiraGroup::getName).collect(toList());
+            if(nonNull(myJiraRestApi)){
+                List<String> users = myJiraRestApi.getGroups().stream().map(JiraGroup::getName).collect(toList());
                 GroupPickerDialog dialog = new GroupPickerDialog(myProject, users);
                 dialog.show();
             }

@@ -1,6 +1,7 @@
 package com.intellij.jira.ui.panels;
 
 import com.google.common.util.concurrent.SettableFuture;
+import com.intellij.jira.actions.ConfigureJiraServersAction;
 import com.intellij.jira.actions.GoToIssuePopupAction;
 import com.intellij.jira.actions.JQLSearcherActionGroup;
 import com.intellij.jira.actions.JiraIssueActionGroup;
@@ -8,7 +9,7 @@ import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.events.JiraIssueEventListener;
 import com.intellij.jira.rest.model.JiraIssue;
-import com.intellij.jira.tasks.JiraServer;
+import com.intellij.jira.server.JiraRestApi;
 import com.intellij.jira.ui.table.JiraIssueListTableModel;
 import com.intellij.jira.ui.table.JiraIssueTableView;
 import com.intellij.jira.util.JiraPanelUtil;
@@ -32,18 +33,19 @@ import java.util.Optional;
 import java.util.concurrent.Future;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueEventListener {
 
-    private Optional<JiraServer> jiraServer;
+    private JiraRestApi myJiraRestApi;
     private Project myProject;
     private JiraIssueTableView issueTable;
     private JiraIssueDetailsPanel issueDetailsPanel;
 
-    public JiraIssuesPanel(Optional<JiraServer> jiraServer, Project project) {
+    public JiraIssuesPanel(JiraRestApi server, Project project) {
         super(false, true);
-        this.jiraServer = jiraServer;
+        this.myJiraRestApi = server;
         this.myProject = project;
         init();
     }
@@ -60,10 +62,10 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
 
     private void setContent() {
         JComponent content;
-        if(!jiraServer.isPresent()){
+        if(isNull(myJiraRestApi)){
             content = JiraPanelUtil.createPlaceHolderPanel("No Jira server found");
         }else{
-            List<JiraIssue> issues = jiraServer.get().getIssues();
+            List<JiraIssue> issues = myJiraRestApi.getIssues();
             issueDetailsPanel = new JiraIssueDetailsPanel();
 
             issueTable = new JiraIssueTableView(issues);
@@ -113,7 +115,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
         group.add(new JQLSearcherActionGroup());
         group.add(new GoToIssuePopupAction());
         group.add(Separator.getInstance());
-        group.add(ActionManager.getInstance().getAction("tasks.configure.servers"));
+        group.add(new ConfigureJiraServersAction());
         return group;
     }
 

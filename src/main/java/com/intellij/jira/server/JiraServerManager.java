@@ -15,13 +15,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@State(name = "JiraServerManager2", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
-public class JiraServerManager2 implements ProjectComponent, PersistentStateComponent<JiraServerManager2.Config> {
+@State(name = "JiraServerManager", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
+public class JiraServerManager implements ProjectComponent, PersistentStateComponent<JiraServerManager.Config> {
 
-
-    private SimpleSelectableList<JiraServer2> myJiraServers = new SimpleSelectableList<>();
+    private List<Runnable> myListeners = new ArrayList<>();
+    private SimpleSelectableList<JiraServer> myJiraServers = new SimpleSelectableList<>();
     private Config myConfig = new Config();
 
     @Nullable
@@ -38,18 +39,18 @@ public class JiraServerManager2 implements ProjectComponent, PersistentStateComp
 
         myJiraServers.clear();
         Element element = config.servers;
-        List<JiraServer2> servers = loadServers(element);
+        List<JiraServer> servers = loadServers(element);
         myJiraServers.addAll(servers);
 
         myJiraServers.selectItem(config.selected);
     }
 
-    private List<JiraServer2> loadServers(Element element) {
-        List<JiraServer2> servers = new ArrayList<>();
+    private List<JiraServer> loadServers(Element element) {
+        List<JiraServer> servers = new ArrayList<>();
         if(nonNull(element)){
             for(Element o : element.getChildren()){
                 try{
-                    JiraServer2 server = XmlSerializer.deserialize(o, JiraServer2.class);
+                    JiraServer server = XmlSerializer.deserialize(o, JiraServer.class);
                     servers.add(server);
                 }catch (XmlSerializationException e) {
                     //LOG.error(e.getMessage(), e);
@@ -60,39 +61,58 @@ public class JiraServerManager2 implements ProjectComponent, PersistentStateComp
         return servers;
     }
 
-    public SimpleSelectableList<JiraServer2> getJiraServers() {
-        return myJiraServers;
+
+    public void addConfigurationServerChangedListener(Runnable runnable){
+        myListeners.add(runnable);
     }
 
-    private JiraServer2[] getAllJiraServersAsArray(){
-        return myJiraServers.getItems().toArray(new JiraServer2[0]);
+    public List<JiraServer> getJiraServers() {
+        return myJiraServers.getItems();
     }
 
     public int getSelectedJiraServerIndex(){
         return myJiraServers.getSelectedItemIndex();
     }
 
-    public JiraServer2 getCurrentJiraServer(){
-        return myJiraServers.getItems().get(getSelectedJiraServerIndex());
+    private JiraServer[] getAllJiraServersAsArray(){
+        return getJiraServers().toArray(new JiraServer[0]);
     }
 
-    public void setJiraServers(SimpleSelectableList<JiraServer2> servers) {
+    public boolean hasJiraServerConfigured(){
+        return myJiraServers.hasSelectedItem();
+    }
+
+    public JiraServer getCurrentJiraServer(){
+        return myJiraServers.hasSelectedItem() ? myJiraServers.getItems().get(getSelectedJiraServerIndex()) : null;
+    }
+
+    public void setJiraServers(SimpleSelectableList<JiraServer> servers) {
         this.myJiraServers = servers;
+        onServersChanged();
     }
 
-    public JiraRepository getJiraRestApi(){
+    @Nullable
+    public JiraRestApi getJiraRestApi(){
         return convertFrom(getCurrentJiraServer());
     }
 
-    private JiraRepository convertFrom(JiraServer2 jiraServer){
+    @Nullable
+    private JiraRestApi convertFrom(@Nullable JiraServer jiraServer){
+        if(isNull(jiraServer)){
+            return null;
+        }
+
         JiraRepository repository = new JiraRepositoryType().createRepository();
         repository.setUrl(jiraServer.getUrl());
         repository.setUsername(jiraServer.getUsername());
         repository.setPassword(jiraServer.getPassword());
 
-        return repository;
+        return new JiraRestApi(repository);
     }
 
+    private void onServersChanged(){
+        myListeners.forEach(Runnable::run);
+    }
 
 
     public static class Config{

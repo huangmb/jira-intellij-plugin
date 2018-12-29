@@ -54,11 +54,7 @@ public class SimpleSelectableList<E>{
         if(index >= MIN_SELECTED && index <= getLastSelectableItemIndex()){
             items.remove(index);
             items.add(index, item);
-            if(selected){
-                selectItem(index);
-            }else{
-                unselectItem(index);
-            }
+            updateSelectedItem(index, selected);
         }
 
         add(item, selected);
@@ -101,6 +97,23 @@ public class SimpleSelectableList<E>{
         }
 
         return null;
+    }
+
+
+    public void updateSelectedItem(E item, boolean selected){
+        updateSelectedItem(items.indexOf(item), selected);
+    }
+
+    private void updateSelectedItem(int index, boolean selected){
+        if(selected){
+            selectItem(index);
+        }else{
+            unselectItem(index);
+        }
+    }
+
+    public void selectItem(E item){
+        selectItem(this.items.indexOf(item));
     }
 
     public void selectItem(int selectedItem) {

@@ -34,7 +34,6 @@ public class JiraJQLSearcherPanel extends JBPanel implements JQLSearcherEventLis
 
     private void init() {
         setBorder(JBUI.Borders.empty(2, 4));
-        getJQLSearcherManager().addJiraServerJqlSearcher();
         List<JQLSearcher> jqlSearchers = getJQLSearcherManager().getJQLSearchers();
         mySelectedSearcher = getJQLSearcherManager().getDeafaultJQLSearcher();
 
