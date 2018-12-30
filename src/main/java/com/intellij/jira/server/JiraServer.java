@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-@Tag("JiraRestApi")
+@Tag("JiraServer")
 public class JiraServer {
 
     private String url;

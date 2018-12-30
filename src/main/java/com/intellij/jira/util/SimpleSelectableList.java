@@ -57,11 +57,17 @@ public class SimpleSelectableList<E>{
             updateSelectedItem(index, selected);
         }
 
-        add(item, selected);
     }
 
+    public E remove(E item){
+        return remove(items.indexOf(item));
+    }
 
     public E remove(int index){
+        if(index < 0 || index > items.size()){
+            return null;
+        }
+
         E element = items.remove(index);
         if(this.selectedItem > getLastSelectableItemIndex()){
             selectItem(getSelectedItemIndex() - 1);

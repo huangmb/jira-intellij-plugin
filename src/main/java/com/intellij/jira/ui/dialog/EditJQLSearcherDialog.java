@@ -2,44 +2,38 @@ package com.intellij.jira.ui.dialog;
 
 import com.intellij.jira.components.JQLSearcherManager;
 import com.intellij.jira.rest.model.jql.JQLSearcher;
+import com.intellij.jira.rest.model.jql.JQLSearcherEditor;
+import com.intellij.jira.tasks.RefreshIssuesTask;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
-import com.intellij.tasks.jira.jql.JqlLanguage;
-import com.intellij.ui.EditorTextField;
-import com.intellij.ui.LanguageTextField;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBTextField;
-import com.intellij.util.ui.FormBuilder;
-import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-import static com.intellij.openapi.util.text.StringUtil.isEmpty;
-import static com.intellij.openapi.util.text.StringUtil.trim;
 import static java.util.Objects.nonNull;
 
 public class EditJQLSearcherDialog extends DialogWrapper {
 
-    protected Project myProject;
+    protected final Project myProject;
+    protected JQLSearcher mySearcher;
+    private JQLSearcher myOldSearcher;
+    protected final JQLSearcherEditor myEditor;
+    protected boolean myApplyOkAction;
 
-    private JBLabel myAliasLabel;
-    protected JBTextField myAliasField;
+    public EditJQLSearcherDialog(@NotNull Project project, @NotNull JQLSearcher searcher) {
+        this(project, searcher, true, true);
+    }
 
-    private JBLabel mySearchLabel;
-    protected EditorTextField mySearchQueryField;
 
-    protected JCheckBox mySetDefaultCheckBox;
-
-    private final JQLSearcher myJQLSearcher;
-
-    public EditJQLSearcherDialog(@NotNull Project project, @Nullable JQLSearcher searcher) {
+    public EditJQLSearcherDialog(@NotNull Project project, @NotNull JQLSearcher searcher, boolean selected, boolean applyOkAction) {
         super(project, false);
         this.myProject = project;
-        this.myJQLSearcher = searcher;
+        this.myOldSearcher = searcher.clone();
+        this.mySearcher = searcher;
+        this.myEditor = new JQLSearcherEditor(myProject, mySearcher, selected);
+        this.myApplyOkAction = applyOkAction;
 
         setTitle("Edit JQL Searcher");
         init();
@@ -49,62 +43,26 @@ public class EditJQLSearcherDialog extends DialogWrapper {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        this.myAliasLabel = new JBLabel("Alias:", 4);
-        this.myAliasField = new JBTextField(getAlias());
-        this.myAliasField.setPreferredSize(UI.size(300, 24));
-
-        this.mySearchLabel = new JBLabel("Search:", 4);
-        this.mySearchQueryField = new LanguageTextField(JqlLanguage.INSTANCE, this.myProject, getJql());
-        this.mySearchQueryField.setPreferredSize(UI.size(300, 24));
-
-        this.mySetDefaultCheckBox = new JCheckBox("Set Default");
-        this.mySetDefaultCheckBox.setBorder(JBUI.Borders.emptyRight(4));
-        this.mySetDefaultCheckBox.setSelected(isDefault());
-
-
-        return FormBuilder.createFormBuilder()
-                .addLabeledComponent(this.myAliasLabel, this.myAliasField)
-                .addLabeledComponent(this.mySearchLabel, this.mySearchQueryField)
-                .addComponent(mySetDefaultCheckBox)
-                .getPanel();
+        return myEditor.getPanel();
     }
-
-
-    private String getAlias(){
-        return nonNull(myJQLSearcher) ? myJQLSearcher.getAlias() : "";
-    }
-
-    private String getJql(){
-        return nonNull(myJQLSearcher) ? myJQLSearcher.getJql() : "";
-    }
-
-    private boolean isDefault(){
-        return nonNull(myJQLSearcher) && myJQLSearcher.isDefault();
-    }
-
 
 
 
     @Nullable
     @Override
     protected ValidationInfo doValidate() {
-        if(isEmpty(trim(myAliasField.getText()))){
-            return new ValidationInfo("Alias field is required");
-        }
-
-        if(isEmpty(trim(mySearchQueryField.getText()))){
-            return new ValidationInfo("JQL field is required");
-        }
-
-        return null;
+        return myEditor.validate();
     }
 
     @Override
     protected void doOKAction() {
-        if(nonNull(myProject)){
-            JQLSearcher jqlSearcher = getJqlSearcher();
+        if(myApplyOkAction && nonNull(myProject)){
             JQLSearcherManager jqlManager = getJqlSearcherManager();
-            jqlManager.update(myJQLSearcher.getAlias(), jqlSearcher);
+            jqlManager.update(myOldSearcher.getAlias(), mySearcher, myEditor.isSelectedSearcher());
+            if(myApplyOkAction){
+                new RefreshIssuesTask(myProject).queue();
+            }
+
         }
 
         super.doOKAction();
@@ -114,7 +72,7 @@ public class EditJQLSearcherDialog extends DialogWrapper {
     @Nullable
     @Override
     public JComponent getPreferredFocusedComponent() {
-        return myAliasField;
+        return myEditor.getAliasField();
     }
 
 
@@ -124,8 +82,11 @@ public class EditJQLSearcherDialog extends DialogWrapper {
 
 
     public JQLSearcher getJqlSearcher(){
-        return new JQLSearcher(myAliasField.getText(), mySearchQueryField.getText(), mySetDefaultCheckBox.isSelected());
+        return mySearcher;
     }
 
+    public boolean isSelectedSearcher(){
+        return myEditor.isSelectedSearcher();
+    }
 
 }

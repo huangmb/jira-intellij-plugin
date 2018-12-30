@@ -5,6 +5,7 @@ import com.intellij.jira.actions.ConfigureJiraServersAction;
 import com.intellij.jira.actions.GoToIssuePopupAction;
 import com.intellij.jira.actions.JQLSearcherActionGroup;
 import com.intellij.jira.actions.JiraIssueActionGroup;
+import com.intellij.jira.components.JQLSearcherManager;
 import com.intellij.jira.components.JiraActionManager;
 import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.events.JiraIssueEventListener;
@@ -65,7 +66,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
         if(isNull(myJiraRestApi)){
             content = JiraPanelUtil.createPlaceHolderPanel("No Jira server found");
         }else{
-            List<JiraIssue> issues = myJiraRestApi.getIssues();
+            List<JiraIssue> issues = myJiraRestApi.getIssues(getDefaultJQLSearcher());
             issueDetailsPanel = new JiraIssueDetailsPanel();
 
             issueTable = new JiraIssueTableView(issues);
@@ -177,5 +178,8 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
         return future;
     }
 
+    private String getDefaultJQLSearcher(){
+        return myProject.getComponent(JQLSearcherManager.class).getSelectedSearcher().getJql();
+    }
 
 }
