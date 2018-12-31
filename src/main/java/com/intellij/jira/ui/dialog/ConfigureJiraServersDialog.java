@@ -10,12 +10,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.Splitter;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.containers.ConcurrentFactoryMap;
 import com.intellij.util.ui.UI;
+import icons.TasksCoreIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,9 +93,7 @@ public class ConfigureJiraServersDialog extends DialogWrapper {
             JiraServer selectedServer = getSelectedServer();
             if(nonNull(selectedServer)) {
                 String name = myServerNames.get(selectedServer);
-                ((CardLayout) myJiraServerEditor.getLayout()).show(myJiraServerEditor, name);
-                mySplitter.doLayout();
-                mySplitter.repaint();
+                updateEditorPanel(name);
             }
         });
 
@@ -103,7 +101,8 @@ public class ConfigureJiraServersDialog extends DialogWrapper {
             @Override
             protected void customizeCellRenderer(@NotNull JList list, Object value, int index, boolean selected, boolean hasFocus) {
                 JiraServer server = (JiraServer)value;
-                append(StringUtil.isEmpty(server.getUrl()) ? "<undefined>" : server.getUrl(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
+                setIcon(TasksCoreIcons.Jira);
+                append(server.getPresentableName(), SimpleTextAttributes.REGULAR_ATTRIBUTES);
             }
         });
 
@@ -177,8 +176,19 @@ public class ConfigureJiraServersDialog extends DialogWrapper {
             myServers.remove(selectedServer);
             myServersList.setSelectedIndex(myServers.getSelectedItemIndex());
         }
+
+        if(myServers.isEmpty()){
+            updateEditorPanel(EMPTY_PANEL_NAME);
+        }
+
+
     }
 
+    private void updateEditorPanel(String name){
+        ((CardLayout) myJiraServerEditor.getLayout()).show(myJiraServerEditor, name);
+        mySplitter.doLayout();
+        mySplitter.repaint();
+    }
 
     private void updateIssues(){
         new RefreshIssuesTask(myProject).queue();

@@ -1,12 +1,15 @@
 package com.intellij.jira.server;
 
 import com.intellij.openapi.util.PasswordUtil;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.Transient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
+import static com.intellij.openapi.util.text.StringUtil.trim;
 
 @Tag("JiraServer")
 public class JiraServer {
@@ -65,6 +68,13 @@ public class JiraServer {
         } catch (NumberFormatException var3) { }
     }
 
+
+    @Transient
+    public String getPresentableName(){
+        return StringUtil.isEmpty(trim(getUrl())) ? "<undefined>" : getUrl();
+    }
+
+
     @NotNull
     @Override
     public JiraServer clone(){
@@ -87,6 +97,6 @@ public class JiraServer {
 
     @Override
     public String toString() {
-        return getUrl();
+        return getPresentableName();
     }
 }
