@@ -56,6 +56,7 @@ public class EditJQLSearcherDialog extends DialogWrapper {
 
     @Override
     protected void doOKAction() {
+        myEditor.apply();
         if(myApplyOkAction && nonNull(myProject)){
             JQLSearcherManager jqlManager = getJqlSearcherManager();
             jqlManager.update(myOldSearcher.getAlias(), mySearcher, myEditor.isSelectedSearcher());

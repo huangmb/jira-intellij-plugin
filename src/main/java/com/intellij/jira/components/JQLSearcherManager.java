@@ -70,7 +70,7 @@ public class JQLSearcherManager implements ProjectComponent, PersistentStateComp
 
 
     public JQLSearcher getSelectedSearcher(){
-        return mySearchers.hasSelectedItem() ? mySearchers.getSelectedItem() : DEFAULT_JQL;
+        return mySearchers.hasSelectedItem() ? mySearchers.getSelectedItem() : null;
     }
 
     public int getSelectedSearcherIndex(){

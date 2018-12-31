@@ -130,6 +130,10 @@ public class SimpleSelectableList<E>{
         }
     }
 
+    public boolean isEmpty(){
+        return this.items.isEmpty();
+    }
+
     public boolean hasSelectedItem(){
         return getSelectedItemIndex() != UNSELECTED;
     }

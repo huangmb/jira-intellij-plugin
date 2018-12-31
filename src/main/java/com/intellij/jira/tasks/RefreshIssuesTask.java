@@ -31,7 +31,11 @@ public class RefreshIssuesTask extends AbstractBackgroundableTask {
         JQLSearcherManager jqlSearcherManager = myProject.getComponent(JQLSearcherManager.class);
         JQLSearcher searcher = jqlSearcherManager.getSelectedSearcher();
 
-        List<JiraIssue> issues = nonNull(jiraRestApi) ? jiraRestApi.getIssues(searcher.getJql()) : new ArrayList<>();
+        List<JiraIssue> issues = new ArrayList<>();
+        if(nonNull(searcher) && nonNull(jiraRestApi)){
+            issues =  jiraRestApi.getIssues(searcher.getJql());
+        }
+
         JiraIssueUpdater.getInstance().update(issues);
     }
 

@@ -74,17 +74,24 @@ public class JiraJQLSearcherPanel extends JBPanel implements JQLSearcherEventLis
     }
 
     @Override
-    public void update(List<JQLSearcher> jqlSearchers) {
+    public void update(List<JQLSearcher> searchers) {
         myComboBoxItems.removeAll();
-        myComboBoxItems.add(jqlSearchers);
-        if(myComboBox.getSelectedIndex() != getJQLSearcherManager().getSelectedSearcherIndex()){
-            myComboBox.setSelectedIndex(getJQLSearcherManager().getSelectedSearcherIndex());
+
+        if(!searchers.isEmpty()){
+            myComboBoxItems.add(searchers);
+            if(myComboBox.getSelectedIndex() != getJQLSearcherManager().getSelectedSearcherIndex()){
+                myComboBox.setSelectedIndex(getJQLSearcherManager().getSelectedSearcherIndex());
+            }
         }
-        //myComboBoxItems.update();
+        else {
+            myComboBoxItems.setSelectedItem(null);
+        }
+
+        myComboBoxItems.update();
     }
 
     @Override
     public void update(JQLSearcher jqlSearcher) {
-
+        // do nothing
     }
 }

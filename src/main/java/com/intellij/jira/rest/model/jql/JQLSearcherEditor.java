@@ -1,11 +1,8 @@
 package com.intellij.jira.rest.model.jql;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.tasks.jira.jql.JqlLanguage;
-import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.LanguageTextField;
 import com.intellij.ui.components.JBLabel;
@@ -17,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 import static com.intellij.openapi.util.text.StringUtil.trim;
@@ -63,10 +59,6 @@ public class JQLSearcherEditor {
         this.myDefaultSearcherCheckBox.setBorder(JBUI.Borders.emptyRight(4));
         this.myDefaultSearcherCheckBox.setSelected(mySelectedSearcher);
 
-        installListener(myAliasField);
-        installListener(mySearchQueryField);
-        installListener(myDefaultSearcherCheckBox);
-
 
         this.myPanel = FormBuilder.createFormBuilder()
                         .addLabeledComponent(this.myAliasLabel, this.myAliasField)
@@ -76,37 +68,12 @@ public class JQLSearcherEditor {
 
     }
 
-    private void installListener(JTextField textField) {
-        textField.getDocument().addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                ApplicationManager.getApplication().invokeLater(JQLSearcherEditor.this::apply);
-            }
-        });
-    }
 
-    private void installListener(EditorTextField editorTextField){
-        editorTextField.addDocumentListener(new DocumentListener() {
-            @Override
-            public void documentChanged(@NotNull com.intellij.openapi.editor.event.DocumentEvent event) {
-                ApplicationManager.getApplication().invokeLater(JQLSearcherEditor.this::apply);
-            }
-        });
-
-    }
-
-    private void installListener(JCheckBox checkBox) {
-        checkBox.addActionListener(e -> defaultSearcherChanged());
-    }
-
-    private void apply(){
+    public void apply(){
         this.mySearcher.setAlias(trim(myAliasField.getText()));
         this.mySearcher.setJql(trim(mySearchQueryField.getText()));
     }
 
-    private void defaultSearcherChanged(){
-        // TODO: 29/12/2018
-    }
 
     public JPanel getPanel(){
         return myPanel;
