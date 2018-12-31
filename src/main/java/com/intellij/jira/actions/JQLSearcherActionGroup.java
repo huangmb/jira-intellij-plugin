@@ -24,14 +24,14 @@ public class JQLSearcherActionGroup extends DefaultActionGroup {
     public void update(AnActionEvent event) {
         Project project = event.getProject();
         if (isNull(project)|| !project.isInitialized() || project.isDisposed()) {
-            event.getPresentation().setEnabled(false);
+            event.getPresentation().setVisible(false);
         } else {
             JiraServerManager manager = project.getComponent(JiraServerManager.class);
             if(manager.hasJiraServerConfigured()){
-                event.getPresentation().setEnabled(true);
+                event.getPresentation().setVisible(true);
             }
             else{
-                event.getPresentation().setEnabled(false);
+                event.getPresentation().setVisible(false);
             }
         }
     }
