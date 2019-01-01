@@ -96,6 +96,11 @@ public class JiraServerManager implements ProjectComponent, PersistentStateCompo
         return convertFrom(getCurrentJiraServer());
     }
 
+    @NotNull
+    public JiraRestApi getJiraRestApiFrom(@NotNull JiraServer jiraServer){
+        return convertFrom(jiraServer);
+    }
+
     @Nullable
     private JiraRestApi convertFrom(@Nullable JiraServer jiraServer){
         if(isNull(jiraServer)){

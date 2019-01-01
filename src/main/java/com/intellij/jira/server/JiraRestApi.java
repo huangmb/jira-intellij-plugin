@@ -174,4 +174,7 @@ public class JiraRestApi {
         return jiraRestClient.getDefaultSearchQuery();
     }
 
+    public boolean testConnection() throws Exception {
+        return jiraRestClient.testConnection();
+    }
 }

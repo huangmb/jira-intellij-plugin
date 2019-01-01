@@ -187,5 +187,11 @@ public class JiraRestClient {
     public String getDefaultSearchQuery() {
         return jiraRepository.getSearchQuery();
     }
+
+    public boolean testConnection() throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("myself"));
+        jiraRepository.executeMethod(method);
+        return method.getStatusCode() == 200;
+    }
 }
 

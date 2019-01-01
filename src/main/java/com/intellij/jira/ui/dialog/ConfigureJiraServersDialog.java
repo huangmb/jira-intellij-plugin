@@ -161,7 +161,7 @@ public class ConfigureJiraServersDialog extends DialogWrapper {
     }
 
     private void addJiraServerEditor(JiraServer server, boolean selected){
-        JiraServerEditor editor = new JiraServerEditor(server, selected, myChangeListener, myChangeUrlListener);
+        JiraServerEditor editor = new JiraServerEditor(myProject,server, selected, myChangeListener, myChangeUrlListener);
         myEditors.add(editor);
         String name = myServerNames.get(server);
         myJiraServerEditor.add(editor.getPanel(), name);

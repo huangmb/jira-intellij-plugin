@@ -1,6 +1,12 @@
 package com.intellij.jira.server;
 
+import com.intellij.jira.tasks.TestJiraServerConnectionTask;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
@@ -12,9 +18,12 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 
+import java.awt.*;
+import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static com.intellij.jira.util.JiraPanelUtil.MARGIN_BOTTOM;
 import static com.intellij.openapi.util.text.StringUtil.trim;
 import static java.lang.String.valueOf;
 
@@ -33,9 +42,11 @@ public class JiraServerEditor {
     private JPasswordField myPasswordField;
 
     private JCheckBox myDefaultServerCheckbox;
+    private JButton myTestButton;
 
     private JPanel myPanel;
 
+    private final Project myProject;
     private final JiraServer myServer;
     private final boolean mySelectedServer;
 
@@ -43,7 +54,8 @@ public class JiraServerEditor {
     private Consumer<JiraServer> myChangeUrlListener;
 
 
-    public JiraServerEditor(final JiraServer server, boolean selected, BiConsumer<JiraServer, Boolean> changeListener, Consumer<JiraServer> changeUrlListener) {
+    public JiraServerEditor(Project project, JiraServer server, boolean selected, BiConsumer<JiraServer, Boolean> changeListener, Consumer<JiraServer> changeUrlListener) {
+        this.myProject = project;
         this.myServer = server;
         this.mySelectedServer = selected;
         this.myChangeListener = changeListener;
@@ -72,11 +84,16 @@ public class JiraServerEditor {
         this.myDefaultServerCheckbox.setBorder(JBUI.Borders.emptyRight(4));
         this.myDefaultServerCheckbox.setSelected(mySelectedServer);
 
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.setBorder(MARGIN_BOTTOM);
+        this.myTestButton = new JButton("Test");
+        buttonPanel.add(myTestButton, BorderLayout.EAST);
 
         installListener(myUrlField);
         installListener(myUsernameField);
         installListener(myPasswordField);
         installListener(myDefaultServerCheckbox);
+        installListener(myTestButton);
 
 
         this.myPanel = FormBuilder.createFormBuilder()
@@ -84,6 +101,7 @@ public class JiraServerEditor {
                             .addLabeledComponent(this.myUsernameLabel, this.myUsernameField)
                             .addLabeledComponent(this.myPasswordLabel, this.myPasswordField)
                             .addComponent(myDefaultServerCheckbox)
+                            .addComponentToRightColumn(buttonPanel)
                             .getPanel();
     }
 
@@ -103,6 +121,28 @@ public class JiraServerEditor {
         checkBox.addActionListener(e -> defaultServerChanged());
     }
 
+    private void installListener(JButton button){
+        button.addActionListener((event) -> {
+            SwingUtilities.invokeLater(() -> {
+                TestJiraServerConnectionTask task = new TestJiraServerConnectionTask(myProject, myServer);
+                ProgressManager.getInstance().run(task);
+                Exception e = task.getException();
+                if (e == null) {
+                    Messages.showMessageDialog(myProject, "Connection is successful", "Connection", Messages.getInformationIcon());
+                }
+                else if (!(e instanceof ProcessCanceledException)) {
+                    String message = e.getMessage();
+                    if (e instanceof UnknownHostException) {
+                        message = "Unknown host: " + message;
+                    }
+                    if (message == null) {
+                        message = "Unknown error";
+                    }
+                    Messages.showErrorDialog(myProject, StringUtil.capitalize(message), "Error");
+                }
+            });
+        });
+    }
 
 
     public JPanel getPanel(){
