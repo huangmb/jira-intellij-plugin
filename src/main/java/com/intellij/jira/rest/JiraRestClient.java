@@ -9,6 +9,7 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,9 +65,25 @@ public class JiraRestClient {
 
     public List<JiraIssueUser> getAssignableUsers(String issueKey) throws Exception {
         GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("user", "assignable", SEARCH));
-        method.setQueryString(new NameValuePair[]{new NameValuePair("issueKey", issueKey)});
-        String response = jiraRepository.executeMethod(method);
-        return parseUsers(response);
+
+        List<JiraIssueUser> newUsers;
+        List<JiraIssueUser> jiraUsers = new ArrayList<>();
+
+        int maxResults = 50;
+
+        do {
+            method.setQueryString(new NameValuePair[]{
+                    new NameValuePair("issueKey", issueKey),
+                    new NameValuePair("startAt", String.valueOf(jiraUsers.size())),
+                    new NameValuePair("maxResults", String.valueOf(maxResults)),
+            });
+
+            String response = jiraRepository.executeMethod(method);
+            newUsers = parseUsers(response);
+            jiraUsers.addAll(newUsers);
+        } while (newUsers.size() == maxResults);
+
+        return jiraUsers;
     }
 
 
