@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class JiraIssuePrioritiesPopup extends PopupFactoryImpl.ActionGroupPopup{
 
     public JiraIssuePrioritiesPopup(@NotNull ActionGroup actionGroup, @NotNull Project project) {
-        super("Change priority to", actionGroup, SimpleDataContext.getProjectContext(project), false, false, false, false, null, -1, Conditions.alwaysTrue(), null);
+        super("Change priority to", actionGroup, SimpleDataContext.getProjectContext(project), false, false, false, false, null, 10, Conditions.alwaysTrue(), null);
     }
 
 

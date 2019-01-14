@@ -18,7 +18,9 @@ import static com.intellij.jira.util.JiraGsonUtil.createIdObject;
 import static java.util.Objects.nonNull;
 
 public class JiraRestClient {
-    private static final Integer DEFAULT_MAX_ISSUES_RESULTS = 500;
+    private static final Integer MAX_ISSUES_RESULTS = 500;
+    private static final Integer MAX_USERS_RESULTS = 200;
+
     private static final String ISSUE = "issue";
     private static final String TRANSITIONS = "transitions";
     private static final String SEARCH = "search";
@@ -37,7 +39,7 @@ public class JiraRestClient {
     }
 
     public List<JiraIssue> findIssues(String searchQuery) throws Exception {
-        GetMethod method = getBasicSearchMethod(searchQuery, DEFAULT_MAX_ISSUES_RESULTS);
+        GetMethod method = getBasicSearchMethod(searchQuery, MAX_ISSUES_RESULTS);
         method.setQueryString(method.getQueryString() + "&fields=" + JiraIssue.REQUIRED_FIELDS);
         String response = jiraRepository.executeMethod(method);
         return parseIssues(response);
@@ -69,19 +71,17 @@ public class JiraRestClient {
         List<JiraIssueUser> newUsers;
         List<JiraIssueUser> jiraUsers = new ArrayList<>();
 
-        int maxResults = 50;
-
         do {
             method.setQueryString(new NameValuePair[]{
                     new NameValuePair("issueKey", issueKey),
                     new NameValuePair("startAt", String.valueOf(jiraUsers.size())),
-                    new NameValuePair("maxResults", String.valueOf(maxResults)),
+                    new NameValuePair("maxResults", String.valueOf(MAX_USERS_RESULTS)),
             });
 
             String response = jiraRepository.executeMethod(method);
             newUsers = parseUsers(response);
             jiraUsers.addAll(newUsers);
-        } while (newUsers.size() == maxResults);
+        } while (newUsers.size() == MAX_USERS_RESULTS);
 
         return jiraUsers;
     }

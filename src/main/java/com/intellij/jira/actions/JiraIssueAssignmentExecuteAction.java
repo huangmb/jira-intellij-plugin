@@ -11,14 +11,17 @@ public class JiraIssueAssignmentExecuteAction extends JiraIssueAction {
     private String username;
     private String issueKey;
 
-    public JiraIssueAssignmentExecuteAction(String issueKey) {
-        super(ActionProperties.of("Unassigned"));
-        this.username = "-1";
-        this.issueKey = issueKey;
+    public static JiraIssueAssignmentExecuteAction assignAnyone(String issueKey){
+        return new JiraIssueAssignmentExecuteAction("Unassign", "-1", issueKey);
     }
 
-    public JiraIssueAssignmentExecuteAction(String username, String issueKey) {
-        super(ActionProperties.of(username));
+    public static JiraIssueAssignmentExecuteAction assignUser(String username, String issueKey){
+        return new JiraIssueAssignmentExecuteAction(username, username, issueKey);
+    }
+
+
+    private JiraIssueAssignmentExecuteAction(String actionName, String username, String issueKey) {
+        super(ActionProperties.of(actionName));
         this.username = username;
         this.issueKey = issueKey;
     }

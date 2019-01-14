@@ -45,8 +45,9 @@ public class JiraIssueAssigneePopupAction extends JiraIssueAction {
 
     private ActionGroup createActionGroup(List<JiraIssueUser> assignableUsers){
         JiraIssueActionGroup group = new JiraIssueActionGroup(getComponent());
-        assignableUsers.forEach(u -> group.add(new JiraIssueAssignmentExecuteAction(u.getKey(), issueFactory.create().getKey())));
-        group.add(new JiraIssueAssignmentExecuteAction(issueFactory.create().getKey())); // Unassigned action
+        assignableUsers.forEach(u -> group.add(JiraIssueAssignmentExecuteAction.assignUser(u.getKey(), issueFactory.create().getKey())));
+        group.add(JiraIssueAssignmentExecuteAction.assignAnyone(issueFactory.create().getKey()));
+
         return group;
     }
 

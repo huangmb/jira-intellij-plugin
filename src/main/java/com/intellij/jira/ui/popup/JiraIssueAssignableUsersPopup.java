@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class JiraIssueAssignableUsersPopup extends PopupFactoryImpl.ActionGroupPopup {
 
     public JiraIssueAssignableUsersPopup(@NotNull ActionGroup actionGroup, @NotNull Project project) {
-        super("Assign to", actionGroup, SimpleDataContext.getProjectContext(project), false, false, false, false, null, -1, Conditions.alwaysTrue(), null);
+        super("Assign to", actionGroup, SimpleDataContext.getProjectContext(project), false, false, false, false, null, 10, Conditions.alwaysTrue(), null);
     }
 
 }
