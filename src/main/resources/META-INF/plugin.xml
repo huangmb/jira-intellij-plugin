@@ -30,9 +30,6 @@
         <component>
             <implementation-class>com.intellij.jira.components.JiraNotificationManager</implementation-class>
         </component>
-        <component>
-            <implementation-class>com.intellij.jira.components.JiraIssueUpdater</implementation-class>
-        </component>
     </application-components>
 
     <project-components>
@@ -44,6 +41,9 @@
         </component>
         <component>
             <implementation-class>com.intellij.jira.server.JiraServerManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.intellij.jira.components.JiraIssueUpdater</implementation-class>
         </component>
     </project-components>
 

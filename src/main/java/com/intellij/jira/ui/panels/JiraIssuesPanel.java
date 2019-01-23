@@ -58,7 +58,7 @@ public class JiraIssuesPanel extends SimpleToolWindowPanel implements JiraIssueE
     }
 
     private void addListeners() {
-        JiraIssueUpdater.getInstance().addListener(this);
+        myProject.getComponent(JiraIssueUpdater.class).addListener(this);
     }
 
     private void setContent() {

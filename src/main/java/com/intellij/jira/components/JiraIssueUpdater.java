@@ -2,27 +2,26 @@ package com.intellij.jira.components;
 
 import com.intellij.jira.events.JiraIssueEventListener;
 import com.intellij.jira.rest.model.JiraIssue;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.ProjectComponent;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JiraIssueUpdater implements ApplicationComponent, Updater<JiraIssue>  {
+public class JiraIssueUpdater implements ProjectComponent, Updater<JiraIssue>  {
 
     private List<JiraIssueEventListener> listeners;
 
-    protected JiraIssueUpdater() {
+
+    @Override
+    public void projectOpened() {
         listeners = new ArrayList<>();
     }
 
-    public static JiraIssueUpdater getInstance() {
-        return ApplicationManager.getApplication().getComponent(JiraIssueUpdater.class);
-    }
-
     @Override
-    public void disposeComponent() { listeners.clear();}
+    public void projectClosed() {
+        listeners.clear();
+    }
 
 
 

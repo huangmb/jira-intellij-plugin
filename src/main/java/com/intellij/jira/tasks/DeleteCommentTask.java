@@ -1,6 +1,5 @@
 package com.intellij.jira.tasks;
 
-import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.exceptions.InvalidPermissionException;
 import com.intellij.jira.exceptions.InvalidResultException;
 import com.intellij.jira.rest.model.JiraIssue;
@@ -41,7 +40,7 @@ public class DeleteCommentTask extends AbstractBackgroundableTask {
         if(issueResult.isValid()){
             JiraIssue issue = (JiraIssue) issueResult.get();
             // Update panels
-            JiraIssueUpdater.getInstance().update(issue);
+            getJiraIssueUpdater().update(issue);
         }
 
     }

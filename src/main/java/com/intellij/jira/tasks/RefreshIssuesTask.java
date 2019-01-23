@@ -1,7 +1,6 @@
 package com.intellij.jira.tasks;
 
 import com.intellij.jira.components.JQLSearcherManager;
-import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.components.JiraNotificationManager;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.rest.model.jql.JQLSearcher;
@@ -36,7 +35,7 @@ public class RefreshIssuesTask extends AbstractBackgroundableTask {
             issues =  jiraRestApi.getIssues(searcher.getJql());
         }
 
-        JiraIssueUpdater.getInstance().update(issues);
+        getJiraIssueUpdater().update(issues);
     }
 
     @Override

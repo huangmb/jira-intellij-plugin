@@ -1,6 +1,5 @@
 package com.intellij.jira.tasks;
 
-import com.intellij.jira.components.JiraIssueUpdater;
 import com.intellij.jira.exceptions.InvalidResultException;
 import com.intellij.jira.rest.model.JiraIssue;
 import com.intellij.jira.server.JiraRestApi;
@@ -33,7 +32,7 @@ public class AssignUserTask extends AbstractBackgroundableTask {
         if(issueResult.isValid()){
             JiraIssue issue = (JiraIssue) issueResult.get();
             // Update panels
-            JiraIssueUpdater.getInstance().update(issue);
+            getJiraIssueUpdater().update(issue);
         }
     }
 
