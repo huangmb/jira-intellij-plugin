@@ -3,10 +3,10 @@ package com.intellij.jira.components;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
-public class JiraActionManager implements ApplicationComponent {
+public class JiraActionManager implements BaseComponent {
 
     private AnAction jiraIssuesRefreshAction;
 

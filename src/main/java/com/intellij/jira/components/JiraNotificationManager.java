@@ -3,13 +3,14 @@ package com.intellij.jira.components;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 
-import static com.intellij.notification.NotificationDisplayType.*;
+import static com.intellij.notification.NotificationDisplayType.BALLOON;
+import static com.intellij.notification.NotificationDisplayType.NONE;
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.INFORMATION;
 
-public class JiraNotificationManager implements ApplicationComponent {
+public class JiraNotificationManager implements BaseComponent {
 
     private static final NotificationGroup BALLON_NOTIFICATION_GROUP = new NotificationGroup("Jira Notifications", BALLOON, true);
     private static final NotificationGroup NONE_NOTIFICATION_GROUP = new NotificationGroup("Jira Notifications", NONE, true);
