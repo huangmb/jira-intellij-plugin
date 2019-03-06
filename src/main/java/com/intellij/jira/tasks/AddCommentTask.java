@@ -16,11 +16,13 @@ public class AddCommentTask extends AbstractBackgroundableTask {
 
     private String issueKey;
     private String body;
+    private String viewableBy;
 
-    public AddCommentTask(@Nullable Project project, String issueKey, String body) {
+    public AddCommentTask(@Nullable Project project, String issueKey, String body, String viewableBy) {
         super(project, "Adding a comment");
         this.issueKey = issueKey;
         this.body = body;
+        this.viewableBy = viewableBy;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class AddCommentTask extends AbstractBackgroundableTask {
             throw new InvalidPermissionException("Jira", "You don't have permission to add a comment");
         }
 
-        Result result = jiraRestApi.addCommentToIssue(body, issueKey);
+        Result result = jiraRestApi.addCommentToIssue(body, issueKey, viewableBy);
         if(!result.isValid()) {
             throw new InvalidResultException("Error", "Issue comment has not been added");
         }

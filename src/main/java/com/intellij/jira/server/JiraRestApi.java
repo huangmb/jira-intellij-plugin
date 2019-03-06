@@ -98,9 +98,9 @@ public class JiraRestApi {
     }
 
 
-    public Result addCommentToIssue(String body, String issueKey){
+    public Result addCommentToIssue(String body, String issueKey, String viewableBy){
         try {
-            JiraIssueComment comment = jiraRestClient.addCommentToIssue(body, issueKey);
+            JiraIssueComment comment = jiraRestClient.addCommentToIssue(body, issueKey, viewableBy);
             return BodyResult.ok(comment);
         } catch (Exception e) {
             log.error(String.format("Error creating comment in issue '%s'", issueKey));
@@ -176,5 +176,14 @@ public class JiraRestApi {
 
     public boolean testConnection() throws Exception {
         return jiraRestClient.testConnection();
+    }
+
+    public List<String> getProjectRoles(String projectKey) {
+        try {
+            return jiraRestClient.getProjectRoles(projectKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ContainerUtil.emptyList();
+        }
     }
 }

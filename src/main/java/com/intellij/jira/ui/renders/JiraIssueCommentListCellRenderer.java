@@ -47,7 +47,7 @@ public class JiraIssueCommentListCellRenderer extends DefaultJiraListCellRender 
         commentArea.setEditable(false);
 
         subPanel.add(priorityPanel, BorderLayout.PAGE_START);
-        subPanel.add(commentArea, BorderLayout.PAGE_END);
+        subPanel.add(commentArea, BorderLayout.CENTER);
 
         commentPanel.add(subPanel, BorderLayout.CENTER);
 

@@ -30,6 +30,7 @@ class JiraIssueCommentsPanel extends SimpleToolWindowPanel {
 
     private JiraIssueCommentsWrapper comments;
     private String issueKey;
+    private String projectKey;
     private JiraIssueComment comment;
 
     private JBList<JiraIssueComment> issueCommentList;
@@ -38,6 +39,7 @@ class JiraIssueCommentsPanel extends SimpleToolWindowPanel {
         super(true);
         this.comments = issue.getComments();
         this.issueKey = issue.getKey();
+        this.projectKey = issue.getProject().getKey();
         initToolbar();
         initContent();
     }
@@ -53,7 +55,7 @@ class JiraIssueCommentsPanel extends SimpleToolWindowPanel {
 
     private ActionGroup createActionGroup() {
         JiraIssueActionGroup group = new JiraIssueActionGroup(this);
-        group.add(new AddCommentDialogAction(issueKey));
+        group.add(new AddCommentDialogAction(issueKey, projectKey));
         group.add(new DeleteCommentDialogAction(issueKey, () -> comment));
 
         return group;

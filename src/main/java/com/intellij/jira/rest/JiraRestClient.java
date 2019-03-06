@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.intellij.jira.rest.JiraIssueParser.*;
+import static com.intellij.jira.ui.dialog.AddCommentDialog.ALL_USERS;
 import static com.intellij.jira.util.JiraGsonUtil.createIdObject;
 import static java.util.Objects.nonNull;
 
@@ -95,8 +96,8 @@ public class JiraRestClient {
     }
 
 
-    public JiraIssueComment addCommentToIssue(String body, String issueKey) throws Exception {
-        String requestBody = "{\"body\": \"" + body + "\"}";
+    public JiraIssueComment addCommentToIssue(String body, String issueKey, String viewableBy) throws Exception {
+        String requestBody = prepareCommentBody(body, viewableBy);
         PostMethod method = new PostMethod(this.jiraRepository.getRestUrl(ISSUE, issueKey, "comment"));
         method.setRequestEntity(createJsonEntity(requestBody));
         String response = jiraRepository.executeMethod(method);
@@ -209,6 +210,27 @@ public class JiraRestClient {
         GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("myself"));
         jiraRepository.executeMethod(method);
         return method.getStatusCode() == 200;
+    }
+
+    public List<String> getProjectRoles(String projectKey) throws Exception {
+        GetMethod method = new GetMethod(this.jiraRepository.getRestUrl("project", projectKey, "role"));
+        String response = jiraRepository.executeMethod(method);
+
+        return parseRoles(response);
+    }
+
+    private String prepareCommentBody(String body, String viewableBy){
+        JsonObject commentBody = new JsonObject();
+        commentBody.addProperty("body", body);
+
+        if(!ALL_USERS.equals(viewableBy)){
+            JsonObject visibility = new JsonObject();
+            visibility.addProperty("type", "role");
+            visibility.addProperty("value", viewableBy);
+            commentBody.add("visibility", visibility);
+        }
+
+        return commentBody.toString();
     }
 }
 

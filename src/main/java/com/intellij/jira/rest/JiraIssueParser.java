@@ -1,11 +1,13 @@
 package com.intellij.jira.rest;
 
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.jira.rest.model.*;
 import com.intellij.tasks.jira.JiraRepository;
 import com.intellij.util.containers.ContainerUtil;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,6 +71,10 @@ public class JiraIssueParser {
         }
 
         return wrapper.getGroups();
+    }
+
+    public static List<String> parseRoles(String response){
+        return new ArrayList<>(JiraRepository.GSON.fromJson(response, JsonObject.class).keySet());
     }
 
 }
