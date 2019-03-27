@@ -2,7 +2,7 @@ package com.intellij.jira.ui;
 
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.util.ui.JBUI;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -14,9 +14,8 @@ public class JiraTabbedPane extends JBTabbedPane {
     }
 
 
-    @NotNull
     @Override
-    protected Insets getInsetsForTabComponent() {
-        return JBUI.insets(0);
+    public void setTabComponentInsets(@Nullable Insets tabInsets) {
+        super.setTabComponentInsets(JBUI.insets(0));
     }
 }

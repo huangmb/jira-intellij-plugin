@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static com.intellij.openapi.ui.Messages.CANCEL_BUTTON;
+import static com.intellij.openapi.ui.Messages.OK_BUTTON;
 import static java.util.Objects.nonNull;
 
 public class ConfigureJiraServersDialog extends DialogWrapper {
@@ -142,7 +144,7 @@ public class ConfigureJiraServersDialog extends DialogWrapper {
                             addJiraServer();
                         })
                         .setRemoveAction(button -> {
-                            if (Messages.showOkCancelDialog(myProject, "You are going to delete this server, are you sure?","Delete Server", Messages.getQuestionIcon()) == Messages.OK) {
+                            if (Messages.showOkCancelDialog(myProject, "You are going to delete this server, are you sure?","Delete Server", OK_BUTTON, CANCEL_BUTTON, Messages.getQuestionIcon()) == Messages.OK) {
                                 removeJiraServer();
                             }
                         })

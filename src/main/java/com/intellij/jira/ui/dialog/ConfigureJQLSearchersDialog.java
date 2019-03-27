@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 import static com.intellij.jira.util.JiraLabelUtil.getBgRowColor;
 import static com.intellij.jira.util.JiraLabelUtil.getFgRowColor;
+import static com.intellij.openapi.ui.Messages.CANCEL_BUTTON;
+import static com.intellij.openapi.ui.Messages.OK_BUTTON;
 
 public class ConfigureJQLSearchersDialog extends DialogWrapper {
 
@@ -91,7 +93,7 @@ public class ConfigureJQLSearchersDialog extends DialogWrapper {
                             }
                         })
                         .setRemoveAction(button -> {
-                            if (Messages.showOkCancelDialog(myProject, "You are going to delete this searcher, are you sure?","Delete Searcher", Messages.getQuestionIcon()) == Messages.OK) {
+                            if (Messages.showOkCancelDialog(myProject, "You are going to delete this searcher, are you sure?","Delete Searcher", OK_BUTTON, CANCEL_BUTTON, Messages.getQuestionIcon()) == Messages.OK) {
 
                                 mySearchers.remove(myTable.getSelectedRow());
                                 myModel.removeRow(myTable.getSelectedRow());
