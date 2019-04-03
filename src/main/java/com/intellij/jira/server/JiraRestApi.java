@@ -186,4 +186,14 @@ public class JiraRestApi {
             return ContainerUtil.emptyList();
         }
     }
+
+    public Result addIssueLink(String linkType, String inIssueKey, String outIssueKey) {
+        try {
+            Integer statusCode = jiraRestClient.addIssueLink(linkType, inIssueKey, outIssueKey);
+            return statusCode == 201 ? BodyResult.ok(statusCode) :  BodyResult.error();
+        } catch (Exception e) {
+            log.error("Error creating issue link");
+            return BodyResult.error();
+        }
+    }
 }

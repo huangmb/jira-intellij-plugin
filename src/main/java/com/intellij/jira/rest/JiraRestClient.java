@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static com.intellij.jira.rest.JiraIssueParser.*;
 import static com.intellij.jira.ui.dialog.AddCommentDialog.ALL_USERS;
-import static com.intellij.jira.util.JiraGsonUtil.createIdObject;
+import static com.intellij.jira.util.JiraGsonUtil.*;
 import static java.util.Objects.nonNull;
 
 public class JiraRestClient {
@@ -231,6 +231,23 @@ public class JiraRestClient {
         }
 
         return commentBody.toString();
+    }
+
+    public Integer addIssueLink(String linkType, String inIssueKey, String outIssueKey) throws Exception {
+        String requestBody = prepareIssueLinkBody(linkType, inIssueKey, outIssueKey);
+        PostMethod method = new PostMethod(this.jiraRepository.getRestUrl("issueLink"));
+        method.setRequestEntity(createJsonEntity(requestBody));
+        jiraRepository.executeMethod(method);
+        return method.getStatusCode();
+    }
+
+    private String prepareIssueLinkBody(String linkType, String inIssueKey, String outIssueKey) {
+        JsonObject linkObject = new JsonObject();
+        linkObject.add("type", createNameObject(linkType));
+        linkObject.add("inwardIssue", createObject("key", inIssueKey));
+        linkObject.add("outwardIssue", createObject("key", outIssueKey));
+
+        return linkObject.toString();
     }
 }
 
