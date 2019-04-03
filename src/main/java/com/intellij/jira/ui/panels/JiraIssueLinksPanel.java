@@ -1,6 +1,7 @@
 package com.intellij.jira.ui.panels;
 
 import com.intellij.jira.actions.AddIssueLinkDialogAction;
+import com.intellij.jira.actions.DeleteIssueLinkDialogAction;
 import com.intellij.jira.actions.JiraIssueActionGroup;
 import com.intellij.jira.rest.model.JiraIssueLink;
 import com.intellij.jira.ui.JiraIssueLinkListModel;
@@ -16,9 +17,11 @@ import com.intellij.ui.components.JBPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 import static com.intellij.jira.ui.JiraToolWindowFactory.TOOL_WINDOW_ID;
 import static java.awt.BorderLayout.CENTER;
+import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
@@ -26,6 +29,8 @@ class JiraIssueLinksPanel extends SimpleToolWindowPanel {
 
     private String issueKey;
     private List<JiraIssueLink> issueLinks;
+    private JBList<JiraIssueLink> issueLinkList;
+    private JiraIssueLink issueLink;
 
     JiraIssueLinksPanel(List<JiraIssueLink> issueLinks, String issueKey) {
         super(true, true);
@@ -47,7 +52,7 @@ class JiraIssueLinksPanel extends SimpleToolWindowPanel {
     private ActionGroup createActionGroup() {
         JiraIssueActionGroup group = new JiraIssueActionGroup(this);
         group.add(new AddIssueLinkDialogAction(issueKey));
-        //group.add(new DeleteIssueLinkDialogAction(issueKey, () -> comment));
+        group.add(new DeleteIssueLinkDialogAction(issueKey, () -> issueLink));
 
         return group;
     }
@@ -56,14 +61,26 @@ class JiraIssueLinksPanel extends SimpleToolWindowPanel {
     private void initContent() {
         JBPanel panel = new JBPanel(new BorderLayout());
 
-        JBList<JiraIssueLink> issueLinkList = new JBList<>();
+        issueLinkList = new JBList<>();
         issueLinkList.setEmptyText("No links");
         issueLinkList.setModel(new JiraIssueLinkListModel(issueLinks));
         issueLinkList.setCellRenderer(new JiraIssueLinkListCellRenderer());
+        issueLinkList.setSelectionMode(SINGLE_SELECTION);
+        issueLinkList.addListSelectionListener(e -> {
+            SwingUtilities.invokeLater(this::updateToolbarActions);
+        });
 
         panel.add(ScrollPaneFactory.createScrollPane(issueLinkList, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), CENTER);
 
         setContent(panel);
+    }
+
+    private void updateToolbarActions() {
+        JiraIssueLink selectedLink = issueLinkList.getSelectedValue();
+        if(!Objects.equals(issueLink, selectedLink)){
+            issueLink = selectedLink;
+            initToolbar();
+        }
     }
 
 

@@ -10,6 +10,9 @@ public class JiraIssueLink {
 
     protected JiraIssueLink() { }
 
+    public String getId() {
+        return id;
+    }
 
     public JiraIssueLinkType getType() {
         return type;

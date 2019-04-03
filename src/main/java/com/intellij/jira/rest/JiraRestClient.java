@@ -249,5 +249,11 @@ public class JiraRestClient {
 
         return linkObject.toString();
     }
+
+    public Integer deleteIssueLink(String issueLinkId) throws Exception {
+        DeleteMethod method = new DeleteMethod(this.jiraRepository.getRestUrl("issueLink", issueLinkId));
+        jiraRepository.executeMethod(method);
+        return method.getStatusCode();
+    }
 }
 

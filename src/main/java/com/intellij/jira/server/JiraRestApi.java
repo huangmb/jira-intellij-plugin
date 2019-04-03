@@ -196,4 +196,14 @@ public class JiraRestApi {
             return BodyResult.error();
         }
     }
+
+    public Result deleteIssueLink(String issueLinkId) {
+        try {
+            Integer statusCode = jiraRestClient.deleteIssueLink(issueLinkId);
+            return statusCode == 204 ? BodyResult.ok(statusCode) :  BodyResult.error();
+        } catch (Exception e) {
+            log.error("Error creating issue link");
+            return BodyResult.error();
+        }
+    }
 }

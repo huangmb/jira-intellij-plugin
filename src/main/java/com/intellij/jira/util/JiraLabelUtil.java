@@ -24,7 +24,11 @@ public class JiraLabelUtil {
     public static final Color DARCULA_SELECTED_ISSUE_COLOR = new Color(108, 32, 133);
 
     public static final Color ISSUE_LINK_COLOR = new Color(240, 216, 226);
+    public static final Color DARK_ISSUE_LINK_COLOR = new Color(240, 187, 219);
+
+
     public static final Color DARCULA_ISSUE_LINK_COLOR = new Color(133, 76, 100);
+    public static final Color DARK_DARCULA_ISSUE_LINK_COLOR = new Color(133, 34, 77);
 
     public static final Color DARCULA_TEXT_COLOR = new Color(200, 200, 200);
 

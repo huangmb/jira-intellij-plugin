@@ -15,7 +15,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 public class AddIssueLinkDialogAction extends JiraIssueAction {
-    private static final ActionProperties properties = ActionProperties.of("New Issue Link",  AllIcons.General.Add);
+    private static final ActionProperties properties = ActionProperties.of("New Link",  AllIcons.General.Add);
 
     private String issueKey;
 

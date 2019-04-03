@@ -46,7 +46,12 @@ public class JiraIssueLinkListCellRenderer extends DefaultJiraListCellRender {
         JiraIssueLink issueLink = (JiraIssueLink) value;
 
         setBorder(JBUI.Borders.emptyBottom(2));
-        setBackground(UIUtil.isUnderDarcula() ? DARCULA_ISSUE_LINK_COLOR : ISSUE_LINK_COLOR);
+
+        if(isSelected){
+            setBackground(UIUtil.isUnderDarcula() ? DARK_DARCULA_ISSUE_LINK_COLOR : DARK_ISSUE_LINK_COLOR);
+        }else{
+            setBackground(UIUtil.isUnderDarcula() ? DARCULA_ISSUE_LINK_COLOR : ISSUE_LINK_COLOR);
+        }
 
         String typeText = nonNull(issueLink.getInwardIssue()) ? issueLink.getType().getInward() : issueLink.getType().getOutward();
         typeLabel.setText(typeText);
