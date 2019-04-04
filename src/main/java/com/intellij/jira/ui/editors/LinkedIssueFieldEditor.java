@@ -112,8 +112,8 @@ public class LinkedIssueFieldEditor extends AbstractFieldEditor {
 
         @Override
         protected void doOKAction() {
-            JiraIssueLinkTypeInfo selectedType = linkTypes.getSelectedValue();
-            String selectedIssue = issuesKey.getSelectedValue();
+            JiraIssueLinkTypeInfo selectedType = (JiraIssueLinkTypeInfo) linkTypesCB.getSelectedItem();
+            String selectedIssue = (String) issueKeysCB.getSelectedItem();
             mySelectedLinkType = selectedType;
             mySelectedIssue = selectedIssue;
             if(nonNull(selectedType) && nonNull(selectedIssue)){

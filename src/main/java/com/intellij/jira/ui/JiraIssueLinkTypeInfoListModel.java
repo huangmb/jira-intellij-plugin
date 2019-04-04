@@ -28,4 +28,9 @@ public class JiraIssueLinkTypeInfoListModel  extends AbstractListModel<JiraIssue
     public JiraIssueLinkTypeInfo getElementAt(int index) {
         return issueLinkTypes.get(index);
     }
+
+
+    public List<JiraIssueLinkTypeInfo> getIssueLinkTypes() {
+        return issueLinkTypes;
+    }
 }
